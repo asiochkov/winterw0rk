@@ -1,0 +1,33 @@
+{
+  "name": "Winterwork",
+  "version": "1.0",
+  "mode": "dark-first",
+  "colors": {
+    "canvas-0": "#080B0F",
+    "canvas-1": "#0D1117",
+    "canvas-2": "#121820",
+    "canvas-3": "#17202A",
+    "canvas-4": "#1C2631",
+    "text-1": "#F3F7FA",
+    "text-2": "#B7C0C8",
+    "text-3": "#7C8791",
+    "text-disabled": "#56616B",
+    "ice-400": "#B9E9FF",
+    "ice-500": "#8FD8FF",
+    "ice-600": "#5FBDEB",
+    "ice-700": "#348FBE",
+    "success": "#6FCB9A",
+    "warning": "#E4B96A",
+    "danger": "#E77A7A",
+    "info": "#8FC9FF"
+  },
+  "border": {
+    "subtle": "rgba(255,255,255,.07)",
+    "standard": "rgba(255,255,255,.11)",
+    "strong": "rgba(255,255,255,.17)"
+  },
+  "spacing": {"1":"4px","2":"8px","3":"12px","4":"16px","6":"24px","8":"32px","12":"48px","16":"64px","24":"96px"},
+  "radius": {"xs":"8px","sm":"10px","md":"12px","lg":"16px","xl":"20px","hero":"24px","pill":"999px"},
+  "motion": {"micro":"150ms","standard":"260ms","complex":"420ms"},
+  "easing": {"standard":"cubic-bezier(.2,.8,.2,1)","out":"cubic-bezier(.4,0,1,1)","settle":"cubic-bezier(.16,.84,.24,1)"}
+}

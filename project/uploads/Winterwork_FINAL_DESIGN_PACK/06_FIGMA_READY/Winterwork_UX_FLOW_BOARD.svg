@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1800" viewBox="0 0 2200 1800">
+<rect width="2200" height="1800" fill="#080B0F"></rect>
+<g font-family="Inter,Arial">
+<text x="90" y="100" fill="#F3F7FA" font-size="52" font-weight="700">WINTERWORK / UX FLOW MAP</text>
+<text x="90" y="145" fill="#7C8791" font-size="20">Design the journeys first. Screens are outputs of the journeys.</text>
+
+<g stroke="#ffffff" stroke-opacity=".12" fill="#121820">
+ <rect x="90" y="220" width="360" height="130" rx="20"></rect><rect x="550" y="220" width="360" height="130" rx="20"></rect><rect x="1010" y="220" width="360" height="130" rx="20"></rect><rect x="1470" y="220" width="360" height="130" rx="20"></rect>
+</g>
+<g fill="#F3F7FA" font-size="22" font-weight="700"><text x="125" y="270">1 · ORIENT</text><text x="585" y="270">2 · CHOOSE</text><text x="1045" y="270">3 · ACT</text><text x="1505" y="270">4 · FEEDBACK</text></g>
+<g fill="#7C8791" font-size="16"><text x="125" y="305">Where am I?</text><text x="585" y="305">What matters now?</text><text x="1045" y="305">Do the action.</text><text x="1505" y="305">What changed?</text></g>
+<path d="M450 285H550M910 285H1010M1370 285H1470" stroke="#8FD8FF" stroke-width="3"></path>
+
+<text x="90" y="450" fill="#F3F7FA" font-size="30" font-weight="700">DAILY LOOP</text>
+<g>
+ <rect x="90" y="500" width="280" height="100" rx="18" fill="#0D1117" stroke="#8FD8FF" stroke-opacity=".3"></rect><text x="120" y="545" fill="#F3F7FA" font-size="20">Today</text><text x="120" y="575" fill="#7C8791" font-size="14">next best action</text>
+ <rect x="440" y="500" width="280" height="100" rx="18" fill="#0D1117"></rect><text x="470" y="545" fill="#F3F7FA" font-size="20">Action</text><text x="470" y="575" fill="#7C8791" font-size="14">habit / workout / focus</text>
+ <rect x="790" y="500" width="280" height="100" rx="18" fill="#0D1117"></rect><text x="820" y="545" fill="#F3F7FA" font-size="20">Completion</text><text x="820" y="575" fill="#7C8791" font-size="14">immediate state change</text>
+ <rect x="1140" y="500" width="280" height="100" rx="18" fill="#0D1117"></rect><text x="1170" y="545" fill="#F3F7FA" font-size="20">Feedback</text><text x="1170" y="575" fill="#7C8791" font-size="14">progress / insight</text>
+ <rect x="1490" y="500" width="280" height="100" rx="18" fill="#0D1117"></rect><text x="1520" y="545" fill="#F3F7FA" font-size="20">Next</text><text x="1520" y="575" fill="#7C8791" font-size="14">return to Today</text>
+ <path d="M370 550H440M720 550H790M1070 550H1140M1420 550H1490" stroke="#8FD8FF" stroke-width="3"></path>
+</g>
+
+<text x="90" y="740" fill="#F3F7FA" font-size="30" font-weight="700">WORKOUT LOOP</text>
+<g>
+ <rect x="90" y="790" width="230" height="100" rx="18" fill="#121820"></rect><text x="115" y="830" fill="#F3F7FA" font-size="18">Plan</text><text x="115" y="860" fill="#7C8791" font-size="14">why / what / when</text>
+ <rect x="370" y="790" width="230" height="100" rx="18" fill="#121820"></rect><text x="395" y="830" fill="#F3F7FA" font-size="18">Exercise</text><text x="395" y="860" fill="#7C8791" font-size="14">current movement</text>
+ <rect x="650" y="790" width="230" height="100" rx="18" fill="#121820"></rect><text x="675" y="830" fill="#F3F7FA" font-size="18">Set</text><text x="675" y="860" fill="#7C8791" font-size="14">weight / reps</text>
+ <rect x="930" y="790" width="230" height="100" rx="18" fill="#121820"></rect><text x="955" y="830" fill="#F3F7FA" font-size="18">Rest</text><text x="955" y="860" fill="#7C8791" font-size="14">timer / recovery</text>
+ <rect x="1210" y="790" width="230" height="100" rx="18" fill="#121820"></rect><text x="1235" y="830" fill="#F3F7FA" font-size="18">Next</text><text x="1235" y="860" fill="#7C8791" font-size="14">obvious action</text>
+ <rect x="1490" y="790" width="230" height="100" rx="18" fill="#121820"></rect><text x="1515" y="830" fill="#F3F7FA" font-size="18">Summary</text><text x="1515" y="860" fill="#7C8791" font-size="14">result / next step</text>
+ <path d="M320 840H370M600 840H650M880 840H930M1160 840H1210M1440 840H1490" stroke="#8FD8FF" stroke-width="3"></path>
+</g>
+
+<text x="90" y="1030" fill="#F3F7FA" font-size="30" font-weight="700">EDGE-STATE GRAMMAR</text>
+<g>
+ <rect x="90" y="1080" width="300" height="120" rx="18" fill="#121820"></rect><text x="120" y="1125" fill="#F3F7FA" font-size="18">Empty</text><text x="120" y="1155" fill="#7C8791" font-size="14">explain + next action</text>
+ <rect x="430" y="1080" width="300" height="120" rx="18" fill="#121820"></rect><text x="460" y="1125" fill="#F3F7FA" font-size="18">Loading</text><text x="460" y="1155" fill="#7C8791" font-size="14">preserve layout + status</text>
+ <rect x="770" y="1080" width="300" height="120" rx="18" fill="#121820"></rect><text x="800" y="1125" fill="#F3F7FA" font-size="18">Error</text><text x="800" y="1155" fill="#7C8791" font-size="14">reason + retry / fallback</text>
+ <rect x="1110" y="1080" width="300" height="120" rx="18" fill="#121820"></rect><text x="1140" y="1125" fill="#F3F7FA" font-size="18">Success</text><text x="1140" y="1155" fill="#7C8791" font-size="14">what changed + next</text>
+ <rect x="1450" y="1080" width="300" height="120" rx="18" fill="#121820"></rect><text x="1480" y="1125" fill="#F3F7FA" font-size="18">Offline</text><text x="1480" y="1155" fill="#7C8791" font-size="14">what still works + sync</text>
+</g>
+
+<text x="90" y="1350" fill="#F3F7FA" font-size="30" font-weight="700">UX PRIORITY LADDER</text>
+<text x="90" y="1410" fill="#8FD8FF" font-size="22" font-weight="700">1. Understand</text><text x="90" y="1450" fill="#B7C0C8" font-size="18">2. Decide</text><text x="90" y="1490" fill="#B7C0C8" font-size="18">3. Act</text><text x="90" y="1530" fill="#B7C0C8" font-size="18">4. Confirm</text><text x="90" y="1570" fill="#B7C0C8" font-size="18">5. Recover / continue</text>
+<text x="650" y="1410" fill="#F3F7FA" font-size="20">Never invert this order with decoration.</text><text x="650" y="1450" fill="#7C8791" font-size="17">A beautiful UI that makes the user think harder is a failed redesign.</text>
+</g>
+</svg>

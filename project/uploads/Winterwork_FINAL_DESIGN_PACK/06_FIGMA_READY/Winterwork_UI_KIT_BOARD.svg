@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="2600" viewBox="0 0 1800 2600">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080B0F"></stop><stop offset="1" stop-color="#111A22"></stop></linearGradient>
+ <linearGradient id="ice" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#5FBDEB"></stop><stop offset="1" stop-color="#B9E9FF"></stop></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="16" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+</defs>
+<rect width="1800" height="2600" fill="url(#bg)"></rect>
+<text x="100" y="120" fill="#F3F7FA" font-family="Inter,Arial" font-size="56" font-weight="700">WINTERWORK / DESIGN SYSTEM</text>
+<text x="100" y="170" fill="#7C8791" font-family="Inter,Arial" font-size="20">Premium personal operating system · dark-first · calm / precise / spatial</text>
+
+<text x="100" y="260" fill="#F3F7FA" font-family="Inter,Arial" font-size="30" font-weight="700">FOUNDATIONS</text>
+<g font-family="Inter,Arial">
+ <rect x="100" y="300" width="250" height="120" rx="20" fill="#080B0F" stroke="#ffffff" stroke-opacity=".12"></rect><text x="125" y="345" fill="#7C8791" font-size="16">CANVAS 0</text><text x="125" y="390" fill="#F3F7FA" font-size="22">#080B0F</text>
+ <rect x="375" y="300" width="250" height="120" rx="20" fill="#0D1117" stroke="#ffffff" stroke-opacity=".12"></rect><text x="400" y="345" fill="#7C8791" font-size="16">SURFACE 1</text><text x="400" y="390" fill="#F3F7FA" font-size="22">#0D1117</text>
+ <rect x="650" y="300" width="250" height="120" rx="20" fill="#121820" stroke="#ffffff" stroke-opacity=".12"></rect><text x="675" y="345" fill="#7C8791" font-size="16">SURFACE 2</text><text x="675" y="390" fill="#F3F7FA" font-size="22">#121820</text>
+ <rect x="925" y="300" width="250" height="120" rx="20" fill="#17202A" stroke="#ffffff" stroke-opacity=".12"></rect><text x="950" y="345" fill="#7C8791" font-size="16">SURFACE 3</text><text x="950" y="390" fill="#F3F7FA" font-size="22">#17202A</text>
+ <rect x="1200" y="300" width="250" height="120" rx="20" fill="#1C2631" stroke="#ffffff" stroke-opacity=".12"></rect><text x="1225" y="345" fill="#7C8791" font-size="16">SURFACE 4</text><text x="1225" y="390" fill="#F3F7FA" font-size="22">#1C2631</text>
+</g>
+
+<text x="100" y="500" fill="#F3F7FA" font-family="Inter,Arial" font-size="30" font-weight="700">TEXT + SEMANTIC COLORS</text>
+<g font-family="Inter,Arial">
+ <text x="100" y="560" fill="#F3F7FA" font-size="28">Primary text — F3F7FA</text><text x="100" y="600" fill="#B7C0C8" font-size="22">Secondary text — B7C0C8</text><text x="100" y="635" fill="#7C8791" font-size="18">Metadata — 7C8791</text>
+ <circle cx="850" cy="565" r="22" fill="#8FD8FF"></circle><text x="890" y="572" fill="#F3F7FA" font-size="20">ICE / action / focus / progress</text>
+ <circle cx="850" cy="625" r="22" fill="#6FCB9A"></circle><text x="890" y="632" fill="#F3F7FA" font-size="20">SUCCESS</text>
+ <circle cx="850" cy="685" r="22" fill="#E4B96A"></circle><text x="890" y="692" fill="#F3F7FA" font-size="20">WARNING</text>
+ <circle cx="850" cy="745" r="22" fill="#E77A7A"></circle><text x="890" y="752" fill="#F3F7FA" font-size="20">DANGER</text>
+</g>
+
+<text x="100" y="850" fill="#F3F7FA" font-family="Inter,Arial" font-size="30" font-weight="700">BUTTONS</text>
+<g font-family="Inter,Arial" font-size="18">
+ <rect x="100" y="900" width="240" height="56" rx="14" fill="url(#ice)"></rect><text x="170" y="936" fill="#071018" font-weight="700">Primary action</text>
+ <rect x="370" y="900" width="240" height="56" rx="14" fill="#17202A" stroke="#ffffff" stroke-opacity=".12"></rect><text x="440" y="936" fill="#F3F7FA">Secondary</text>
+ <rect x="640" y="900" width="200" height="56" rx="14" fill="transparent" stroke="#ffffff" stroke-opacity=".15"></rect><text x="705" y="936" fill="#B7C0C8">Ghost</text>
+ <rect x="870" y="900" width="220" height="56" rx="14" fill="#32191D" stroke="#E77A7A" stroke-opacity=".35"></rect><text x="925" y="936" fill="#E77A7A">Delete</text>
+</g>
+
+<text x="100" y="1060" fill="#F3F7FA" font-family="Inter,Arial" font-size="30" font-weight="700">CARDS / METRICS</text>
+<g font-family="Inter,Arial">
+ <rect x="100" y="1110" width="380" height="220" rx="22" fill="#121820" stroke="#ffffff" stroke-opacity=".09"></rect><text x="130" y="1155" fill="#7C8791" font-size="15">TODAY</text><text x="130" y="1220" fill="#F3F7FA" font-size="48" font-weight="700">18 / 24</text><rect x="130" y="1260" width="300" height="8" rx="4" fill="#1C2631"></rect><rect x="130" y="1260" width="225" height="8" rx="4" fill="url(#ice)"></rect><text x="130" y="1305" fill="#B7C0C8" font-size="15">75% complete</text>
+ <rect x="510" y="1110" width="380" height="220" rx="22" fill="#121820" stroke="#ffffff" stroke-opacity=".09"></rect><text x="540" y="1155" fill="#7C8791" font-size="15">NEXT ACTION</text><text x="540" y="1210" fill="#F3F7FA" font-size="28" font-weight="700">Upper Body Session</text><text x="540" y="1250" fill="#B7C0C8" font-size="15">45 min · 6 exercises</text><rect x="540" y="1270" width="160" height="42" rx="12" fill="#8FD8FF"></rect><text x="580" y="1297" fill="#071018" font-size="14" font-weight="700">Start</text>
+ <rect x="920" y="1110" width="380" height="220" rx="22" fill="#121820" stroke="#ffffff" stroke-opacity=".09"></rect><text x="950" y="1155" fill="#7C8791" font-size="15">FOCUS</text><text x="950" y="1220" fill="#F3F7FA" font-size="46" font-weight="700">42:18</text><text x="950" y="1260" fill="#7C8791" font-size="15">Deep work session</text><circle cx="1235" cy="1245" r="35" fill="#8FD8FF" opacity=".9"></circle><text x="1224" y="1252" fill="#071018" font-size="18">▶</text>
+</g>
+
+<text x="100" y="1430" fill="#F3F7FA" font-family="Inter,Arial" font-size="30" font-weight="700">HABIT / WORKOUT / STATUS COMPONENTS</text>
+<g font-family="Inter,Arial">
+ <rect x="100" y="1480" width="720" height="88" rx="18" fill="#121820" stroke="#ffffff" stroke-opacity=".09"></rect><circle cx="145" cy="1524" r="22" fill="#8FD8FF"></circle><path d="M136 1524l7 7 13-16" stroke="#071018" stroke-width="4" fill="none"></path><text x="185" y="1518" fill="#F3F7FA" font-size="18" font-weight="700">Morning training</text><text x="185" y="1545" fill="#7C8791" font-size="14">Daily · 07:30</text><text x="730" y="1532" fill="#6FCB9A" font-size="14">COMPLETE</text>
+ <rect x="850" y="1480" width="720" height="88" rx="18" fill="#121820" stroke="#ffffff" stroke-opacity=".09"></rect><text x="885" y="1518" fill="#F3F7FA" font-size="18" font-weight="700">Set 3 / 4</text><text x="885" y="1545" fill="#7C8791" font-size="14">Bench press · 70 kg × 8</text><rect x="1390" y="1505" width="140" height="40" rx="11" fill="#8FD8FF"></rect><text x="1424" y="1531" fill="#071018" font-size="14" font-weight="700">Log set</text>
+ <rect x="100" y="1600" width="720" height="88" rx="18" fill="#121820" stroke="#ffffff" stroke-opacity=".09"></rect><text x="135" y="1640" fill="#F3F7FA" font-size="18" font-weight="700">Recovery needed</text><text x="135" y="1666" fill="#E4B96A" font-size="14">Training load is high today</text><rect x="660" y="1622" width="120" height="38" rx="10" fill="#1C2631"></rect><text x="688" y="1647" fill="#B7C0C8" font-size="13">Review</text>
+</g>
+
+<text x="100" y="1800" fill="#F3F7FA" font-family="Inter,Arial" font-size="30" font-weight="700">NAVIGATION</text>
+<rect x="100" y="1850" width="1500" height="88" rx="20" fill="#0D1117" stroke="#ffffff" stroke-opacity=".1"></rect>
+<g font-family="Inter,Arial" font-size="14" text-anchor="middle">
+ <g fill="#7C8791"><text x="220" y="1903">Today</text><text x="440" y="1903">Arc</text><text x="660" y="1903">Habits</text><text x="880" y="1903">Training</text><text x="1100" y="1903">Focus</text><text x="1320" y="1903">Progress</text><text x="1500" y="1903">More</text></g>
+ <circle cx="220" cy="1878" r="7" fill="#8FD8FF"></circle>
+</g>
+
+<text x="100" y="2070" fill="#F3F7FA" font-family="Inter,Arial" font-size="30" font-weight="700">SPATIAL / GLASS RULE</text>
+<rect x="100" y="2120" width="1500" height="240" rx="30" fill="#121820" fill-opacity=".72" stroke="#ffffff" stroke-opacity=".12"></rect>
+<circle cx="1330" cy="2230" r="110" fill="#5FBDEB" opacity=".12" filter="url(#glow)"></circle>
+<text x="145" y="2180" fill="#F3F7FA" font-family="Inter,Arial" font-size="22" font-weight="700">Depth is a hierarchy tool, not decoration.</text>
+<text x="145" y="2225" fill="#B7C0C8" font-family="Inter,Arial" font-size="17">Use translucency, blur and ambient light only to separate layers</text>
+<text x="145" y="2255" fill="#B7C0C8" font-family="Inter,Arial" font-size="17">or focus attention. Never turn every card into glass.</text>
+
+<text x="100" y="2490" fill="#7C8791" font-family="Inter,Arial" font-size="16">WINTERWORK · FIGMA-READY REFERENCE BOARD · v1.0</text>
+</svg>

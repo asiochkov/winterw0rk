@@ -1,0 +1,86 @@
+{
+  "product": "Winterwork",
+  "motion_style": [
+    "premium",
+    "precise",
+    "tactile",
+    "quiet",
+    "spatial"
+  ],
+  "references": [
+    "Linear",
+    "Arc/Arc Search",
+    "Apple Fitness",
+    "Strava",
+    "Headspace"
+  ],
+  "rules": {
+    "functional_state_over_decoration": true,
+    "never_block_interaction": true,
+    "preserve_existing_logic": true,
+    "reduced_motion_required": true,
+    "prefer_transform_opacity": true,
+    "avoid_large_3d": true
+  },
+  "tiers": {
+    "micro": {
+      "duration_ms": [
+        100,
+        160
+      ],
+      "use": [
+        "press",
+        "toggle",
+        "icon",
+        "hover"
+      ]
+    },
+    "component": {
+      "duration_ms": [
+        160,
+        240
+      ],
+      "use": [
+        "dropdown",
+        "sheet",
+        "card",
+        "tab"
+      ]
+    },
+    "context": {
+      "duration_ms": [
+        220,
+        360
+      ],
+      "use": [
+        "route",
+        "modal",
+        "shared_element"
+      ]
+    },
+    "hero": {
+      "duration_ms": [
+        450,
+        900
+      ],
+      "use": [
+        "milestone",
+        "report",
+        "completion"
+      ]
+    }
+  },
+  "high_value_screens": [
+    "Arc",
+    "Personal Report",
+    "Focus",
+    "Active Workout",
+    "Today"
+  ],
+  "low_motion_screens": [
+    "Settings",
+    "Profile",
+    "Forms",
+    "Dense analytics"
+  ]
+}

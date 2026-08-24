@@ -1,0 +1,36 @@
+{
+  "durations_ms": {
+    "instant": 80,
+    "micro": 120,
+    "fast": 160,
+    "standard": 220,
+    "medium": 280,
+    "context": 340,
+    "slow": 520,
+    "hero": 760
+  },
+  "distances_px": {
+    "micro": 4,
+    "small": 8,
+    "medium": 16,
+    "large": 28
+  },
+  "scale": {
+    "press": 0.99,
+    "enter": 0.985,
+    "hover": 1.005
+  },
+  "stagger_ms": {
+    "default": 28,
+    "max_total": 160
+  },
+  "motion_budget": {
+    "micro_interactions_per_screen": "2-4",
+    "major_transitions_per_screen": 1
+  },
+  "reduced_motion": {
+    "translate_max_px": 0,
+    "decorative_loops": false,
+    "preserve_opacity_feedback": true
+  }
+}
