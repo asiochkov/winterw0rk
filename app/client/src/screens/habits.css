@@ -1,0 +1,155 @@
+.habit-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.habit-card {
+  text-align: left;
+  background: var(--sf1);
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  padding: var(--s4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.habit-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.habit-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 2px;
+}
+.habit-card-cat {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+  margin: 0;
+}
+.habit-card-streak {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.habit-card-streak-n {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--am);
+  line-height: 1;
+}
+.habit-card-streak-l {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--mut);
+}
+.habit-week-strip {
+  display: flex;
+  gap: 6px;
+}
+.habit-week-dot {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--sf3);
+}
+.habit-week-on {
+  background: var(--ok);
+}
+.habit-week-miss {
+  background: var(--dg);
+  opacity: 0.55;
+}
+.habit-week-off {
+  background: var(--sf2);
+}
+
+/* Add habit form */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.type-row {
+  display: flex;
+  gap: var(--s2);
+}
+.type-btn {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: var(--r-md);
+  border: var(--edge);
+  background: var(--sf1);
+  color: var(--tx);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.type-btn-on {
+  border-color: var(--ac);
+  background: var(--sf-ac);
+  color: var(--ac2);
+}
+.day-row {
+  display: flex;
+  gap: 6px;
+}
+.day-btn {
+  flex: 1;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: var(--edge);
+  background: var(--sf1);
+  color: var(--mut);
+  font-size: 12px;
+  font-weight: 700;
+}
+.day-btn-on {
+  border-color: var(--ac);
+  background: var(--ac);
+  color: var(--on-ac);
+}
+
+/* Habit detail */
+.detail-stats {
+  display: flex;
+  gap: var(--s6);
+}
+.detail-stat {
+  display: flex;
+  flex-direction: column;
+}
+.detail-stat-n {
+  font-size: 24px;
+  font-weight: 800;
+}
+.detail-stat-l {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--mut);
+  text-transform: uppercase;
+}
+.detail-history {
+  display: flex;
+  flex-direction: column;
+}
+.detail-history-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: var(--edge);
+  font-size: 14px;
+}
+.detail-history-row:last-child {
+  border-bottom: none;
+}
+.detail-history-date {
+  color: var(--mut);
+}
+.detail-history-value {
+  font-weight: 600;
+}

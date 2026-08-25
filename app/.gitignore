@@ -1,0 +1,12 @@
+# Secrets — never commit. docker compose reads .env from this directory.
+.env
+.env.*
+!.env.example
+
+node_modules/
+dist/
+
+# SQLite databases and their write-ahead files.
+*.db
+*.db-shm
+*.db-wal

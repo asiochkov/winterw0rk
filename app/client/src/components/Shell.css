@@ -1,0 +1,194 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--bg);
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.app-content {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  gap: var(--s8);
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--s6) var(--s4) var(--s8);
+  min-height: 100vh;
+}
+.app-main-tabbed {
+  padding-bottom: 96px;
+}
+
+.app-rail {
+  display: none;
+}
+
+.page-head {
+  margin-bottom: var(--s6);
+}
+.page-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin: 0 0 4px;
+}
+.page-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Mobile bottom nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--s2);
+  padding: var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));
+  background: rgba(13, 13, 13, 0.86);
+  backdrop-filter: blur(20px);
+  border-top: var(--edge);
+}
+
+.nav-item {
+  flex: 1;
+  max-width: 115px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+  color: var(--mut);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: var(--r-md);
+  transition: color var(--m-fast) var(--e-io);
+}
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.65;
+  transition: opacity var(--m-fast) var(--e-io), transform var(--m-fast) var(--e-io);
+}
+.nav-item-active {
+  color: var(--tx);
+}
+.nav-item-active .nav-icon {
+  opacity: 1;
+  color: var(--ac);
+  transform: scale(1.08);
+}
+
+/* Desktop sidebar nav — hidden until the desktop breakpoint */
+.side-nav {
+  display: none;
+}
+
+/* Tablet: content gets breathing room, bottom nav stays (thumb reach still wins) */
+@media (min-width: 700px) {
+  .app-content {
+    max-width: 640px;
+  }
+  .app-main {
+    padding: var(--s12) var(--s6) var(--s8);
+  }
+}
+
+/* Desktop: sidebar rail replaces bottom nav, secondary rail can appear */
+@media (min-width: 1024px) {
+  .app-shell {
+    justify-content: flex-start;
+  }
+  .side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+    width: 220px;
+    flex: none;
+    padding: var(--s8) var(--s4);
+    border-right: var(--edge);
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .side-nav-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-md);
+    background: var(--tx);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    margin-bottom: var(--s6);
+  }
+  .side-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    padding: 10px 12px;
+    border-radius: var(--r-md);
+    color: var(--mut);
+    font-size: 14px;
+    font-weight: 600;
+    transition: background var(--m-fast) var(--e-io), color var(--m-fast) var(--e-io);
+  }
+  .side-nav-item:hover {
+    background: var(--sf1);
+  }
+  .side-nav-item-active {
+    background: var(--sf-ac);
+    color: var(--tx);
+  }
+  .side-nav-item-active .nav-icon {
+    color: var(--ac);
+    opacity: 1;
+  }
+
+  .app-body-with-sidebar {
+    justify-content: flex-start;
+  }
+  .app-content {
+    max-width: 780px;
+    margin: 0 var(--s16);
+  }
+  .app-content-with-rail {
+    max-width: 980px;
+  }
+  .app-main {
+    padding: var(--s16) 0 var(--s16);
+  }
+  .app-rail {
+    display: block;
+    flex: none;
+    width: 300px;
+    padding: var(--s16) 0 var(--s16);
+  }
+
+  .app-main-tabbed {
+    padding-bottom: var(--s16);
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+}

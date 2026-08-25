@@ -1,0 +1,103 @@
+.mood-today-set {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+.mood-today-emoji {
+  font-size: 40px;
+}
+.mood-today-label {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+.mood-today-tag {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin: 2px 0 0;
+}
+
+.mood-picker {
+  display: flex;
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+}
+.mood-picker-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--s3) 0;
+  background: var(--sf1);
+  border: var(--edge);
+  border-radius: var(--r-lg);
+}
+.mood-emoji {
+  font-size: 26px;
+}
+.mood-picker-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--mut);
+  text-transform: uppercase;
+}
+.mood-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+}
+
+.mood-cal-dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+}
+.mood-cal-dow span {
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--mut-dim);
+}
+.mood-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.mood-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: var(--r-xs);
+}
+.mood-cal-day {
+  font-size: 11px;
+  color: var(--mut);
+}
+.mood-cal-today {
+  background: var(--sf2);
+}
+.mood-cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.mood-cal-m1 {
+  background: var(--dg);
+}
+.mood-cal-m2 {
+  background: var(--am);
+}
+.mood-cal-m3 {
+  background: var(--mut);
+}
+.mood-cal-m4 {
+  background: var(--ac);
+}
+.mood-cal-m5 {
+  background: var(--ok);
+}

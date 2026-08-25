@@ -1,0 +1,79 @@
+.planner-add {
+  display: flex;
+  gap: 8px;
+  margin-bottom: var(--s6);
+}
+.planner-add .input {
+  flex: 1;
+}
+.planner-select {
+  background: var(--sf1);
+  border: var(--edge);
+  border-radius: var(--r-md);
+  color: var(--tx);
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.planner-day {
+  margin-bottom: var(--s6);
+}
+.planner-day-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin: 0 0 8px;
+}
+
+.planner-task {
+  border-left: 2px solid var(--sf3);
+  padding: 8px 0 8px 12px;
+  margin-bottom: 4px;
+}
+.planner-task-high {
+  border-left-color: var(--dg);
+}
+.planner-task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.planner-task-title {
+  flex: 1;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.planner-task-done {
+  color: var(--mut);
+  text-decoration: line-through;
+}
+.planner-subtasks {
+  margin: 6px 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.planner-subtask {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--mut);
+}
+.planner-menu {
+  margin: 10px 0 0 32px;
+  background: var(--sf1);
+  border: var(--edge);
+  border-radius: var(--r-md);
+  padding: 12px;
+}
+.planner-sub-add {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.planner-sub-add .input {
+  flex: 1;
+}

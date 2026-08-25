@@ -1,0 +1,131 @@
+.legal-intro {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--tx);
+  margin: 0 0 var(--s8);
+  padding-bottom: var(--s6);
+  border-bottom: var(--edge);
+}
+
+.legal-section {
+  margin-bottom: var(--s8);
+}
+
+.legal-heading {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--s3);
+}
+
+.legal-para {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--mut);
+  margin: 0 0 var(--s3);
+  max-width: 68ch;
+}
+
+.legal-version {
+  font-size: 12px;
+  color: var(--mut-dim);
+  border-top: var(--edge);
+  padding-top: var(--s4);
+  margin-top: var(--s8);
+}
+
+.consent-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s4);
+  background: var(--sf1);
+  border: var(--edge);
+  border-radius: var(--r-md);
+}
+.consent-read {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin: 0 0 var(--s2);
+}
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--tx);
+  cursor: pointer;
+}
+.consent-row input {
+  margin-top: 2px;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ac);
+}
+
+/**
+ * While the notice is on screen, reserve space for it so it never covers a
+ * bottom-anchored CTA. Removed as soon as it is dismissed.
+ */
+/*
+ * Anchored to the top rather than the bottom. Primary actions and the tab bar
+ * both live at the bottom of the screen on mobile, and a bottom-anchored notice
+ * covered them — blocking onboarding entirely. Top placement cannot collide
+ * with either, and the shells simply start lower while it is visible.
+ */
+body.has-cookie-notice .app-main,
+body.has-cookie-notice .auth-shell,
+body.has-cookie-notice .onb-shell {
+  padding-top: 172px;
+}
+
+.cookie-notice {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 12px;
+  z-index: 60;
+  width: calc(100% - 32px);
+  max-width: 520px;
+  background: var(--sf2);
+  border: var(--edge2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--lift2);
+  padding: var(--s4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.cookie-notice p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--mut);
+}
+@media (min-width: 700px) {
+  .cookie-notice {
+    flex-direction: row;
+    align-items: center;
+  }
+  body.has-cookie-notice .app-main,
+  body.has-cookie-notice .auth-shell,
+  body.has-cookie-notice .onb-shell {
+    padding-top: 120px;
+  }
+}
+
+.legal-links {
+  display: flex;
+  gap: var(--s4);
+  justify-content: center;
+  margin-top: var(--s6);
+  font-size: 12.5px;
+}
+.legal-links a {
+  color: var(--mut);
+}
+.legal-links a:hover {
+  color: var(--tx);
+}

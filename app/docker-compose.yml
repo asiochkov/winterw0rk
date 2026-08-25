@@ -1,0 +1,24 @@
+services:
+  winterwork:
+    build: .
+    restart: unless-stopped
+    ports:
+      - '${PORT:-8787}:8787'
+    volumes:
+      - winterwork-data:/data
+    environment:
+      NODE_ENV: production
+      # Required — the server refuses to boot without these.
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
+      SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST in .env}
+      APP_URL: ${APP_URL:?set APP_URL in .env}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      MAIL_FROM: ${MAIL_FROM:-Winterwork <no-reply@winterwork.app>}
+      REMINDERS_ENABLED: ${REMINDERS_ENABLED:-true}
+    # Give in-flight requests time to finish before SIGKILL.
+    stop_grace_period: 15s
+
+volumes:
+  winterwork-data:

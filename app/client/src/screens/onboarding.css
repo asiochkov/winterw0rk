@@ -1,0 +1,146 @@
+.onb-shell {
+  min-height: 100vh;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: var(--s8) var(--s4) var(--s8);
+  display: flex;
+  flex-direction: column;
+}
+
+.onb-progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--s8);
+}
+.onb-dot {
+  height: 3px;
+  flex: 1;
+  border-radius: var(--r-pill);
+  background: var(--sf2);
+}
+.onb-dot-on {
+  background: var(--ac);
+}
+
+.onb-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s6);
+  flex: 1;
+}
+
+.onb-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin: 0;
+}
+.onb-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: -12px 0 0;
+}
+.onb-body {
+  font-size: 15px;
+  color: var(--mut);
+  margin: -12px 0 0;
+  line-height: 1.5;
+}
+
+.onb-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  flex: 1;
+}
+.onb-option {
+  text-align: left;
+  background: var(--sf1);
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  padding: var(--s4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color var(--m-fast) var(--e-io), background var(--m-fast) var(--e-io);
+}
+.onb-option-row {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.onb-option-on {
+  border-color: var(--ac);
+  background: var(--sf-ac);
+}
+.onb-option-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+.onb-option-hint {
+  font-size: 12.5px;
+  color: var(--mut);
+  letter-spacing: 0.02em;
+}
+.onb-option-row .onb-option-hint {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.onb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  flex: 1;
+  align-content: flex-start;
+}
+.onb-chip {
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  background: var(--sf1);
+  border: var(--edge);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tx);
+  transition: border-color var(--m-fast) var(--e-io), background var(--m-fast) var(--e-io);
+}
+.onb-chip-on {
+  border-color: var(--ac);
+  background: var(--sf-ac);
+  color: var(--ac2);
+}
+
+.onb-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  flex: 1;
+}
+.onb-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: var(--s3);
+  border-bottom: var(--edge);
+}
+.onb-summary-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.onb-summary-value {
+  font-size: 15px;
+  font-weight: 600;
+}
+.onb-error {
+  color: var(--dg);
+  font-size: 13.5px;
+  margin: -8px 0 0;
+}

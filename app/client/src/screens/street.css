@@ -1,0 +1,13 @@
+.street-active {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.street-live-stats {
+  display: flex;
+  gap: var(--s8);
+  justify-content: center;
+  margin-top: var(--s4);
+}

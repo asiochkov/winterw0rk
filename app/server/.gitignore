@@ -1,0 +1,14 @@
+node_modules/
+dist/
+
+# Secrets — never commit.
+.env
+.env.*
+!.env.example
+
+# Local database and its write-ahead files.
+winterwork.db
+winterwork.db-*
+*.db
+*.db-shm
+*.db-wal
