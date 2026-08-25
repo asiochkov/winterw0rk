@@ -16,6 +16,16 @@ interface Billing {
 interface Notifications {
   reminderEmailEnabled: boolean;
   reminderHour: number;
+  timezone: string | null;
+}
+
+/** The zone this browser reports, or undefined where Intl is unavailable. */
+function browserTimezone(): string | undefined {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    return undefined;
+  }
 }
 
 export default function Settings() {
@@ -147,6 +157,14 @@ export default function Settings() {
                   ))}
                 </select>
               </label>
+            )}
+            {notif.reminderEmailEnabled && (
+              <p style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 8 }}>
+                {t('notifTimezone', { tz: notif.timezone || t('notifTimezoneUnknown') })}{' '}
+                <button className="today-link" onClick={() => updateNotifications({ timezone: browserTimezone() })}>
+                  {t('notifTimezoneUse')}
+                </button>
+              </p>
             )}
             <p style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 10 }}>{t('notifReminderNote')}</p>
           </>

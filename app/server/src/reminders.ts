@@ -3,11 +3,46 @@ import { db } from './db.js';
 import { config } from './config.js';
 import { dailyReminderMail, mailerConfigured, sendMail } from './mailer.js';
 import { scheduledOn, todayStr } from './util.js';
+import { withLock } from './joblock.js';
 
 interface ReminderCandidate {
   id: number;
   email: string;
   unsubscribe_token: string | null;
+  reminder_hour: number;
+  timezone: string | null;
+}
+
+/**
+ * The wall-clock hour and calendar date for an instant in a given IANA zone.
+ * A reminder set for 19:00 has to mean 19:00 where the user lives, and "today"
+ * has to be their today — otherwise the once-a-day guard fires on the wrong day
+ * for anyone far enough from the server.
+ *
+ * Falls back to server time when the zone is missing or not recognised, which
+ * is the pre-timezone behaviour rather than a crash.
+ */
+export function localHourAndDate(now: Date, timezone: string | null): { hour: number; date: string } {
+  if (timezone) {
+    try {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: timezone,
+        hour12: false,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+      }).formatToParts(now);
+      const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+      // 'en-CA' gives ISO-shaped date parts; hour 24 means midnight in this format.
+      const hour = Number(get('hour')) % 24;
+      const date = `${get('year')}-${get('month')}-${get('day')}`;
+      if (!Number.isNaN(hour) && /^\d{4}-\d{2}-\d{2}$/.test(date)) return { hour, date };
+    } catch {
+      /* unknown zone — fall through to server time */
+    }
+  }
+  return { hour: now.getHours(), date: todayStr(now) };
 }
 
 export function ensureUnsubscribeToken(userId: number): string {
@@ -58,23 +93,28 @@ export function openHabitsToday(userId: number, date = todayStr()): { remaining:
 export async function runReminderSweep(now = new Date()): Promise<{ sent: number; skipped: number }> {
   if (!mailerConfigured()) return { sent: 0, skipped: 0 };
 
-  const hour = now.getHours();
-  const today = todayStr(now);
-
+  // Opted-in accounts only. The due check happens per user below, because
+  // "is it their reminder hour yet" depends on their timezone, not the server's.
   const candidates = db
     .prepare(
-      `SELECT id, email, unsubscribe_token FROM users
+      `SELECT id, email, unsubscribe_token, reminder_hour, timezone FROM users
        WHERE reminder_email_enabled = 1
-         AND status = 'active'
-         AND reminder_hour = ?
-         AND (reminder_last_sent_date IS NULL OR reminder_last_sent_date != ?)`
+         AND status = 'active'`
     )
-    .all(hour, today) as ReminderCandidate[];
+    .all() as ReminderCandidate[];
 
   let sent = 0;
   let skipped = 0;
 
   for (const user of candidates) {
+    const { hour, date: today } = localHourAndDate(now, user.timezone);
+    if (hour !== user.reminder_hour) continue;
+
+    const alreadySent = db
+      .prepare('SELECT reminder_last_sent_date AS d FROM users WHERE id = ?')
+      .get(user.id) as { d: string | null };
+    if (alreadySent.d === today) continue;
+
     const { remaining, total } = openHabitsToday(user.id, today);
     if (remaining <= 0) {
       // Nothing to nag about. Mark the day done so we don't reconsider them hourly.
@@ -110,7 +150,12 @@ let timer: NodeJS.Timeout | null = null;
 export function startReminderScheduler(): void {
   if (timer || !config.remindersEnabled || !mailerConfigured()) return;
   const tick = () => {
-    runReminderSweep().catch((err) => console.error('[reminders] Sweep failed:', err));
+    // Only one instance sweeps per tick. The TTL is longer than a sweep should
+    // ever take but shorter than the interval, so a crashed holder frees it
+    // before the next tick rather than stalling reminders indefinitely.
+    withLock('reminder-sweep', 10 * 60 * 1000, runReminderSweep).catch((err) =>
+      console.error('[reminders] Sweep failed:', err)
+    );
   };
   timer = setInterval(tick, 15 * 60 * 1000);
   // Don't hold the process open purely for reminders.

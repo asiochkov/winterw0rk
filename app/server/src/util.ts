@@ -23,3 +23,16 @@ export function daysBetween(a: string, b: string): number {
 export function scheduledOn(schedule: number[], dateStr: string): boolean {
   return schedule.includes(weekdayOf(dateStr));
 }
+
+/**
+ * True when the runtime's ICU data recognises this IANA zone. Guards anything
+ * user-supplied before it reaches Intl, which throws on an unknown zone.
+ */
+export function isKnownTimeZone(tz: string): boolean {
+  try {
+    new Intl.DateTimeFormat('en-CA', { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}

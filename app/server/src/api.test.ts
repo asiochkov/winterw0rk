@@ -634,3 +634,107 @@ describe('reminder sweep', () => {
     await expect(runReminderSweep()).resolves.toEqual({ sent: 0, skipped: 0 });
   });
 });
+
+describe('reminder timezones', () => {
+  it('reads the local hour and date for a zone, not the server clock', async () => {
+    const { localHourAndDate } = await import('./reminders.js');
+    // 2026-08-25T22:30Z is already the 26th in Tokyo and still the 25th in New York.
+    const instant = new Date('2026-08-25T22:30:00Z');
+
+    expect(localHourAndDate(instant, 'UTC')).toEqual({ hour: 22, date: '2026-08-25' });
+    expect(localHourAndDate(instant, 'Asia/Tokyo')).toEqual({ hour: 7, date: '2026-08-26' });
+    expect(localHourAndDate(instant, 'America/New_York')).toEqual({ hour: 18, date: '2026-08-25' });
+  });
+
+  it('reports midnight as hour 0, not 24', async () => {
+    const { localHourAndDate } = await import('./reminders.js');
+    expect(localHourAndDate(new Date('2026-08-25T00:15:00Z'), 'UTC').hour).toBe(0);
+  });
+
+  it('falls back to server time for a missing or bogus zone', async () => {
+    const { localHourAndDate } = await import('./reminders.js');
+    const instant = new Date('2026-08-25T22:30:00Z');
+    const fallback = { hour: instant.getHours(), date: expect.any(String) };
+    expect(localHourAndDate(instant, null)).toMatchObject(fallback);
+    expect(localHourAndDate(instant, 'Not/AZone')).toMatchObject(fallback);
+  });
+
+  it('stores a valid timezone at signup and rejects a bogus one', async () => {
+    const agent = request.agent(app);
+    await agent
+      .post('/api/auth/signup')
+      .send({ email: `tz${Date.now()}@test.com`, password: 'password123', timezone: 'Europe/Moscow', ...CONSENT });
+    expect((await agent.get('/api/account/notifications')).body.timezone).toBe('Europe/Moscow');
+
+    const junk = request.agent(app);
+    await junk
+      .post('/api/auth/signup')
+      .send({ email: `tzx${Date.now()}@test.com`, password: 'password123', timezone: 'Mars/Olympus', ...CONSENT });
+    expect((await junk.get('/api/account/notifications')).body.timezone).toBeNull();
+  });
+
+  it('changes the timezone from settings but ignores an unknown one', async () => {
+    const { agent } = await newUser();
+    const ok = await agent.patch('/api/account/notifications').send({ timezone: 'Asia/Tokyo' });
+    expect(ok.body.timezone).toBe('Asia/Tokyo');
+
+    const bad = await agent.patch('/api/account/notifications').send({ timezone: 'Nope/Nope' });
+    expect(bad.body.timezone).toBe('Asia/Tokyo');
+  });
+});
+
+describe('job locks', () => {
+  it('lets only one holder in at a time and frees on release', async () => {
+    const { acquireLock, releaseLock } = await import('./joblock.js');
+    expect(acquireLock('t-basic', 60_000)).toBe(true);
+    releaseLock('t-basic');
+    expect(acquireLock('t-basic', 60_000)).toBe(true);
+    releaseLock('t-basic');
+  });
+
+  it('hands the lock over once it has expired', async () => {
+    const { acquireLock } = await import('./joblock.js');
+    const { db } = await import('./db.js');
+    expect(acquireLock('t-expiry', 60_000)).toBe(true);
+
+    // Pretend another instance took it and then died holding it.
+    db.prepare("UPDATE job_locks SET holder = 'someone-else', expires_at = ? WHERE name = 't-expiry'").run(
+      new Date(Date.now() - 1000).toISOString()
+    );
+    expect(acquireLock('t-expiry', 60_000)).toBe(true);
+  });
+
+  it('refuses a lock another live instance holds', async () => {
+    const { acquireLock } = await import('./joblock.js');
+    const { db } = await import('./db.js');
+    acquireLock('t-contended', 60_000);
+    db.prepare("UPDATE job_locks SET holder = 'other-instance' WHERE name = 't-contended'").run();
+    expect(acquireLock('t-contended', 60_000)).toBe(false);
+  });
+
+  it('withLock skips the body when the lock is held elsewhere', async () => {
+    const { acquireLock, withLock } = await import('./joblock.js');
+    const { db } = await import('./db.js');
+    acquireLock('t-skip', 60_000);
+    db.prepare("UPDATE job_locks SET holder = 'other-instance' WHERE name = 't-skip'").run();
+
+    let ran = false;
+    const result = await withLock('t-skip', 60_000, async () => {
+      ran = true;
+      return 'done';
+    });
+    expect(ran).toBe(false);
+    expect(result).toBeNull();
+  });
+
+  it('releases the lock even when the job throws', async () => {
+    const { acquireLock, withLock } = await import('./joblock.js');
+    await expect(
+      withLock('t-throws', 60_000, async () => {
+        throw new Error('boom');
+      })
+    ).rejects.toThrow('boom');
+    // Free again for the next run rather than stuck until the TTL.
+    expect(acquireLock('t-throws', 60_000)).toBe(true);
+  });
+});

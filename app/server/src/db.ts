@@ -313,3 +313,66 @@ addColumnIfMissing('users', 'reminder_hour', 'INTEGER NOT NULL DEFAULT 19');
 addColumnIfMissing('users', 'unsubscribe_token', 'TEXT');
 // Date of the last reminder sent, so a restart can't re-send the same day's mail.
 addColumnIfMissing('users', 'reminder_last_sent_date', 'TEXT');
+// IANA zone, so a reminder hour means the user's local time rather than the server's.
+addColumnIfMissing('users', 'timezone', 'TEXT');
+
+/**
+ * Cooperative locks so background work runs on exactly one instance. Today the
+ * app is single-node, but a second instance would otherwise double-send every
+ * reminder — a lock is far cheaper than discovering that in production.
+ */
+db.exec(`
+CREATE TABLE IF NOT EXISTS job_locks (
+  name TEXT PRIMARY KEY,
+  holder TEXT NOT NULL,
+  acquired_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL
+);
+`);
+
+/**
+ * Indexes for the queries the app actually runs. Every user-scoped read would
+ * otherwise scan the whole table — invisible with one account, linear pain once
+ * there are thousands.
+ *
+ * UNIQUE constraints already create an index, so the pairs they cover
+ * (habit_entries(habit_id,date), mood/body/nutrition/step_entries(user_id,date),
+ * program_progress, workout_plan_days, users.email, reset tokens) are absent here
+ * on purpose — a duplicate index costs writes and buys nothing.
+ */
+db.exec(`
+-- Owner lookups: the single most common filter in the codebase.
+CREATE INDEX IF NOT EXISTS idx_habits_user ON habits(user_id, archived);
+CREATE INDEX IF NOT EXISTS idx_quit_user ON quit_counters(user_id, archived);
+CREATE INDEX IF NOT EXISTS idx_tasks_user ON tasks(user_id);
+CREATE INDEX IF NOT EXISTS idx_cardio_user ON cardio_sessions(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_food_user_date ON food_entries(user_id, date);
+
+-- Focus history filters on the owner and orders by start time.
+CREATE INDEX IF NOT EXISTS idx_focus_user_started ON focus_sessions(user_id, started_at);
+
+-- Today's workout is fetched by (user, date) on every Today render.
+CREATE INDEX IF NOT EXISTS idx_sessions_user_date ON workout_sessions(user_id, date);
+
+-- Child rows, always read through their parent. cardio_track_points matters
+-- most: a single run stores hundreds of points.
+CREATE INDEX IF NOT EXISTS idx_track_points_session ON cardio_track_points(session_id);
+CREATE INDEX IF NOT EXISTS idx_splits_session ON cardio_splits(session_id);
+CREATE INDEX IF NOT EXISTS idx_session_exercises_session ON session_exercises(session_id, order_idx);
+CREATE INDEX IF NOT EXISTS idx_set_entries_sx ON set_entries(session_exercise_id, set_index);
+CREATE INDEX IF NOT EXISTS idx_subtasks_task ON subtasks(task_id);
+CREATE INDEX IF NOT EXISTS idx_cravings_counter ON craving_episodes(counter_id, timestamp);
+CREATE INDEX IF NOT EXISTS idx_relapses_counter ON relapses(counter_id, timestamp);
+
+-- Unsubscribe links resolve by token alone, from an unauthenticated request.
+CREATE INDEX IF NOT EXISTS idx_users_unsubscribe ON users(unsubscribe_token);
+
+-- The reminder sweep runs every 15 minutes and selects opted-in active accounts.
+-- Whether each one is actually due depends on their timezone, so that part is
+-- decided in code — this index just keeps the sweep from reading every account.
+CREATE INDEX IF NOT EXISTS idx_users_reminder
+  ON users(reminder_email_enabled, status);
+
+-- Exercise library filtering.
+CREATE INDEX IF NOT EXISTS idx_exercises_group ON exercises(group_name);
+`);

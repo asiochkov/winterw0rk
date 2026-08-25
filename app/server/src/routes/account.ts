@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAuth, userIdOf } from '../middleware.js';
+import { isKnownTimeZone } from '../util.js';
 import { ensureUnsubscribeToken } from '../reminders.js';
 
 const router = Router();
@@ -39,24 +40,26 @@ router.use(requireAuth);
 /** Reminder preferences. Defaults are off, so this only ever opts people in. */
 router.get('/notifications', (req, res) => {
   const row = db
-    .prepare('SELECT reminder_email_enabled, reminder_hour FROM users WHERE id = ?')
-    .get(userIdOf(req)) as { reminder_email_enabled: number; reminder_hour: number };
+    .prepare('SELECT reminder_email_enabled, reminder_hour, timezone FROM users WHERE id = ?')
+    .get(userIdOf(req)) as { reminder_email_enabled: number; reminder_hour: number; timezone: string | null };
   res.json({
     reminderEmailEnabled: !!row.reminder_email_enabled,
     reminderHour: row.reminder_hour,
+    timezone: row.timezone,
   });
 });
 
 const notificationsSchema = z.object({
   reminderEmailEnabled: z.boolean().optional(),
   reminderHour: z.number().int().min(0).max(23).optional(),
+  timezone: z.string().max(64).optional(),
 });
 
 router.patch('/notifications', (req, res) => {
   const parsed = notificationsSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: 'invalid_input' });
   const userId = userIdOf(req);
-  const { reminderEmailEnabled, reminderHour } = parsed.data;
+  const { reminderEmailEnabled, reminderHour, timezone } = parsed.data;
 
   if (reminderEmailEnabled !== undefined) {
     db.prepare('UPDATE users SET reminder_email_enabled = ? WHERE id = ?').run(
@@ -69,13 +72,19 @@ router.patch('/notifications', (req, res) => {
   if (reminderHour !== undefined) {
     db.prepare('UPDATE users SET reminder_hour = ? WHERE id = ?').run(reminderHour, userId);
   }
+  // Only store a zone the platform actually recognises, so the sweep never has
+  // to reason about junk it was handed.
+  if (timezone !== undefined && isKnownTimeZone(timezone)) {
+    db.prepare('UPDATE users SET timezone = ? WHERE id = ?').run(timezone, userId);
+  }
 
   const row = db
-    .prepare('SELECT reminder_email_enabled, reminder_hour FROM users WHERE id = ?')
-    .get(userId) as { reminder_email_enabled: number; reminder_hour: number };
+    .prepare('SELECT reminder_email_enabled, reminder_hour, timezone FROM users WHERE id = ?')
+    .get(userId) as { reminder_email_enabled: number; reminder_hour: number; timezone: string | null };
   res.json({
     reminderEmailEnabled: !!row.reminder_email_enabled,
     reminderHour: row.reminder_hour,
+    timezone: row.timezone,
   });
 });
 

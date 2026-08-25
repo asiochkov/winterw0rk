@@ -39,7 +39,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = useCallback(
     async (email: string, password: string, name: string, consent: SignupConsent) => {
-      const { user } = await api.post<{ user: User }>('/auth/signup', { email, password, name, ...consent });
+      // Captured here so a reminder set for 19:00 means 19:00 where they are.
+      // Changeable later in Settings; the server ignores anything it can't resolve.
+      let timezone: string | undefined;
+      try {
+        timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      } catch {
+        /* leave unset — the server falls back to its own clock */
+      }
+      const { user } = await api.post<{ user: User }>('/auth/signup', {
+        email,
+        password,
+        name,
+        timezone,
+        ...consent,
+      });
       setUser(user);
       return user;
     },

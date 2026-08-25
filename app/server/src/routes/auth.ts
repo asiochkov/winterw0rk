@@ -7,6 +7,7 @@ import { requireAuth, setSessionUser, userIdOf } from '../middleware.js';
 import { ensureDefaultPlan } from '../seedData.js';
 import { LEGAL_VERSIONS, MINIMUM_AGE } from '../legal.js';
 import { config } from '../config.js';
+import { isKnownTimeZone } from '../util.js';
 import { passwordResetMail, sendMail } from '../mailer.js';
 
 const router = Router();
@@ -18,6 +19,7 @@ const credsSchema = z.object({
 });
 
 const signupSchema = credsSchema.extend({
+  timezone: z.string().max(64).optional(),
   acceptedTerms: z.literal(true, { message: 'You must accept the Terms of Service to create an account.' }),
   acceptedPrivacy: z.literal(true, { message: 'You must accept the Privacy Policy to create an account.' }),
   confirmedAge: z.literal(true, { message: `You must confirm you are at least ${MINIMUM_AGE}.` }),
@@ -49,17 +51,26 @@ router.post('/signup', (req, res) => {
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message || 'invalid_input' });
   }
-  const { email, password, name } = parsed.data;
+  const { email, password, name, timezone } = parsed.data;
   const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
   if (existing) return res.status(409).json({ error: 'An account with this email already exists.' });
 
   const hash = bcrypt.hashSync(password, 10);
   const info = db
     .prepare(
-      `INSERT INTO users (email, password_hash, name, terms_version, privacy_version, consented_at)
-       VALUES (?, ?, ?, ?, ?, datetime('now'))`
+      `INSERT INTO users (email, password_hash, name, terms_version, privacy_version, consented_at, timezone)
+       VALUES (?, ?, ?, ?, ?, datetime('now'), ?)`
     )
-    .run(email, hash, name || '', LEGAL_VERSIONS.terms, LEGAL_VERSIONS.privacy);
+    .run(
+      email,
+      hash,
+      name || '',
+      LEGAL_VERSIONS.terms,
+      LEGAL_VERSIONS.privacy,
+      // Only keep a zone this runtime can resolve; anything else is dropped so
+      // the reminder sweep never has to handle junk.
+      timezone && isKnownTimeZone(timezone) ? timezone : null
+    );
   ensureDefaultPlan(Number(info.lastInsertRowid));
   setSessionUser(req, Number(info.lastInsertRowid));
   const row = db.prepare('SELECT * FROM users WHERE id = ?').get(info.lastInsertRowid);
