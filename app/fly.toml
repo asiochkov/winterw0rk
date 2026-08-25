@@ -1,0 +1,45 @@
+# Fly.io deployment. Chosen because SQLite needs a real persistent disk,
+# which Fly volumes provide without adding a managed database.
+#
+# Set `app` to your own name, then follow DEPLOY.md.
+app = "winterwork"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8787"
+  DB_PATH = "/data/winterwork.db"
+  CLIENT_DIR = "/app/client"
+
+# SQLite is a single-writer store on one disk, so this app must not be
+# scaled past one machine. auto_stop is off to keep the reminder scheduler
+# running; a stopped machine sends no reminders.
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 250
+
+[[http_service.checks]]
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "10s"
+  method = "GET"
+  path = "/api/health"
+
+[mounts]
+  source = "winterwork_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
