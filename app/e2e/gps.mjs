@@ -13,6 +13,10 @@ async function onboard(page, email) {
   await page.fill('input[placeholder="Your name"]', 'GPS Tester');
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', 'password123');
+  // Signup is gated on explicit consent; the button stays disabled until all are ticked.
+  const boxes = page.locator('.consent-row input');
+  const n = await boxes.count();
+  for (let i = 0; i < n; i++) await boxes.nth(i).check();
   await page.getByRole('button', { name: 'Create account', exact: true }).click();
   await page.waitForURL('**/onboarding');
   await page.getByRole('button', { name: 'Continue', exact: true }).click();

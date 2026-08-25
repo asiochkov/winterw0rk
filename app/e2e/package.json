@@ -1,0 +1,13 @@
+{
+  "name": "winterwork-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser-driven acceptance tests. Run against both dev servers; see README.md.",
+  "scripts": {
+    "acceptance": "node acceptance.mjs",
+    "gps": "node gps.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}

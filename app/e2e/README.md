@@ -12,8 +12,14 @@ cd ../server && npm run dev     # :8787
 cd ../client && npm run dev     # :5173
 ```
 
-Playwright must be available. If Chromium lives outside the default location,
-point at it explicitly:
+Install Playwright and its browser:
+
+```bash
+npm install
+npx playwright install chromium
+```
+
+If Chromium already lives somewhere else, point at it instead of downloading:
 
 ```bash
 export CHROMIUM_PATH=/path/to/chromium
@@ -22,8 +28,8 @@ export CHROMIUM_PATH=/path/to/chromium
 ## Running
 
 ```bash
-node acceptance.mjs   # full production acceptance suite
-node gps.mjs          # GPS tracking with emulated device movement
+npm run acceptance    # full production acceptance suite
+npm run gps           # GPS tracking with emulated device movement
 ```
 
 `acceptance.mjs` covers registration, consent enforcement, onboarding, every
