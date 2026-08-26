@@ -8,7 +8,7 @@ import { ensureDefaultPlan } from '../seedData.js';
 import { LEGAL_VERSIONS, MINIMUM_AGE } from '../legal.js';
 import { config } from '../config.js';
 import { isKnownTimeZone } from '../util.js';
-import { passwordResetMail, sendMail } from '../mailer.js';
+import { mailerConfigured, passwordResetMail, sendMail } from '../mailer.js';
 
 const router = Router();
 
@@ -129,6 +129,14 @@ const forgotSchema = z.object({ email: z.string().trim().toLowerCase().email() }
 router.post('/forgot-password', async (req, res, next) => {
   const parsed = forgotSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: 'Enter a valid email.' });
+  // In production with no mailer there is no safe way to run this: the token
+  // could only be delivered by returning it, and an unauthenticated caller who
+  // receives a reset token owns the account. Say so plainly instead. Outside
+  // production the same branch is the documented dev convenience.
+  if (!mailerConfigured() && config.isProd) {
+    return res.status(503).json({ error: 'password_reset_unavailable' });
+  }
+
   const email = parsed.data.email;
   const user = db.prepare('SELECT id FROM users WHERE email = ?').get(email) as any;
 
@@ -149,9 +157,10 @@ router.post('/forgot-password', async (req, res, next) => {
 
   try {
     const sent = await sendMail(passwordResetMail(email, resetUrl));
-    // Only hand the token back when nothing could deliver it, so a configured
-    // deployment never leaks a working reset token over the API.
-    res.json(sent ? { ok: true } : { ok: true, devResetToken: token });
+    // The token goes back over the API only in development, where it is a
+    // convenience. In production an undeliverable reset is refused above, so
+    // this branch can never hand a stranger a working token.
+    res.json(sent || config.isProd ? { ok: true } : { ok: true, devResetToken: token });
   } catch (err) {
     next(err);
   }

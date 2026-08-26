@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useServerConfig } from '../hooks/useServerConfig';
 import { Screen } from '../components/Shell';
 import { Button, Section } from '../components/ui';
 import './legal.css';
@@ -31,6 +32,7 @@ function browserTimezone(): string | undefined {
 export default function Settings() {
   const { user, signOut } = useAuth();
   const { lang, setLang, t } = useLanguage();
+  const { reminderEmailsEnabled } = useServerConfig();
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [billing, setBilling] = useState<Billing | null>(null);
@@ -130,7 +132,11 @@ export default function Settings() {
       )}
 
       <Section title={t('settingsNotifications')}>
-        {notif ? (
+        {/* A toggle that saves a preference nothing acts on is worse than no
+            toggle, so on a deployment with no mail the section says so. */}
+        {!reminderEmailsEnabled ? (
+          <p style={{ fontSize: 12.5, color: 'var(--mut)' }}>{t('notifEmailOff')}</p>
+        ) : notif ? (
           <>
             <label className="consent-row" style={{ marginBottom: 12 }}>
               <input

@@ -7,12 +7,11 @@ Before you start you need four things that are yours, not the code's:
 
 1. **A host account** (Fly.io below, or any Docker host).
 2. **An SMTP provider** — Resend, Postmark, SES, Mailgun, Fastmail, anything
-   with SMTP credentials. Without it the server refuses to boot, because a
-   password reset nobody receives locks people out of their accounts.
-3. **A domain.** Fly gives you `<app>.fly.dev` for free, so this is optional
-   for *hosting* — but not for *email*: a provider will only deliver to
-   strangers once you have verified a domain you control. See "Email: a
-   sending domain is not optional" below before inviting anyone.
+   with SMTP credentials. *Optional:* the app runs without one in a reduced
+   mode where self-service password reset is off. See "Running without email".
+3. **A domain** — only if you want email. Fly gives you `<app>.fly.dev` free
+   for hosting; a mail provider will only deliver to strangers once you have
+   verified a domain you control. Skip both for now if you like.
 4. **Operator details for the legal pages** — who runs the service, where they
    are established, and an email that answers privacy mail. The Privacy Policy
    and Terms name these, so the client build refuses to run without them.
@@ -49,19 +48,17 @@ fly volumes create winterwork_data --size 1 --region fra
 # 5. Secrets (never in fly.toml — that file is committed)
 fly secrets set \
   SESSION_SECRET="$(openssl rand -hex 32)" \
-  APP_URL="https://winterwork.fly.dev" \
-  SMTP_HOST="smtp.resend.com" \
-  SMTP_PORT="587" \
-  SMTP_USER="resend" \
-  SMTP_PASS="your-smtp-password" \
-  MAIL_FROM="Winterwork <no-reply@yourdomain.com>"
+  APP_URL="https://winterwork.fly.dev"
+
+#    Email is optional — see "Running without email". Add these later, once
+#    you have a sending domain, and redeploy:
+#      SMTP_HOST SMTP_PORT SMTP_USER SMTP_PASS MAIL_FROM
 
 # 6. Ship it
 fly deploy
 ```
 
-`APP_URL` must be the real public URL — password reset and unsubscribe links
-are built from it.
+`APP_URL` must be the real public URL — links inside emails are built from it.
 
 **Do not `fly scale count 2`.** SQLite is single-writer on one disk, and the
 reminder scheduler runs in-process; a second machine would corrupt writes and
@@ -208,6 +205,35 @@ fly ssh sftp get /data/backups/winterwork-<stamp>.db ./winterwork-$(date +%F).db
 ```
 
 Turn the scheduler off with `BACKUPS_ENABLED=false` if you back up another way.
+
+## Running without email
+
+Setting no `SMTP_HOST` is a supported way to launch. The app starts, prints a
+banner saying what is off, and runs:
+
+- **Sign-up and sign-in work normally.** There was never an email confirmation
+  step — an account is active the moment it is created.
+- **Self-service password reset is closed.** The endpoint answers 503 and the
+  client hides the link. It cannot be left open: with nothing to mail the token
+  through, the only way to deliver it would be to return it over the API, and
+  anyone who can request a reset token for an address owns that account.
+- **Daily reminder emails are not sent,** and Settings says so instead of
+  offering a switch that does nothing.
+- Everything else — habits, quitting, mood, focus, training, nutrition, body,
+  GPS, steps, planner, export, deletion — is untouched.
+
+When someone forgets their password, you reset it:
+
+```bash
+fly ssh console -C "cd /app && node dist/scripts/reset-password.js them@example.com"
+# prints a generated password; or pass your own as a second argument
+```
+
+Send it over a channel you already trust and tell them to change it. Any reset
+link that was already in flight for that account is invalidated.
+
+Adding SMTP later needs no code change: set the secrets, redeploy, and the link
+reappears by itself.
 
 ## Email: a sending domain is not optional
 

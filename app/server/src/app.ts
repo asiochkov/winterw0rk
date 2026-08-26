@@ -23,6 +23,7 @@ import { rateLimit, securityHeaders } from './security.js';
 import { errorHandler, requestLogger } from './observability.js';
 import { trackActivity } from './middleware.js';
 import { config } from './config.js';
+import { mailerConfigured } from './mailer.js';
 
 export function createApp() {
   ensureExercisesSeeded();
@@ -100,6 +101,18 @@ export function createApp() {
   app.use('/api/billing', billingRoutes);
 
   app.get('/api/health', (_req, res) => res.json({ ok: true }));
+
+  // What this deployment can actually do, so the client stops offering things
+  // that will fail. Public and unauthenticated: the sign-in screen needs it
+  // before anyone has an account.
+  app.get('/api/config', (_req, res) =>
+    res.json({
+      // Outside production the flow still works: it hands the reset link back
+      // to the UI instead of mailing it.
+      passwordResetEnabled: mailerConfigured() || !config.isProd,
+      reminderEmailsEnabled: mailerConfigured() && config.remindersEnabled,
+    })
+  );
 
   app.use('/api', (_req, res) => res.status(404).json({ error: 'not_found' }));
 

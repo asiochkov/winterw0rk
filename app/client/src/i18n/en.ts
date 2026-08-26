@@ -46,6 +46,10 @@ export const en = {
   forgotPasswordSend: 'Send reset link',
   forgotPasswordSending: 'Sending…',
   forgotPasswordSent: "If that email has an account, a reset link is on its way.",
+  forgotPasswordOffSub: 'Password reset by email is not available on this deployment.',
+  forgotPasswordOffNote:
+    'Email sending is not set up yet, so we cannot send you a reset link. Ask whoever runs this Winterwork to set a new password for you.',
+  notifEmailOff: 'Email sending is not set up on this deployment, so reminder emails are off.',
   forgotPasswordDevNote: 'No email service in this build — here is the link a real email would contain:',
   backToSignIn: 'Back to sign in',
   resetPasswordTitle: 'Choose a new password',

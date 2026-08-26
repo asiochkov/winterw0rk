@@ -39,9 +39,32 @@ const smtp = smtpHost
     }
   : undefined;
 
+/**
+ * Running production without SMTP is a deliberate, reduced mode, not an error:
+ * a launch can be worth more than self-service password reset. What it must
+ * never become is a security hole, so with no mailer the reset endpoint is
+ * closed outright rather than handing the token back over the API — that would
+ * let anyone take over any account by knowing its email address.
+ *
+ * The operator resets passwords by hand instead: `npm run reset-password`.
+ */
 if (isProd && !smtp) {
-  throw new Error(
-    'SMTP_HOST must be set in production. Password reset is undeliverable without it.'
+  console.warn(
+    [
+      '',
+      '  ┌─────────────────────────────────────────────────────────────┐',
+      '  │  Running WITHOUT email (SMTP_HOST is not set).              │',
+      '  │                                                             │',
+      '  │  · Sign-up and sign-in work normally.                       │',
+      '  │  · Self-service password reset is DISABLED. Anyone who      │',
+      '  │    forgets their password needs you to reset it:            │',
+      '  │        npm run reset-password -- them@example.com           │',
+      '  │  · Daily reminder emails are not sent.                      │',
+      '  │                                                             │',
+      '  │  Set SMTP_HOST to turn all of this back on.                 │',
+      '  └─────────────────────────────────────────────────────────────┘',
+      '',
+    ].join('\n')
   );
 }
 

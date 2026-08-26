@@ -21,7 +21,7 @@ plan and your chosen habits are seeded so Today has real content immediately.
 ## Tests
 
 ```bash
-cd server && npm test        # 101 unit + API integration tests
+cd server && npm test        # 104 unit + API integration tests
 cd e2e && node acceptance.mjs # 32 browser checks against the running app
 ```
 
@@ -101,9 +101,14 @@ in a dismissible notice.
 
 ## Configuration
 
-See `.env.example`. Production refuses to start without `SESSION_SECRET`
-(so a public deployment cannot ship with a forgeable session key) or
-`SMTP_HOST` (so password reset can never be silently undeliverable).
+See `.env.example`. Production refuses to start without `SESSION_SECRET`, so a
+public deployment cannot ship with a forgeable session key.
+
+`SMTP_HOST` is optional. Without it the app runs in a reduced mode: sign-up and
+sign-in work as always, self-service password reset is closed (the operator
+runs `npm run reset-password` instead), and reminder emails are off. It cannot
+be left half-open, because delivering a reset token without email would mean
+returning it over the API. See "Running without email" in `DEPLOY.md`.
 
 The client build refuses in the same spirit: `VITE_LEGAL_OPERATOR_NAME`,
 `VITE_LEGAL_OPERATOR_LOCATION` and `VITE_LEGAL_CONTACT_EMAIL` name who operates
@@ -140,9 +145,10 @@ Notes:
 Password resets and daily reminders send over SMTP via `SMTP_*`. Reset links
 are built from `APP_URL`, so it must be the public URL.
 
-Without SMTP configured (development only), nothing is silently dropped: mail
-is logged to the console and the reset link is returned to the UI with a visible
-note. Once SMTP is set, the token is never returned over the API.
+In development without SMTP nothing is silently dropped: mail is logged to the
+console and the reset link is returned to the UI with a visible note. That
+convenience is development-only — in production the token is never returned
+over the API, and the endpoint closes instead.
 
 Reminder emails are opt-in per user in Settings, only sent on days something is
 still open, sent at most once a day, and carry an unsubscribe link that works
@@ -172,7 +178,10 @@ it, and what to change at each point.
   Background jobs are already safe to run in more than one process (they take
   an expiring DB lock), but rate-limit counters are still per-process. Moving
   to Postgres is the unlock; see `SCALING.md`.
-- **Email reminders only.** No web push or native notifications.
+- **Email reminders only.** No web push or native notifications, and none at
+  all on a deployment with no SMTP.
+- **One theme.** The interface is dark by design, matching the prototype; it
+  does not follow the operating system's light mode.
 - **No billing integration.** Plan state is modelled and enforced, but there is
   no payment provider wired up; everything is free.
 - Exercise, program and food seed content is representative (36 exercises

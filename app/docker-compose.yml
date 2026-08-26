@@ -16,8 +16,10 @@ services:
       NODE_ENV: production
       # Required — the server refuses to boot without these.
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
-      SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST in .env}
       APP_URL: ${APP_URL:?set APP_URL in .env}
+      # Optional. Leave empty to run without email; password reset then has to
+      # be done with `npm run reset-password`. See DEPLOY.md.
+      SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}

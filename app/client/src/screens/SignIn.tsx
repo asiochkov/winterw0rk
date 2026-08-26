@@ -2,12 +2,14 @@ import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth, ApiError } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useServerConfig } from '../hooks/useServerConfig';
 import { Button, Field, Input } from '../components/ui';
 import './auth.css';
 
 export default function SignIn() {
   const { user, loading, signIn } = useAuth();
   const { t } = useLanguage();
+  const { passwordResetEnabled } = useServerConfig();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -62,9 +64,11 @@ export default function SignIn() {
               autoComplete="current-password"
             />
           </Field>
-          <Link to="/forgot-password" style={{ fontSize: 13.5, alignSelf: 'flex-start' }}>
-            {t('forgotPassword')}
-          </Link>
+          {passwordResetEnabled && (
+            <Link to="/forgot-password" style={{ fontSize: 13.5, alignSelf: 'flex-start' }}>
+              {t('forgotPassword')}
+            </Link>
+          )}
           <Button type="submit" full disabled={busy}>
             {busy ? t('signingIn') : t('signIn')}
           </Button>
