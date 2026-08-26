@@ -73,8 +73,16 @@ export const config = {
   port: Number(process.env.PORT) || 8787,
   sessionSecret: requiredInProduction('SESSION_SECRET', 'winterwork-dev-secret-not-for-production'),
 
-  /** Absolute base URL used to build links inside emails. */
-  appUrl: (optional('APP_URL') || `http://localhost:${Number(process.env.PORT) || 8787}`).replace(/\/$/, ''),
+  /**
+   * Absolute base URL used to build links inside emails. RENDER_EXTERNAL_URL is
+   * injected by Render, which assigns the hostname itself — so on that host the
+   * right value is known without anyone typing it in.
+   */
+  appUrl: (
+    optional('APP_URL') ||
+    optional('RENDER_EXTERNAL_URL') ||
+    `http://localhost:${Number(process.env.PORT) || 8787}`
+  ).replace(/\/$/, ''),
 
   smtp,
   mailFrom: optional('MAIL_FROM') || 'Winterwork <no-reply@winterwork.app>',

@@ -1,0 +1,38 @@
+# Render Blueprint — free-tier deployment.
+#
+# READ THIS BEFORE INVITING ANYONE: Render's free instances have no persistent
+# disk, and they spin down after about 15 minutes without traffic. SQLite lives
+# on the container filesystem, so **every restart wipes the database** —
+# accounts, habits, history, all of it. That is fine for showing the app; it is
+# not fine for asking people to rely on it.
+#
+# Fixing it means a paid instance with a disk, or moving to Postgres. See
+# app/SCALING.md.
+services:
+  - type: web
+    name: winterwork
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./app/Dockerfile
+    dockerContext: ./app
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Signs session cookies. Generated once by Render and kept across deploys;
+      # changing it signs everyone out.
+      - key: SESSION_SECRET
+        generateValue: true
+      # Where the built client is served from, inside the image.
+      - key: CLIENT_DIR
+        value: /app/client
+      # Snapshots would be written to the same disposable filesystem the
+      # database is on, so they would protect nothing and cost startup time.
+      - key: BACKUPS_ENABLED
+        value: "false"
+      # No SMTP here on purpose: the app runs without email, and password reset
+      # closes rather than degrading. See "Running without email" in DEPLOY.md.
+      #
+      # APP_URL is not set either — the server falls back to RENDER_EXTERNAL_URL,
+      # which Render injects with the real hostname it assigns.

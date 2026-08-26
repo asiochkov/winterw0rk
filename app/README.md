@@ -120,6 +120,11 @@ build with those unset fails rather than shipping a policy that names nobody.
 The image builds the client, compiles the server, and serves both from one
 origin — no CORS, no separate static host.
 
+`render.yaml` deploys the whole thing on Render's free tier with no card and no
+configuration — but free instances there have no disk, so the database is lost
+on every restart. Fine for a demo, not for real accounts. `DEPLOY.md` covers
+that and the options that keep data.
+
 ```bash
 cp .env.example .env      # fill in SESSION_SECRET, APP_URL, SMTP_*
 docker compose up -d --build

@@ -4,15 +4,11 @@ WORKDIR /build/client
 COPY client/package*.json ./
 RUN npm ci
 COPY client/ ./
-# The privacy policy and terms have to name who operates the service; the
-# production build refuses to run without these. They are baked into the
-# bundle, so they are public information, not secrets.
-ARG VITE_LEGAL_OPERATOR_NAME
-ARG VITE_LEGAL_OPERATOR_LOCATION
-ARG VITE_LEGAL_CONTACT_EMAIL
-ENV VITE_LEGAL_OPERATOR_NAME=$VITE_LEGAL_OPERATOR_NAME \
-    VITE_LEGAL_OPERATOR_LOCATION=$VITE_LEGAL_OPERATOR_LOCATION \
-    VITE_LEGAL_CONTACT_EMAIL=$VITE_LEGAL_CONTACT_EMAIL
+# The operator details the legal pages must name come from
+# client/.env.production, which Vite loads for this build by itself. They were
+# build arguments once; not every host can pass those, and an unset argument
+# becomes an empty environment variable that overrides the file and fails the
+# build. A committed file has neither problem — and they are public anyway.
 RUN npm run build
 
 FROM node:22-slim AS server-build

@@ -8,13 +8,7 @@ primary_region = "fra"
 [build]
   dockerfile = "Dockerfile"
 
-  # Who operates the service, as named in the Privacy Policy and Terms. These
-  # are baked into the client bundle and are public by design — not secrets.
-  # The build fails if any of them is left as UNSET.
-  [build.args]
-    VITE_LEGAL_OPERATOR_NAME = "Арсений Иочков"
-    VITE_LEGAL_OPERATOR_LOCATION = "Россия"
-    VITE_LEGAL_CONTACT_EMAIL = "iochkovas@gmail.com"
+  # Operator details for the legal pages live in client/.env.production.
 
 [env]
   NODE_ENV = "production"

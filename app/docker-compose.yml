@@ -1,12 +1,7 @@
 services:
   winterwork:
-    build:
-      context: .
-      # Baked into the client bundle; the build fails while they are unset.
-      args:
-        VITE_LEGAL_OPERATOR_NAME: ${VITE_LEGAL_OPERATOR_NAME:?set VITE_LEGAL_OPERATOR_NAME in .env}
-        VITE_LEGAL_OPERATOR_LOCATION: ${VITE_LEGAL_OPERATOR_LOCATION:?set VITE_LEGAL_OPERATOR_LOCATION in .env}
-        VITE_LEGAL_CONTACT_EMAIL: ${VITE_LEGAL_CONTACT_EMAIL:?set VITE_LEGAL_CONTACT_EMAIL in .env}
+    # Operator details for the legal pages come from client/.env.production.
+    build: .
     restart: unless-stopped
     ports:
       - '${PORT:-8787}:8787'

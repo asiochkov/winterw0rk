@@ -2,6 +2,10 @@
 .env
 .env.*
 !.env.example
+# Exception: the operator details the legal pages must name. They are public by
+# definition — they are printed on /privacy — and the client build refuses to
+# run without them, so a host that cannot pass build arguments needs them here.
+!client/.env.production
 
 node_modules/
 dist/
