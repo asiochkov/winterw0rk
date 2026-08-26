@@ -4,6 +4,15 @@ WORKDIR /build/client
 COPY client/package*.json ./
 RUN npm ci
 COPY client/ ./
+# The privacy policy and terms have to name who operates the service; the
+# production build refuses to run without these. They are baked into the
+# bundle, so they are public information, not secrets.
+ARG VITE_LEGAL_OPERATOR_NAME
+ARG VITE_LEGAL_OPERATOR_LOCATION
+ARG VITE_LEGAL_CONTACT_EMAIL
+ENV VITE_LEGAL_OPERATOR_NAME=$VITE_LEGAL_OPERATOR_NAME \
+    VITE_LEGAL_OPERATOR_LOCATION=$VITE_LEGAL_OPERATOR_LOCATION \
+    VITE_LEGAL_CONTACT_EMAIL=$VITE_LEGAL_CONTACT_EMAIL
 RUN npm run build
 
 FROM node:22-slim AS server-build

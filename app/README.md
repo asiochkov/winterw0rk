@@ -21,7 +21,7 @@ plan and your chosen habits are seeded so Today has real content immediately.
 ## Tests
 
 ```bash
-cd server && npm test        # 77 unit + API integration tests
+cd server && npm test        # 101 unit + API integration tests
 cd e2e && node acceptance.mjs # 32 browser checks against the running app
 ```
 
@@ -36,7 +36,10 @@ server/src
   app.ts          express app factory (importable for tests)
   db.ts           schema + additive column migrations
   config.ts       env config; refuses insecure defaults in production
-  security.ts     rate limiting, security headers, error handler
+  security.ts     rate limiting and security headers
+  observability.ts structured request log, error reporting seam
+  backup.ts       scheduled SQLite snapshots with retention
+  joblock.ts      expiring DB locks so background jobs run once
   middleware.ts   requireAuth / requireAdmin / activity tracking
   entitlements.ts plan -> feature mapping (single place to gate features)
   geo.ts          GPS distance, splits, elevation, noise filtering
@@ -102,6 +105,11 @@ See `.env.example`. Production refuses to start without `SESSION_SECRET`
 (so a public deployment cannot ship with a forgeable session key) or
 `SMTP_HOST` (so password reset can never be silently undeliverable).
 
+The client build refuses in the same spirit: `VITE_LEGAL_OPERATOR_NAME`,
+`VITE_LEGAL_OPERATOR_LOCATION` and `VITE_LEGAL_CONTACT_EMAIL` name who operates
+the service, and the Privacy Policy is legally required to say so. A production
+build with those unset fails rather than shipping a policy that names nobody.
+
 ## Deploying
 
 The image builds the client, compiles the server, and serves both from one
@@ -113,12 +121,9 @@ docker compose up -d --build
 ```
 
 SQLite lives on the `winterwork-data` volume, so it survives container
-replacement. Back it up with:
-
-```bash
-docker compose exec winterwork \
-  node -e "require('better-sqlite3')('/data/winterwork.db').backup('/data/backup.db')"
-```
+replacement. The app snapshots it on a schedule into `backups/` beside the
+database, keeping the newest few — see the Backups section of `DEPLOY.md` for
+restoring, and for why you still want a copy off the box.
 
 Notes:
 
@@ -155,14 +160,18 @@ without a login.
   is synced, and a resync can never lower the day's count. Manual entry is
   available where no motion sensor exists.
 
+## Scaling
+
+`SCALING.md` covers where this shape stops working, in the order you will hit
+it, and what to change at each point.
+
 ## Known limitations
 
-- **Single-instance only.** Rate-limit counters and the reminder scheduler both
-  live in process memory, and SQLite is a single-node store. Running a second
-  instance would double-send reminders and split the rate limiter — move to
-  Postgres and a shared store (plus an external scheduler) before scaling out.
-- **Reminder times are server-local.** A user's chosen hour is interpreted in
-  the server's timezone, not theirs. Storing a per-user timezone is the fix.
+- **Single-instance only.** SQLite is a single-writer store on one disk, so a
+  second instance would corrupt data — `fly scale count 2` is not an option.
+  Background jobs are already safe to run in more than one process (they take
+  an expiring DB lock), but rate-limit counters are still per-process. Moving
+  to Postgres is the unlock; see `SCALING.md`.
 - **Email reminders only.** No web push or native notifications.
 - **No billing integration.** Plan state is modelled and enforced, but there is
   no payment provider wired up; everything is free.

@@ -1,6 +1,8 @@
 import { createApp } from './app.js';
 import { config } from './config.js';
 import { startReminderScheduler, stopReminderScheduler } from './reminders.js';
+import { startBackupScheduler, stopBackupScheduler } from './backup.js';
+import { installProcessHandlers } from './observability.js';
 import { db } from './db.js';
 
 const server = createApp().listen(config.port, () => {
@@ -8,6 +10,7 @@ const server = createApp().listen(config.port, () => {
 });
 
 startReminderScheduler();
+startBackupScheduler();
 
 /**
  * Finish in-flight requests and close the database cleanly, so a deploy or
@@ -20,6 +23,7 @@ function shutdown(signal: string) {
   console.log(`${signal} received, shutting down.`);
 
   stopReminderScheduler();
+  stopBackupScheduler();
 
   // A reverse proxy holds keep-alive sockets open indefinitely; without this
   // server.close() would wait on them and every deploy would hit the timeout.
@@ -44,3 +48,7 @@ function shutdown(signal: string) {
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
+
+// An uncaught exception leaves the process in an unknown state; drain what is
+// in flight, then let the supervisor start a clean one.
+installProcessHandlers(() => shutdown('uncaughtException'));

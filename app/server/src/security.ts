@@ -62,10 +62,3 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
   }
   next();
 }
-
-/** Last-resort handler: log the detail, return something opaque. */
-export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
-  console.error('[unhandled]', err);
-  if (res.headersSent) return;
-  res.status(500).json({ error: 'Something went wrong. Try again.' });
-}

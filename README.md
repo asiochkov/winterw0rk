@@ -1,25 +1,28 @@
-# CODING AGENTS: READ THIS FIRST
+# Winterwork
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+A habit, quitting, mood, focus and training tracker. Real accounts, real
+persistence, RU and EN.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+**The app lives in [`app/`](app/) — start with [`app/README.md`](app/README.md).**
 
-## What you should do — IMPORTANT
+```bash
+cd app/server && npm install && npm run dev    # API on :8787
+cd app/client && npm install && npm run dev    # client on :5173
+```
 
-**Read the chat transcripts first.** There are 6 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+| I want to… | Read |
+| --- | --- |
+| Run it locally, understand the architecture | [`app/README.md`](app/README.md) |
+| Put it on the internet | [`app/DEPLOY.md`](app/DEPLOY.md) |
+| Know what breaks as it grows | [`app/SCALING.md`](app/SCALING.md) |
 
-**Read `project/Winterwork v7.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+## What else is in here
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
-
-## About the design files
-
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
-
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
-
-## Bundle contents
-
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `Winterwork mobile app prototype` project files (HTML prototypes, assets, components)
+- `project/` — the original Claude Design prototypes the app was built from.
+  `Winterwork v7.dc.html` is the one that was implemented.
+- `chats/` — the design conversations behind those prototypes.
+- `tools/build-prototype-bundle.mjs` — packs the prototype into a shareable
+  static folder and a single self-contained HTML file, with React and Babel
+  vendored so it depends on nothing at runtime.
+- `HANDOFF.md` — the original Claude Design handoff instructions, kept for
+  provenance.

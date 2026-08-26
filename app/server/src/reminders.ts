@@ -4,6 +4,7 @@ import { config } from './config.js';
 import { dailyReminderMail, mailerConfigured, sendMail } from './mailer.js';
 import { scheduledOn, todayStr } from './util.js';
 import { withLock } from './joblock.js';
+import { reportError } from './observability.js';
 
 interface ReminderCandidate {
   id: number;
@@ -137,7 +138,7 @@ export async function runReminderSweep(now = new Date()): Promise<{ sent: number
       sent++;
     } catch (err) {
       // Leave the date unset so the next sweep retries rather than silently dropping it.
-      console.error(`[reminders] Failed to send to user ${user.id}:`, err);
+      reportError(err, { msg: 'reminder send failed', user: user.id });
     }
   }
 
@@ -154,7 +155,7 @@ export function startReminderScheduler(): void {
     // ever take but shorter than the interval, so a crashed holder frees it
     // before the next tick rather than stalling reminders indefinitely.
     withLock('reminder-sweep', 10 * 60 * 1000, runReminderSweep).catch((err) =>
-      console.error('[reminders] Sweep failed:', err)
+      reportError(err, { msg: 'reminder sweep failed' })
     );
   };
   timer = setInterval(tick, 15 * 60 * 1000);

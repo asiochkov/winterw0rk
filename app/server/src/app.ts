@@ -19,7 +19,8 @@ import stepRoutes from './routes/steps.js';
 import accountRoutes from './routes/account.js';
 import billingRoutes from './routes/billing.js';
 import adminRoutes from './routes/admin.js';
-import { errorHandler, rateLimit, securityHeaders } from './security.js';
+import { rateLimit, securityHeaders } from './security.js';
+import { errorHandler, requestLogger } from './observability.js';
 import { trackActivity } from './middleware.js';
 import { config } from './config.js';
 
@@ -33,6 +34,7 @@ export function createApp() {
   // Needed for correct req.ip behind a reverse proxy, which the rate limiter keys on.
   if (isProd) app.set('trust proxy', 1);
 
+  app.use(requestLogger);
   app.use(securityHeaders);
   app.use(express.json({ limit: '2mb' }));
   app.use(

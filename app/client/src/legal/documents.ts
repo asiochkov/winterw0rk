@@ -6,13 +6,25 @@
  * a substitute for review by a qualified lawyer before you operate commercially.
  */
 export const LEGAL_VERSIONS = {
-  terms: '2026-08-24',
-  privacy: '2026-08-24',
+  terms: '2026-08-26',
+  privacy: '2026-08-26',
 } as const;
+
+/**
+ * The placeholder that marks operator details as unfilled. A production build
+ * refuses to run while any of them still reads this — see vite.config.ts.
+ * Data protection law requires naming who the controller actually is, and an
+ * address nobody answers is worse than no policy at all.
+ */
+export const UNSET = 'UNSET';
 
 export const OPERATOR = {
   productName: 'Winterwork',
-  contactEmail: 'privacy@winterwork.example',
+  /** Who operates the service — a company, sole trader, or named individual. */
+  name: import.meta.env.VITE_LEGAL_OPERATOR_NAME || UNSET,
+  /** Where they are established, at least to country level. */
+  location: import.meta.env.VITE_LEGAL_OPERATOR_LOCATION || UNSET,
+  contactEmail: import.meta.env.VITE_LEGAL_CONTACT_EMAIL || UNSET,
   minimumAge: 16,
 } as const;
 
@@ -32,9 +44,10 @@ export interface LegalDocument {
 export const TERMS_EN: LegalDocument = {
   title: 'Terms of Service',
   version: LEGAL_VERSIONS.terms,
-  updated: '24 August 2026',
+  updated: '26 August 2026',
   intro:
-    'These terms govern your use of Winterwork. By creating an account you agree to them. If you do not agree, do not use the service.',
+    `These terms are an agreement between you and ${OPERATOR.name}, established in ${OPERATOR.location}, who operates Winterwork. ` +
+    'By creating an account you agree to them. If you do not agree, do not use the service.',
   sections: [
     {
       heading: '1. What Winterwork is',
@@ -111,8 +124,9 @@ export const TERMS_EN: LegalDocument = {
 export const PRIVACY_EN: LegalDocument = {
   title: 'Privacy Policy',
   version: LEGAL_VERSIONS.privacy,
-  updated: '24 August 2026',
+  updated: '26 August 2026',
   intro:
+    `Winterwork is operated by ${OPERATOR.name}, established in ${OPERATOR.location}, who is the data controller for everything described here and can be reached at ${OPERATOR.contactEmail}. ` +
     'This policy explains what Winterwork collects, why, how long it is kept, and the control you have over it. Much of what the app records is health-related and therefore sensitive, so it is treated accordingly.',
   sections: [
     {
@@ -199,9 +213,10 @@ export const PRIVACY_EN: LegalDocument = {
 export const TERMS_RU: LegalDocument = {
   title: 'Пользовательское соглашение',
   version: LEGAL_VERSIONS.terms,
-  updated: '24 августа 2026',
+  updated: '26 августа 2026',
   intro:
-    'Эти условия регулируют использование Winterwork. Создавая аккаунт, вы соглашаетесь с ними. Если вы не согласны — не пользуйтесь сервисом.',
+    `Эти условия — соглашение между вами и ${OPERATOR.name} (${OPERATOR.location}), кто управляет Winterwork. ` +
+    'Создавая аккаунт, вы соглашаетесь с ними. Если вы не согласны — не пользуйтесь сервисом.',
   sections: [
     {
       heading: '1. Что такое Winterwork',
@@ -278,8 +293,9 @@ export const TERMS_RU: LegalDocument = {
 export const PRIVACY_RU: LegalDocument = {
   title: 'Политика конфиденциальности',
   version: LEGAL_VERSIONS.privacy,
-  updated: '24 августа 2026',
+  updated: '26 августа 2026',
   intro:
+    `Winterwork управляет ${OPERATOR.name} (${OPERATOR.location}) — оператор ваших данных, связаться можно по адресу ${OPERATOR.contactEmail}. ` +
     'Политика объясняет, что Winterwork собирает, зачем, сколько хранит и как вы этим управляете. Многое из того, что записывает приложение, относится к здоровью и является чувствительными данными — и обрабатывается соответственно.',
   sections: [
     {

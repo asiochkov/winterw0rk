@@ -4,8 +4,8 @@
  * rather than trusted from the client.
  */
 export const LEGAL_VERSIONS = {
-  terms: '2026-08-24',
-  privacy: '2026-08-24',
+  terms: '2026-08-26',
+  privacy: '2026-08-26',
 } as const;
 
 export const MINIMUM_AGE = 16;

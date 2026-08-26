@@ -62,4 +62,11 @@ export const config = {
   /** Send the daily reminder sweep at this hour, server local time. */
   reminderHour: Number(process.env.REMINDER_HOUR) || 19,
   remindersEnabled: process.env.REMINDERS_ENABLED !== 'false',
+
+  backupsEnabled: process.env.BACKUPS_ENABLED !== 'false',
+  /** Where snapshots are written. Defaults to a `backups` dir beside the DB. */
+  backupDir: optional('BACKUP_DIR'),
+  /** How many snapshots to keep; older ones are pruned after each run. */
+  backupKeep: Number(process.env.BACKUP_KEEP) || 7,
+  backupIntervalHours: Number(process.env.BACKUP_INTERVAL_HOURS) || 24,
 } as const;

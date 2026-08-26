@@ -10,6 +10,9 @@ Before you start you need three things that are yours, not the code's:
    with SMTP credentials. Without it the server refuses to boot, because a
    password reset nobody receives locks people out of their accounts.
 3. **A domain** (optional on Fly — you get `<app>.fly.dev` free).
+4. **Operator details for the legal pages** — who runs the service, where they
+   are established, and an email that answers privacy mail. The Privacy Policy
+   and Terms name these, so the client build refuses to run without them.
 
 Generate the session secret once and keep it:
 
@@ -36,7 +39,14 @@ fly apps create winterwork          # pick your own name
 # 3. Persistent disk for SQLite — same name as [mounts].source
 fly volumes create winterwork_data --size 1 --region fra
 
-# 4. Secrets (never in fly.toml — that file is committed)
+# 4. Operator details for the legal pages. These are baked into the client
+#    bundle and are public, so they live in fly.toml rather than in secrets —
+#    edit [build.args] there, replacing every UNSET:
+#      VITE_LEGAL_OPERATOR_NAME     = "ИП Иванов И. И."
+#      VITE_LEGAL_OPERATOR_LOCATION = "Serbia"
+#      VITE_LEGAL_CONTACT_EMAIL     = "privacy@yourdomain.com"
+
+# 5. Secrets (never in fly.toml — that file is committed)
 fly secrets set \
   SESSION_SECRET="$(openssl rand -hex 32)" \
   APP_URL="https://winterwork.fly.dev" \
@@ -46,7 +56,7 @@ fly secrets set \
   SMTP_PASS="your-smtp-password" \
   MAIL_FROM="Winterwork <no-reply@yourdomain.com>"
 
-# 5. Ship it
+# 6. Ship it
 fly deploy
 ```
 
@@ -126,23 +136,53 @@ message arrives. If it doesn't, check the logs (`fly logs` /
 
 ## Backups
 
-SQLite is one file on the mounted disk. Nothing backs it up for you.
+The app takes its own snapshots: one at boot and then every
+`BACKUP_INTERVAL_HOURS` (default 24), keeping the newest `BACKUP_KEEP`
+(default 7) in `backups/` beside the database. Each one is written with
+SQLite's backup API and checkpointed into a single self-contained file, so
+restoring is a copy.
 
 ```bash
-# Fly
-fly ssh console -C "node -e \"require('better-sqlite3')('/data/winterwork.db').backup('/data/backup.db')\""
-fly sftp get /data/backup.db ./winterwork-$(date +%F).db
-
-# Docker
-docker compose exec winterwork \
-  node -e "require('better-sqlite3')('/data/winterwork.db').backup('/data/backup.db')"
-docker compose cp winterwork:/data/backup.db ./winterwork-$(date +%F).db
+fly ssh console -C "ls -la /data/backups"     # what exists
+fly logs | grep '"msg":"backup"'              # confirm it is running
 ```
 
-Use `.backup()` rather than copying the file — a plain copy of a live SQLite
-database can capture a torn write.
+Restore:
 
-Put that on a cron job before you have users worth losing.
+```bash
+fly ssh console
+  cp /data/backups/winterwork-<stamp>.db /data/winterwork.db
+  exit
+fly apps restart winterwork
+```
+
+**These snapshots live on the same volume as the database.** They cover a bad
+migration, a mistaken delete, or corruption — not losing the volume. Pull a
+copy off the box on a schedule:
+
+```bash
+fly ssh sftp get /data/backups/winterwork-<stamp>.db ./winterwork-$(date +%F).db
+```
+
+Turn the scheduler off with `BACKUPS_ENABLED=false` if you back up another way.
+
+## Logs and errors
+
+Production logs one JSON object per line on stdout. Health checks are dropped;
+nothing user-entered is logged, and users appear by id, never by email.
+
+```bash
+fly logs                                    # everything
+fly logs | grep '"level":"error"'           # only failures
+fly logs | grep '"status":5'                # only 5xx responses
+```
+
+Every response carries an `X-Request-Id`, and a 500 returns the same id in its
+body — so a user reporting "it broke" can quote one string that finds the exact
+request in the log.
+
+To send errors to Sentry or similar, call `setErrorReporter()` from
+`src/index.ts`. There is no vendor SDK in the tree; the seam is deliberate.
 
 ## Updating
 

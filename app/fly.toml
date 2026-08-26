@@ -8,6 +8,14 @@ primary_region = "fra"
 [build]
   dockerfile = "Dockerfile"
 
+  # Who operates the service, as named in the Privacy Policy and Terms. These
+  # are baked into the client bundle and are public by design — not secrets.
+  # The build fails while they still read UNSET.
+  [build.args]
+    VITE_LEGAL_OPERATOR_NAME = "UNSET"
+    VITE_LEGAL_OPERATOR_LOCATION = "UNSET"
+    VITE_LEGAL_CONTACT_EMAIL = "UNSET"
+
 [env]
   NODE_ENV = "production"
   PORT = "8787"
