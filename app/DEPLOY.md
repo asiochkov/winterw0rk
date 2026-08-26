@@ -3,13 +3,16 @@
 Everything ships as one container: the API and the built client are served
 from a single origin, with SQLite on a mounted disk.
 
-Before you start you need three things that are yours, not the code's:
+Before you start you need four things that are yours, not the code's:
 
 1. **A host account** (Fly.io below, or any Docker host).
 2. **An SMTP provider** — Resend, Postmark, SES, Mailgun, Fastmail, anything
    with SMTP credentials. Without it the server refuses to boot, because a
    password reset nobody receives locks people out of their accounts.
-3. **A domain** (optional on Fly — you get `<app>.fly.dev` free).
+3. **A domain.** Fly gives you `<app>.fly.dev` for free, so this is optional
+   for *hosting* — but not for *email*: a provider will only deliver to
+   strangers once you have verified a domain you control. See "Email: a
+   sending domain is not optional" below before inviting anyone.
 4. **Operator details for the legal pages** — who runs the service, where they
    are established, and an email that answers privacy mail. The Privacy Policy
    and Terms name these, so the client build refuses to run without them.
@@ -39,12 +42,9 @@ fly apps create winterwork          # pick your own name
 # 3. Persistent disk for SQLite — same name as [mounts].source
 fly volumes create winterwork_data --size 1 --region fra
 
-# 4. Operator details for the legal pages. These are baked into the client
-#    bundle and are public, so they live in fly.toml rather than in secrets —
-#    edit [build.args] there, replacing every UNSET:
-#      VITE_LEGAL_OPERATOR_NAME     = "ИП Иванов И. И."
-#      VITE_LEGAL_OPERATOR_LOCATION = "Serbia"
-#      VITE_LEGAL_CONTACT_EMAIL     = "privacy@yourdomain.com"
+# 4. Operator details for the legal pages live in fly.toml under
+#    [build.args] — they are baked into the client bundle and are public,
+#    so they are not secrets. Check they name you, not the previous operator.
 
 # 5. Secrets (never in fly.toml — that file is committed)
 fly secrets set \
@@ -134,6 +134,49 @@ someone needs it: use *Forgot password* on the sign-in screen and confirm the
 message arrives. If it doesn't, check the logs (`fly logs` /
 `docker compose logs -f`) — send failures are logged, not swallowed.
 
+## Where the data actually lives
+
+Worth being precise about, because accounts and health records are what this
+app stores.
+
+**One file, one disk.** Everything — accounts, password hashes, habits, mood
+notes, GPS tracks, body measurements — is in `/data/winterwork.db` on the
+volume created by `fly volumes create`. A Fly volume is a physical slice of
+local NVMe on one host in one region, not network storage: it is attached to
+exactly one machine, and it does not follow the app if the app moves. Snapshots
+written by the backup job sit in `/data/backups` on that same volume.
+
+**Which region** is whatever `primary_region` in fly.toml says. It ships as
+`fra` — Frankfurt, Germany. Change it before the first deploy; moving a volume
+afterwards means creating a new one and restoring a snapshot into it.
+
+**Who can reach it.** No third party. There are no analytics scripts, no ad
+SDKs, no external logging service — the request log goes to stdout on the same
+machine. `fly ssh console` gets you a shell on the volume, so whoever holds the
+Fly account holds the data. Guard that account with 2FA.
+
+**How it is protected.** Passwords are bcrypt hashes, never reversible.
+Traffic is TLS-only (`force_https`), and session cookies are `Secure`, so the
+app will not sign anyone in over plain HTTP. Fly encrypts volumes at rest —
+worth re-checking in their docs rather than taking this file's word for it,
+since that is their guarantee to make, not this repo's.
+
+**Where the law comes into it.** Two rules can apply at once, and which ones
+depend on who your users are, not where you host:
+
+- If you serve people in the EU or UK, GDPR applies. The app already covers
+  the mechanics — named controller, explicit consent for health data, one-click
+  export, immediate deletion — and Frankfurt keeps the data inside the EU.
+- If you serve Russian citizens, 152-ФЗ requires their personal data to be
+  collected and stored in a database **located in Russia**. A Frankfurt volume
+  does not satisfy that. Hosting in Russia means dropping Fly and using the
+  Docker path in Option B on a Russian provider — Yandex Cloud, Selectel, VK
+  Cloud, or any VPS. Nothing in the code changes; `docker compose up -d --build`
+  is the whole deployment, and you supply TLS with the nginx config above.
+
+This is a hosting decision, not a code decision, and it is much cheaper to make
+before the first real user than after.
+
 ## Backups
 
 The app takes its own snapshots: one at boot and then every
@@ -165,6 +208,47 @@ fly ssh sftp get /data/backups/winterwork-<stamp>.db ./winterwork-$(date +%F).db
 ```
 
 Turn the scheduler off with `BACKUPS_ENABLED=false` if you back up another way.
+
+## Email: a sending domain is not optional
+
+A fresh account at any transactional provider can only send **to the address
+that owns the account**, from a shared testing address like
+`onboarding@resend.dev`. That is enough to try the app yourself and completely
+useless the moment a stranger clicks *Forgot password*: their reset mail is
+rejected and they are locked out with no visible reason.
+
+The fix is a domain you control. Roughly thirty minutes, most of it waiting
+for DNS.
+
+1. **Register a domain.** Any registrar; the cheap ones are fine. This is the
+   only part that costs money — on the order of $10 a year.
+2. **Add it in Resend** → Domains → Add Domain. Resend shows a handful of DNS
+   records: a DKIM key, an SPF record, and a DMARC record.
+3. **Copy those records into your registrar's DNS panel** exactly as shown.
+   Verification usually completes within minutes; DNS can take a few hours.
+4. **Point the app at it.** `MAIL_FROM` must use the verified domain, or the
+   provider rejects the send:
+
+   ```bash
+   fly secrets set MAIL_FROM="Winterwork <no-reply@yourdomain.com>"
+   ```
+
+5. **Serve the app from it too**, so links in those emails match the site:
+
+   ```bash
+   fly certs add winterwork.yourdomain.com
+   # add the CNAME Fly prints, pointing at <app>.fly.dev, then:
+   fly secrets set APP_URL="https://winterwork.yourdomain.com"
+   ```
+
+All three records earn their keep: SPF and DKIM are what stop mail from a new
+domain going straight to spam, and DMARC is what most large providers now
+expect to see. Skipping them does not fail loudly — it just quietly halves
+your delivery rate.
+
+Until the domain verifies, the app runs fine and **only you** can receive mail
+from it. Sign-in works, data works; password reset works for your own account
+and silently fails for everyone else. Do not invite people before then.
 
 ## Logs and errors
 
