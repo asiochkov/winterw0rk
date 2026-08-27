@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 74" role="img" aria-label="Winterwork">
+  <!--
+    The Winterwork mark: two tapered strokes meeting in a fold, the right one
+    carrying down into the spike.
+
+    REDRAWN, NOT EXTRACTED. The mark was supplied as a chat image, whose pixels
+    could not be reached from this environment, so the outline was rebuilt by
+    eye against it and checked down to 16px. It is faithful in silhouette and
+    proportion, not to the curve. Replace this file with the real vector when
+    it is to hand — nothing else needs touching, every use points here.
+  -->
+  <g fill="currentColor">
+    <path d="M96 3 C84 9 70 20 61 33 C54 43 50 54 48 63 L51 73
+             C55 61 61 47 68 37 C76 23 86 11 96 3 Z"/>
+    <path d="M4 3 C13 11 21 21 30 31 C38 40 46 46 53 50
+             C49 43 42 33 33 24 C24 15 13 7 4 3 Z"/>
+  </g>
+</svg>

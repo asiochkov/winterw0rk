@@ -127,7 +127,8 @@ at 23/9/2 days clean, a session planned for today, arc day 17 of 90.
 | `29d66c1` | Active session rebuilt |
 | `d9f07e7` | Session summary built (from v6 — needs redoing against v7) |
 | `d3c6021` | Reference switched to v7; tokens rewritten from v7 |
-| _this one_ | Divergence report (brief step 2) |
+| `ac029d5` | Divergence report (brief step 2) |
+| _this one_ | App icons and the mark; template leftovers removed |
 
 Everything is on `main` at `github.com/asiochkov/winterw0rk`. Render redeploys
 on push; the live URL is `winterwork.onrender.com`.
@@ -183,6 +184,16 @@ build.
   does not have, you are looking at the wrong version.
 - **The design pack and the brief's palette section describe v6, not v7.** They
   are not the reference. See the top of this file.
+- **The logo in `public/logo.svg` is a redraw, and the only one.** The mark
+  arrived as a chat image whose pixels this environment cannot reach, so its
+  outline was rebuilt by eye and checked down to 16px. Silhouette and
+  proportion are right; the curve is not the original. Drop the real vector
+  over that file and every use follows — `favicon.svg` carries its own copy of
+  the two paths, so update both, then re-run `node make-icons.mjs` in
+  `app/e2e`.
+- **v7's Welcome has no logo mark.** It sets WINTER/WORK as type, 76px/800 at
+  -.045em. The `WW` badge the app shows is its own invention and goes when
+  Welcome is rebuilt. The logo belongs on the browser and OS surfaces only.
 - **Assets are extracted, not redrawn.** `app/client/src/assets/icons.v6.json`
   holds the prototype's 50 icon paths — verified byte-identical in v6 and v7,
   so the v6 in its name is now only history; `milestones.v6.json` holds its recovery
