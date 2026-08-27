@@ -72,6 +72,7 @@ export const en = {
   habitsTabList: 'HABITS',
   habitsTabQuit: 'QUIT',
   habitsConsistency: 'CONSISTENCY',
+  habitLastWeeks: 'LAST {weeks} WEEKS',
   navMore: 'More',
 
   // common

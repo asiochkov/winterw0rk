@@ -74,6 +74,7 @@ export const ru: typeof en = {
   habitsTabList: 'ПРИВЫЧКИ',
   habitsTabQuit: 'ОТКАЗ',
   habitsConsistency: 'ПОСТОЯНСТВО',
+  habitLastWeeks: 'ПОСЛЕДНИЕ {weeks} НЕДЕЛЬ',
   navMore: 'Ещё',
 
   // common
