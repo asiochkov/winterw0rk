@@ -1,11 +1,41 @@
+/**
+ * Design tokens, taken verbatim from `project/Winterwork v6.dc.html`.
+ *
+ * v6 is the prototype that realises Winterwork_FINAL_DESIGN_PACK: its palette
+ * matches 03_UI/04_DESIGN_TOKENS.json value for value — canvas-0 #080B0F,
+ * canvas-1 #0D1117, canvas-3 #17202A, ice-500 #8FD8FF. v7 departs from that
+ * pack (neutral #0D0D0D, periwinkle #7E9BFF), so v6 is the reference here.
+ *
+ * Do not adjust these by eye. Any change belongs in the prototype first.
+ *
+ * Names are the app's own where they already had one; the extra v6 variables
+ * are added under v6's names.
+ */
+
 :root {
   /* motion */
+  --m-instant: 80ms;
   --m-micro: 120ms;
   --m-fast: 160ms;
   --m-std: 220ms;
   --m-med: 280ms;
-  --m-slow: 420ms;
+  --m-ctx: 340ms;
+  --m-slow: 520ms;
+  --m-hero: 760ms;
+  --m-cplx: 340ms;
+  --m-sig: 520ms;
+
+  /* travel distances and press scales the prototype animates with */
+  --d-micro: 4px;
+  --d-sm: 8px;
+  --d-md: 16px;
+  --d-lg: 28px;
+  --sc-press: 0.99;
+  --sc-enter: 0.985;
+  --sc-hover: 1.005;
+
   --e-io: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --e-out: cubic-bezier(0.4, 0, 1, 1);
   --e-settle: cubic-bezier(0.16, 0.84, 0.24, 1);
 
   /* spacing */
@@ -17,6 +47,7 @@
   --s8: 32px;
   --s12: 48px;
   --s16: 64px;
+  --s24: 96px;
 
   /* radius */
   --r-hero: 24px;
@@ -26,29 +57,102 @@
   --r-sm: 10px;
   --r-xs: 8px;
   --r-pill: 999px;
+}
 
-  /* color: cold / dark, unmistakably Winterwork */
-  --bg: #0d0d0d;
-  --tx: #fafafa;
-  --mut: #84868c;
-  --mut-dim: #5b5d63;
-  --ac: #7e9bff;
-  --ac2: #a9bcff;
-  --on-ac: #0d0d0d;
-  --ok: #63c79b;
-  --dg: #e8756f;
-  --am: #ffb454;
+/* Night is the default, exactly as in the prototype. */
+:root,
+[data-theme='night'] {
+  --bg: #080b0f;
+  --bgr: 8, 11, 15;
+  --solid: #0d1117;
+  --sheet: #17202a;
+  --sfr: 23, 32, 42;
 
-  --sf1: #121214;
-  --sf2: #17171a;
-  --sf3: #212126;
-  --sf-ac: rgba(126, 155, 255, 0.12);
-  --sf-am: rgba(255, 180, 84, 0.12);
-  --sf-ok: rgba(99, 199, 155, 0.12);
-  --sf-dg: rgba(232, 117, 111, 0.12);
+  --tx: #f3f7fa;
+  --t: 243, 247, 250;
+  --w: 255, 255, 255;
 
-  --edge: 1px solid rgba(255, 255, 255, 0.08);
-  --edge2: 1px solid rgba(255, 255, 255, 0.14);
-  --lift: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --lift2: 0 8px 24px -12px rgba(0, 0, 0, 0.65);
+  --mut: #7c8791;
+  --mutr: 124, 135, 145;
+  /* Disabled text; the pack calls it text-disabled. */
+  --mut-dim: #56616b;
+
+  --ac: #8fd8ff;
+  --ac2: #b9e9ff;
+  --acr: 143, 216, 255;
+  --on-ac: #080b0f;
+
+  --dg: #e77a7a;
+  --dgr: 231, 122, 122;
+  --ok: #6fcb9a;
+  --okr: 111, 203, 154;
+  --am: #e4b96a;
+  --amr: 228, 185, 106;
+
+  --h1: #17202a;
+  --h2: #121820;
+
+  --sf1: #0d1117;
+  --sf2: #121820;
+  --sf3: #1c2631;
+  --sf-ac: rgba(143, 216, 255, 0.1);
+  --sf-am: rgba(228, 185, 106, 0.1);
+  /* The app tints success and danger surfaces too; same 10% as the two above. */
+  --sf-ok: rgba(111, 203, 154, 0.1);
+  --sf-dg: rgba(231, 122, 122, 0.1);
+
+  --sunk: #080b0f;
+  --edge: 1px solid rgba(255, 255, 255, 0.07);
+  --edge2: 1px solid rgba(255, 255, 255, 0.11);
+  --lift: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --lift2: 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --glow-ac: none;
+  --glow-am: none;
+}
+
+[data-theme='day'] {
+  --bg: #f7f7f8;
+  --bgr: 247, 247, 248;
+  --solid: #ffffff;
+  --sheet: #ffffff;
+  --sfr: 255, 255, 255;
+
+  --tx: #111111;
+  --t: 17, 17, 17;
+  --w: 17, 17, 17;
+
+  --mut: #6b6f74;
+  --mutr: 107, 111, 116;
+  --mut-dim: #9aa0a6;
+
+  --ac: #2a72d4;
+  --ac2: #1f5aae;
+  --acr: 42, 114, 212;
+  --on-ac: #ffffff;
+
+  --dg: #c4453f;
+  --dgr: 196, 69, 63;
+  --ok: #1e8158;
+  --okr: 30, 129, 88;
+  --am: #8a6114;
+  --amr: 138, 97, 20;
+
+  --h1: #edeef0;
+  --h2: #f2f3f5;
+
+  --sf1: #ffffff;
+  --sf2: #ffffff;
+  --sf3: #f0f1f3;
+  --sf-ac: rgba(42, 114, 212, 0.07);
+  --sf-am: rgba(138, 97, 20, 0.07);
+  --sf-ok: rgba(30, 129, 88, 0.07);
+  --sf-dg: rgba(196, 69, 63, 0.07);
+
+  --sunk: #f0f1f3;
+  --edge: 1px solid rgba(17, 17, 17, 0.09);
+  --edge2: 1px solid rgba(17, 17, 17, 0.14);
+  --lift: 0 1px 2px rgba(17, 17, 17, 0.06);
+  --lift2: 0 8px 24px -12px rgba(17, 17, 17, 0.12);
+  --glow-ac: none;
+  --glow-am: none;
 }
