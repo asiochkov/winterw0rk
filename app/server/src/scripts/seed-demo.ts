@@ -117,6 +117,33 @@ const seed = db.transaction(() => {
     );
   }
 
+  // v6 shows a session planned for today — "Upper body · Gym, 18 sets, about
+  // 52 min" — so Today's next-step card and the Training screen have something
+  // to say. Four exercises from whatever the library holds gives that shape.
+  db.prepare("DELETE FROM workout_sessions WHERE user_id = ? AND date = ?").run(user!.id, todayStr());
+  // Upper-body groups only, or the session contradicts its own name.
+  const picks = db
+    .prepare(
+      `SELECT id FROM exercises
+        WHERE group_name IN ('CHEST','BACK','SHOULDERS','ARMS')
+        ORDER BY group_name, id LIMIT 4`
+    )
+    .all() as { id: string }[];
+
+  if (picks.length) {
+    const session = db
+      .prepare("INSERT INTO workout_sessions (user_id, date, name, status) VALUES (?, ?, ?, 'planned')")
+      .run(user!.id, todayStr(), 'Upper Body');
+    const sessionId = Number(session.lastInsertRowid);
+    picks.forEach((ex, i) => {
+      db.prepare('INSERT INTO session_exercises (session_id, exercise_id, order_idx) VALUES (?, ?, ?)').run(
+        sessionId,
+        ex.id,
+        i
+      );
+    });
+  }
+
   // The prototype sits partway through a 90-day arc rather than on day one.
   db.prepare('UPDATE users SET arc_start_date = ?, arc_length_days = 90, onboarded = 1 WHERE id = ?').run(
     dateNDaysAgo(16),
@@ -127,5 +154,7 @@ const seed = db.transaction(() => {
 seed();
 
 const closed = HABITS.filter((h) => h.doneToday).length;
-console.log(`Seeded ${user.email}: ${HABITS.length} habits (${closed} closed today), ${QUITS.length} quit counters.`);
+console.log(
+  `Seeded ${user.email}: ${HABITS.length} habits (${closed} closed today), ${QUITS.length} quit counters, one session planned for today.`
+);
 console.log('Arc starts 16 days ago, so Today shows day 17 — the prototype’s own default.');

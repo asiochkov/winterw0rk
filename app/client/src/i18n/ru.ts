@@ -86,6 +86,17 @@ export const ru: typeof en = {
   quitGoalToward: 'на {goal}',
   quitNoGoal: 'цель не задана',
   quitCurrentRunShort: 'ТЕКУЩИЙ',
+  trainingMovement: 'ДВИЖЕНИЕ',
+  trainingExercises: 'УПРАЖНЕНИЯ',
+  trainingWarmupIncluded: 'РАЗМИНКА ВКЛЮЧЕНА',
+  trainingMetricExercises: 'УПРАЖНЕНИЙ',
+  trainingMetricSets: 'ПОДХОДОВ',
+  trainingMetricDuration: 'ОКОЛО',
+  trainingMetricMinutes: '{n} мин',
+  trainingPurpose: 'Идите по порядку. Отдых между подходами — часть тренировки, а не пауза в ней.',
+  trainingLastSet: 'прошлый раз {weight} кг × {reps}',
+  trainingNoHistory: 'истории пока нет',
+  trainingOpen: 'Открыть',
   navMore: 'Ещё',
 
   // common

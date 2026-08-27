@@ -84,6 +84,17 @@ export const en = {
   quitGoalToward: 'toward {goal}',
   quitNoGoal: 'no goal set',
   quitCurrentRunShort: 'CURRENT',
+  trainingMovement: 'MOVEMENT',
+  trainingExercises: 'EXERCISES',
+  trainingWarmupIncluded: 'WARM-UP INCLUDED',
+  trainingMetricExercises: 'EXERCISES',
+  trainingMetricSets: 'SETS',
+  trainingMetricDuration: 'ABOUT',
+  trainingMetricMinutes: '{n} min',
+  trainingPurpose: 'Work through it in order. Rest between sets is part of the session, not a pause in it.',
+  trainingLastSet: 'last {weight}kg × {reps}',
+  trainingNoHistory: 'no history yet',
+  trainingOpen: 'Open',
   navMore: 'More',
 
   // common

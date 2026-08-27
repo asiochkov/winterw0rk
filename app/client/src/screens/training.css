@@ -164,3 +164,216 @@
   border-bottom: var(--edge);
   font-size: 14px;
 }
+
+/* ── Training, transcribed from v6 ────────────────────────────────────── */
+.tr-body {
+  padding: 0 22px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tr-card {
+  padding: 30px 26px 26px;
+  border-radius: 18px;
+  background: rgba(var(--acr), 0.07);
+  border: 1px solid rgba(var(--acr), 0.18);
+}
+.tr-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.tr-card-day {
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ac);
+}
+.tr-card-place {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.tr-card-name {
+  margin-top: 20px;
+  font-weight: 800;
+  font-size: 44px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--tx);
+  text-wrap: pretty;
+}
+.tr-metrics {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.tr-metric {
+  min-width: 0;
+}
+.tr-metric-v {
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+  white-space: nowrap;
+}
+.tr-metric-l {
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.tr-purpose {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(var(--w), 0.09);
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(var(--t), 0.6);
+  text-wrap: pretty;
+}
+.tr-start {
+  width: 100%;
+  height: 62px;
+  margin-top: 22px;
+  border: none;
+  border-radius: 18px;
+  background: var(--tx);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform var(--m-fast) ease;
+}
+.tr-start:hover {
+  transform: translateY(-1px);
+}
+
+.tr-exercises {
+  padding: 22px 18px;
+  border-radius: 18px;
+  background: rgba(var(--w), 0.035);
+  border: var(--edge);
+}
+.tr-exercises-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 4px 16px;
+}
+.tr-exercises-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(var(--t), 0.5);
+}
+.tr-exercises-note {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.tr-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tr-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--sf1);
+  border: var(--edge);
+}
+.tr-row-n {
+  flex: none;
+  width: 22px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+.tr-row-body {
+  flex: 1;
+  min-width: 0;
+}
+.tr-row-name {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--tx);
+}
+.tr-row-meta {
+  margin-top: 5px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.tr-row-swap {
+  flex: none;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: var(--edge2);
+  background: var(--sf1);
+  color: rgba(var(--t), 0.7);
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tr-rest {
+  padding: 30px 26px;
+  border-radius: 18px;
+  background: rgba(var(--w), 0.035);
+  border: var(--edge);
+}
+.tr-rest-title {
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+}
+.tr-rest-body {
+  margin: 14px 0 18px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--mut);
+}
+.tr-library {
+  align-self: center;
+  margin-top: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-start { transition: none; }
+  .tr-start:hover { transform: none; }
+}
