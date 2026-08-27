@@ -126,15 +126,21 @@ at 23/9/2 days clean, a session planned for today, arc day 17 of 90.
 | `00edaaf` | Training screen rebuilt |
 | `29d66c1` | Active session rebuilt |
 | `d9f07e7` | Session summary built (from v6 — needs redoing against v7) |
-| _this one_ | Reference switched to v7; tokens rewritten from v7 |
+| `d3c6021` | Reference switched to v7; tokens rewritten from v7 |
+| _this one_ | Divergence report (brief step 2) |
 
 Everything is on `main` at `github.com/asiochkov/winterw0rk`. Render redeploys
 on push; the live URL is `winterwork.onrender.com`.
 
 ## Still to do
 
-**First: re-transcribe the eleven v6 screens against v7.** The token swap
-changed every colour under them, but their layout and content are still v6's.
+**Start from `docs/divergence.md`** — regenerate it with `node
+tools/divergence-report.mjs`. It lists all 25 v7 screens against what the app
+has: nine transcribed from v6 and needing redoing, fourteen never transcribed
+from any prototype at all, two with no screen yet.
+
+**First: re-transcribe the v6 screens against v7.** The token swap changed
+every colour under them, but their layout and content are still v6's.
 
 Screens not yet built: **Exercise / Library / Plans / Program detail**, Focus and Focus history, Mood,
 Street, Nutrition, Planner, Welcome / Sign in / Create account / Forgot
