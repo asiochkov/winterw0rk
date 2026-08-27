@@ -581,3 +581,222 @@
 .t-block {
   min-width: 0;
 }
+
+/* Clean runs — v6's quit strip on Today. */
+.t-runs,
+.t-overview {
+  border-radius: 18px;
+  background: var(--sf1);
+  border: var(--edge);
+}
+.t-runs {
+  padding: 20px 22px;
+}
+.t-runs-label,
+.t-overview-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  color: var(--mut);
+}
+.t-runs-label {
+  margin-bottom: 14px;
+}
+.t-runs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.t-run {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--sf2);
+  border: var(--edge);
+  cursor: pointer;
+  text-align: left;
+}
+.t-run-days {
+  flex: none;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+}
+.t-run-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.t-run-kicker,
+.t-run-saved {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 1;
+}
+.t-run-kicker {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ac);
+}
+.t-run-saved {
+  font-weight: 500;
+  color: var(--mut);
+}
+
+/* Day overview — conic ring plus one bar per area. */
+.t-overview {
+  padding: 24px 22px;
+}
+.t-overview-label {
+  margin-bottom: 20px;
+}
+.t-overview-body {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.t-ring {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  flex: none;
+  border-radius: 50%;
+  transition: background var(--m-slow) var(--e-io);
+}
+.t-ring-hole {
+  position: absolute;
+  inset: 9px;
+  border-radius: 50%;
+  background: var(--sf1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.t-ring-text {
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+}
+.t-areas {
+  flex: 1;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.t-area-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.t-area-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+.t-area-value {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--tx);
+}
+.t-area-track {
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--w), 0.07);
+  overflow: hidden;
+}
+.t-area-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  transition: width var(--m-slow) var(--e-io);
+}
+.t-area-fill.tone-ac { background: var(--ac); }
+.t-area-fill.tone-ok { background: var(--ok); }
+.t-area-fill.tone-am { background: var(--am); }
+
+@media (prefers-reduced-motion: reduce) {
+  .t-ring,
+  .t-area-fill { transition: none; }
+}
+
+/* Mood is part of the overview in v6; the picker sits under it until logged. */
+.t-overview-mood {
+  margin-top: 10px;
+}
+
+/* Mind pair: mood and focus, two sunk tiles. */
+.t-mind {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.t-mind-tile {
+  text-align: left;
+  padding: 22px 20px;
+  border-radius: 18px;
+  background: var(--sunk);
+  border: none;
+  cursor: pointer;
+}
+.t-mind-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.t-mood-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 36px;
+  margin-top: 18px;
+}
+.t-mood-bar {
+  width: 6px;
+  border-radius: 2px;
+  background: var(--ac);
+}
+.t-mood-bar.is-empty {
+  background: rgba(var(--w), 0.12);
+}
+.t-mind-big {
+  margin-top: 18px;
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+}
+.t-mind-foot {
+  margin-top: 14px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  color: var(--mut);
+}
+.t-mind-foot.is-accent {
+  color: var(--ac);
+}

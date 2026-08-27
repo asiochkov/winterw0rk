@@ -7,6 +7,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { NextStepCard, StreakCard, TodayHero, phaseOf, weekFrom } from './TodayHero';
 import { TodayHabits } from './TodayHabits';
+import { CleanRuns, DayOverview, MindTiles, type OverviewArea } from './TodayBlocks';
 import { useWorld } from '../context/WorldContext';
 import { Button, Section } from '../components/ui';
 import { ErrorState, LoadingRows } from '../components/states';
@@ -32,6 +33,8 @@ export default function Today() {
   const [session, setSession] = useState<WorkoutSession | null>(null);
   const [restDay, setRestDay] = useState(false);
   const [mood, setMood] = useState<MoodEntry | null>(null);
+  const [focusSec, setFocusSec] = useState(0);
+  const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const mutation = useMutation();
@@ -39,17 +42,23 @@ export default function Today() {
   const load = useCallback(async () => {
     setLoadError(null);
     try {
-      const [h, q, tr, m] = await Promise.all([
+      const [h, q, tr, m, f, mh] = await Promise.all([
         api.get<{ habits: Habit[] }>('/habits'),
         api.get<{ counters: QuitCounter[] }>('/quit'),
         api.get<{ session: WorkoutSession | null; restDay: boolean }>('/training/today'),
         api.get<{ entry: MoodEntry | null }>('/mood/today'),
+        // The day-overview ring needs today's focus minutes alongside the rest.
+        api.get<{ totalSec: number }>('/focus/today'),
+        // The mood tile draws the last week rather than a single value.
+        api.get<{ entries: MoodEntry[] }>('/mood/history'),
       ]);
       setHabits(h.habits);
       setCounters(q.counters);
       setSession(tr.session);
       setRestDay(tr.restDay);
       setMood(m.entry);
+      setFocusSec(f.totalSec);
+      setMoodHistory(mh.entries);
     } catch (err) {
       setLoadError(err instanceof Error ? err.message : 'Could not load today.');
     } finally {
@@ -76,13 +85,6 @@ export default function Today() {
     const value = Math.max(0, habit.todayValue + delta);
     const ok = await mutation.run(() => api.post(`/habits/${habit.id}/complete`, { value }));
     if (ok) load();
-  }
-
-  async function pickMood(k: number) {
-    await mutation.run(async () => {
-      const { entry } = await api.post<{ entry: MoodEntry }>('/mood', { mood: k });
-      setMood(entry);
-    });
   }
 
   if (loading) {
@@ -198,6 +200,32 @@ export default function Today() {
     };
   })();
 
+  const focusMin = Math.round(focusSec / 60);
+
+  // Seven days of mood, oldest first, with a gap where nothing was logged.
+  const moodByDate = new Map(moodHistory.map((e) => [e.date, e.mood]));
+  const moodBars = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(Date.now() - (6 - i) * 86400000).toISOString().slice(0, 10);
+    return moodByDate.get(d) ?? null;
+  });
+  const habitRate = todaysHabits.length ? Math.round((doneCount / todaysHabits.length) * 100) : 0;
+  // v6's three areas, averaged for the ring: habits, an hour of focus, mood.
+  const overviewAreas: OverviewArea[] = [
+    { label: t('todayAreaHabits'), pct: habitRate, value: `${doneCount}/${todaysHabits.length}`, tone: 'ac' },
+    {
+      label: t('todayAreaFocus'),
+      pct: Math.min(100, Math.round((focusMin / 60) * 100)),
+      value: t('todayFocusMinutes', { n: focusMin }),
+      tone: 'ok',
+    },
+    {
+      label: t('todayAreaMood'),
+      pct: mood ? 100 : 0,
+      value: mood ? t('todayMoodRecordedShort') : t('todayMoodNone'),
+      tone: 'am',
+    },
+  ];
+
   // v6 reorders Today's blocks by time of day and world: mind leads in the
   // evening, training leads in the fitness world, habits lead otherwise.
   const evening = phaseOf() === 'evening';
@@ -239,33 +267,22 @@ export default function Today() {
 
         {counters.length > 0 && (
           <div className="t-block" style={{ order: order.quit }}>
-            <Section title={t('todayQuit')} action={<button className="today-link" onClick={() => navigate('/quit')}>{t('all')}</button>}>
-              <div className="today-quit-row">
-                {counters.map((c) => (
-                  <div key={c.id} className="today-quit-chip">
-                    <span className="today-quit-days">{c.runDays}</span>
-                    <span className="today-quit-kind">{c.kind}</span>
-                  </div>
-                ))}
-              </div>
-            </Section>
+            <CleanRuns counters={counters} onOpen={(c) => navigate(`/quit/${c.id}`)} />
           </div>
         )}
 
+        <div className="t-block" style={{ order: order.quit }}>
+          <DayOverview areas={overviewAreas} />
+        </div>
+
         <div className="t-block" style={{ order: order.mind }}>
-          <Section title={t('todayMood')}>
-            {mood ? (
-              <p className="today-mood-set">{t('todayMoodRecorded', { label: t(MOOD_KEYS[mood.mood - 1]) })}</p>
-            ) : (
-              <div className="today-mood-row">
-                {MOOD_KEYS.map((key, i) => (
-                  <button key={key} className="today-mood-btn" onClick={() => pickMood(i + 1)} title={t(key)}>
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-            )}
-          </Section>
+          <MindTiles
+            moodBars={moodBars}
+            moodText={mood ? t(MOOD_KEYS[mood.mood - 1]) : t('todayMoodNotLogged')}
+            focusText={t('todayFocusMinutes', { n: focusMin })}
+            onMood={() => navigate('/mood')}
+            onFocus={() => navigate('/focus')}
+          />
         </div>
 
         {habits.length === 0 && (
