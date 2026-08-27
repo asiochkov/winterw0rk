@@ -100,3 +100,36 @@
     margin-top: var(--s8);
   }
 }
+
+/* A form headline is not a hero headline; this replaces an inline override. */
+.auth-headline-form {
+  font-size: 26px;
+  margin-top: var(--s6);
+}
+
+.auth-password {
+  position: relative;
+}
+.auth-password input {
+  /* Room for the toggle so long passwords do not run under it. */
+  padding-right: 78px;
+}
+.auth-password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--mut);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.auth-password-toggle:hover {
+  color: var(--tx);
+}

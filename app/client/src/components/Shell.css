@@ -105,6 +105,19 @@
   background: var(--sunk);
 }
 
+/* v7 draws this pill 34px tall and the round buttons at 40. Both are under
+   the 44px a tap needs, so the hit area is extended past the paint with a
+   pseudo-element rather than by resizing anything. */
+.ww-world-tab::after,
+.ww-nav-round::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 44px;
+  transform: translateY(-50%);
+}
 .ww-world-tab {
   position: relative;
   flex: 1;
@@ -149,6 +162,7 @@
 }
 
 .ww-nav-round {
+  position: relative;
   flex: none;
   width: 40px;
   height: 40px;

@@ -1,0 +1,56 @@
+/* Toast, transcribed from v7's <sc-if value="{{ toast }}"> block.
+   v7 pins it above the bottom bar at 118px and holds it for 1900ms. */
+.ww-toast-slot {
+  position: fixed;
+  left: 22px;
+  right: 22px;
+  bottom: 118px;
+  z-index: 55;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+}
+.ww-toast {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: var(--r-lg);
+  background: var(--sheet);
+  border: var(--edge2);
+  color: var(--tx);
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: var(--lift2);
+  animation: wwToast 0.42s var(--e-settle) both;
+}
+/* A failure has to be distinguishable without reading it. */
+.ww-toast.is-error {
+  border-color: rgba(var(--dgr), 0.42);
+}
+
+/* From 760px the bottom bar is gone and the rail takes its place, so the
+   toast no longer has to clear it. */
+@media (min-width: 760px) {
+  .ww-toast-slot {
+    bottom: 34px;
+    left: auto;
+    right: 34px;
+    max-width: 420px;
+  }
+}
+
+@keyframes wwToast {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ww-toast {
+    animation: none;
+  }
+}

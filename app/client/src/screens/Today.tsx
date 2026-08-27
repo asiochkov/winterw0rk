@@ -5,6 +5,7 @@ import type { Habit, MoodEntry, QuitCounter, WorkoutSession } from '../api/types
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { ContextRail } from '../components/ContextRail';
 import { NextStepCard, StreakCard, TodayHero, phaseOf, weekFrom } from './TodayHero';
 import { TodayHabits } from './TodayHabits';
 import { CleanRuns, DayOverview, MindTiles, type OverviewArea } from './TodayBlocks';
@@ -161,6 +162,51 @@ export default function Today() {
   );
   const week = weekFrom(ratios, lang === 'ru');
 
+  /*
+   * The desktop rail. Its 300px column was reserved in CSS and left empty on
+   * every screen, which is what made a laptop look broken. v7 fills it with
+   * per-screen context, and measures each figure against the user's own
+   * 30-day average rather than an absolute target.
+   */
+  const railHabitRate = todaysHabits.length ? Math.round((doneCount / todaysHabits.length) * 100) : 0;
+  const rate30 = habits.length
+    ? Math.round(habits.reduce((sum, h) => sum + (h.rate ?? 0), 0) / habits.length)
+    : 0;
+  const rail = (
+    <ContextRail
+      kicker={t('ctxDayKicker')}
+      title={t('ctxDayTitle')}
+      body={t('ctxDayBody')}
+      metrics={[
+        {
+          label: t('ctxHabitsToday'),
+          value: `${doneCount}/${todaysHabits.length}`,
+          delta: `${railHabitRate}%`,
+          direction: railHabitRate >= rate30 ? 'up' : 'down',
+          meaning: t('ctxAverage', { n: rate30 }),
+        },
+        {
+          label: t('ctxCleanDays'),
+          value: String(cleanBest),
+          meaning: counters.length
+            ? t('ctxCleanMeaning', { n: counters.length })
+            : t('ctxCleanNone'),
+        },
+        {
+          label: t('ctxStreak'),
+          value: String(bestStreak),
+          meaning: t('ctxStreakMeaning'),
+        },
+      ]}
+      nextLabel={t('ctxNext')}
+      actions={[
+        { label: t('navHabits'), hint: `${todaysHabits.length - doneCount}`, onClick: () => navigate('/habits') },
+        { label: t('navProgress'), onClick: () => navigate('/progress') },
+        { label: t('navPlanner'), onClick: () => navigate('/planner') },
+      ]}
+    />
+  );
+
   // Priority in v6: unfinished session → today's workout → open habits → mood.
   const openHabits = todaysHabits.filter((h) => !h.doneToday);
   const next = (() => {
@@ -238,7 +284,7 @@ export default function Today() {
       : { workout: 4, habits: 1, quit: 2, mind: 3, body: 5 };
 
   return (
-    <Screen nav bleed>
+    <Screen nav bleed rail={rail}>
       <TodayHero
         seasonLine={seasonLine}
         initials={initials}

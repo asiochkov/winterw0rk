@@ -44,7 +44,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 42px;
+  /* 42px is v7's paint; 44 is what a finger needs. */
+  height: 44px;
   padding: 0 18px;
   border-radius: var(--r-pill);
   border: 1px solid rgba(var(--w), 0.1);

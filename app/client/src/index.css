@@ -52,3 +52,29 @@ button:disabled {
 .mono {
   font-variant-numeric: tabular-nums;
 }
+
+/*
+ * A visible focus ring. There was none anywhere in the app, so a keyboard or
+ * switch user had no way to tell where they were. :focus-visible keeps it off
+ * for pointer users, which is why it can be this prominent.
+ */
+:focus-visible {
+  outline: 2px solid var(--ac);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+/*
+ * Anything tappable clears 44px. v7 was drawn without a finger in mind and
+ * several of its controls come out at 34 to 42; where the paint has to stay
+ * that size the hit area is extended separately rather than the control being
+ * resized. Text-only actions have no paint to preserve, so they take the
+ * height directly.
+ */
+.today-link,
+.auth-back,
+.auth-foot a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

@@ -14,6 +14,7 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   // Deliberately unticked by default — consent has to be an affirmative action.
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -53,9 +54,7 @@ export default function SignUp() {
         <button className="auth-back" onClick={() => navigate('/')}>
           ← {t('back')}
         </button>
-        <h1 className="auth-headline" style={{ fontSize: 26, marginTop: 24 }}>
-          {t('signUpTitle')}
-        </h1>
+        <h1 className="auth-headline auth-headline-form">{t('signUpTitle')}</h1>
         <p className="auth-sub">{t('signUpSub')}</p>
         <form className="auth-form" onSubmit={onSubmit}>
           <Field label={t('nameLabel')}>
@@ -71,16 +70,27 @@ export default function SignUp() {
               autoComplete="email"
             />
           </Field>
-          <Field label={t('passwordLabel')} error={error} hint={!error ? t('passwordHint') : undefined}>
-            <Input
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              autoComplete="new-password"
-            />
+          <Field label={t('passwordLabel')} hint={t('passwordHint')}>
+            <div className="auth-password">
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="new-password"
+              />
+              {/* A typo in a masked field can otherwise only be found by failing. */}
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-pressed={showPassword}
+              >
+                {t(showPassword ? 'passwordHide' : 'passwordShow')}
+              </button>
+            </div>
           </Field>
           <div className="consent-block">
             <p className="consent-read">
@@ -95,19 +105,33 @@ export default function SignUp() {
             </p>
             <label className="consent-row">
               <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} />
+              <span className="consent-box" aria-hidden="true">✓</span>
               <span>{t('legalAcceptTerms')}</span>
             </label>
             <label className="consent-row">
               <input type="checkbox" checked={acceptPrivacy} onChange={(e) => setAcceptPrivacy(e.target.checked)} />
+              <span className="consent-box" aria-hidden="true">✓</span>
               <span>{t('legalAcceptPrivacy')}</span>
             </label>
             <label className="consent-row">
               <input type="checkbox" checked={confirmAge} onChange={(e) => setConfirmAge(e.target.checked)} />
+              <span className="consent-box" aria-hidden="true">✓</span>
               <span>{t('legalConfirmAge')}</span>
             </label>
           </div>
 
-          <Button type="submit" full disabled={busy || !consentComplete}>
+          {/* The error sits with the action it belongs to, not under the
+              password field where a "that email is taken" made no sense. */}
+          {error && (
+            <p className="inline-error" role="alert">
+              {error}
+            </p>
+          )}
+
+          {/* The button stays enabled while consent is outstanding. Disabling
+              it left the screen looking broken on arrival with nothing saying
+              why; submitting now says exactly what is missing. */}
+          <Button type="submit" full disabled={busy}>
             {busy ? t('creatingAccount') : t('createAccount')}
           </Button>
         </form>

@@ -48,21 +48,54 @@
   color: var(--mut);
   margin: 0 0 var(--s2);
 }
+/*
+ * These were raw browser checkboxes — 16px of operating-system chrome in the
+ * middle of an otherwise fully drawn interface, and well under a tappable
+ * size. The input stays in the DOM for semantics and keyboard use, and is
+ * painted over by the box beside it.
+ */
 .consent-row {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  /* The whole row is the target, not just the box. */
+  min-height: 44px;
+  padding: 4px 0;
   font-size: 13.5px;
   line-height: 1.45;
   color: var(--tx);
   cursor: pointer;
 }
 .consent-row input {
-  margin-top: 2px;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.consent-box {
   flex: none;
-  width: 16px;
-  height: 16px;
-  accent-color: var(--ac);
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-xs);
+  border: 1px solid rgba(var(--w), 0.22);
+  background: var(--sf2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  font-size: 13px;
+  line-height: 1;
+  transition: background var(--m-fast) var(--e-io), border-color var(--m-fast) var(--e-io);
+}
+.consent-row input:checked + .consent-box {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: var(--onac);
+}
+/* The input is invisible, so the ring has to be drawn on what replaced it. */
+.consent-row input:focus-visible + .consent-box {
+  outline: 2px solid var(--ac);
+  outline-offset: 2px;
 }
 
 /**

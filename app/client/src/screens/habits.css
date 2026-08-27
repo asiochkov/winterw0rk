@@ -80,6 +80,8 @@
 }
 .type-btn {
   flex: 1;
+  /* 12px padding left these at 41px; a tap needs 44. */
+  min-height: 44px;
   padding: 12px 0;
   border-radius: var(--r-md);
   border: var(--edge);
@@ -394,7 +396,8 @@
 }
 .hd-back {
   width: 42px;
-  height: 42px;
+  /* 42px is v7's paint; 44 is what a finger needs. */
+  height: 44px;
   border-radius: 12px;
   border: 1px solid rgba(var(--w), 0.14);
   background: var(--sf2);

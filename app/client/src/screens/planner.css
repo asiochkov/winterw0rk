@@ -7,6 +7,7 @@
   flex: 1;
 }
 .planner-select {
+  min-height: 44px;
   background: var(--sf1);
   border: var(--edge);
   border-radius: var(--r-md);

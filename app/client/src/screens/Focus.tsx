@@ -5,6 +5,7 @@ import type { FocusMode } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { Button, Section } from '../components/ui';
+import { useMutation } from '../hooks/useAsyncData';
 import './focus.css';
 
 const MODES: { k: FocusMode; labelKey: 'focusPomodoro' | 'focusDeep' | 'focusCustom'; sec: number }[] = [
@@ -20,6 +21,7 @@ function fmt(sec: number) {
 }
 
 export default function Focus() {
+  const mutation = useMutation();
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [mode, setMode] = useState<FocusMode>('pomodoro');
@@ -50,19 +52,29 @@ export default function Focus() {
 
   async function start() {
     const sec = mode === 'custom' ? customMin * 60 : MODES.find((m) => m.k === mode)!.sec;
-    const { id } = await api.post<{ id: number }>('/focus/start', { mode, plannedSec: sec });
-    setSessionId(id);
-    setPlannedSec(sec);
-    setRemaining(sec);
-    elapsedRef.current = 0;
-    setRunning(true);
-    setDone(false);
+    // The clock only starts once the server has the session. Starting it first
+    // would run a timer that no record exists for.
+    await mutation.run(async () => {
+      const { id } = await api.post<{ id: number }>('/focus/start', { mode, plannedSec: sec });
+      setSessionId(id);
+      setPlannedSec(sec);
+      setRemaining(sec);
+      elapsedRef.current = 0;
+      setRunning(true);
+      setDone(false);
+    });
   }
 
   async function finish(planned: number) {
     if (!sessionId) return;
     setRunning(false);
-    await api.post(`/focus/${sessionId}/finish`, { actualSec: elapsedRef.current || planned });
+    // If this fails the session is deliberately left open rather than cleared:
+    // the block was worked, and dropping it on a network blip would lose it.
+    // Stopping again retries.
+    const ok = await mutation.run(() =>
+      api.post(`/focus/${sessionId}/finish`, { actualSec: elapsedRef.current || planned })
+    );
+    if (!ok) return;
     setDone(true);
     setSessionId(null);
   }

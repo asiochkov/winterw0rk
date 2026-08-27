@@ -81,6 +81,9 @@
   gap: var(--s2);
 }
 .quit-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 8px 14px;
   border-radius: var(--r-pill);
   border: var(--edge);
