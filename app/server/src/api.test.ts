@@ -8,6 +8,7 @@ const tmpDb = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'ww-test-')), 'tes
 process.env.DB_PATH = tmpDb;
 
 const { createApp } = await import('./app.js');
+const { db } = await import('./db.js');
 const request = (await import('supertest')).default;
 
 const app = createApp();
@@ -522,6 +523,62 @@ describe('training', () => {
     const reopened = await agent.get(`/api/training/sessions/${session.id}/summary`);
     expect(reopened.body.session.feeling).toBe(4);
     expect(reopened.body.session.notes).toBe('felt strong');
+  });
+
+  it('measures the change against the last session of the same name', async () => {
+    const { agent, email } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+    const session = today.body.session;
+    const first = session.exercises[0];
+
+    await agent.post(`/api/training/sessions/${session.id}/start`);
+    await agent
+      .post(`/api/training/sessions/${session.id}/sets`)
+      .send({ sessionExerciseId: first.sessionExerciseId, weight: 50, reps: 10, isWarmup: false });
+    await agent.post(`/api/training/sessions/${session.id}/finish`).send({});
+
+    // Nothing preceded it, so there is no percentage to state.
+    const before = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(before.body.summary.changePct).toBeNull();
+    expect(before.body.summary.previousTonnage).toBeNull();
+
+    // Plant an earlier run of the same session at 400kg against this one's
+    // 500, which is the 25% the summary should report.
+    const userId = (db.prepare('SELECT id FROM users WHERE email = ?').get(email) as any).id;
+    const prior = db
+      .prepare(
+        `INSERT INTO workout_sessions (user_id, date, name, status, duration_sec)
+         VALUES (?, '2020-01-06', ?, 'completed', 1800)`
+      )
+      .run(userId, session.name);
+    const priorEx = db
+      .prepare('INSERT INTO session_exercises (session_id, exercise_id, order_idx) VALUES (?, ?, 0)')
+      .run(prior.lastInsertRowid, first.exerciseId);
+    db.prepare(
+      `INSERT INTO set_entries (session_exercise_id, set_index, weight, reps, is_warmup)
+       VALUES (?, 0, 40, 10, 0)`
+    ).run(priorEx.lastInsertRowid);
+
+    const after = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(after.body.summary.previousTonnage).toBe(400);
+    expect(after.body.summary.changePct).toBe(25);
+  });
+
+  it('names the next planned day after this session', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const res = await agent.get(`/api/training/sessions/${today.body.session.id}/summary`);
+    expect(res.status).toBe(200);
+    const next = res.body.summary.next;
+    // The seeded plan covers several weekdays, so there is always a next one,
+    // and it is never the day this session is on.
+    expect(next).not.toBeNull();
+    expect(next.weekday).toBeGreaterThanOrEqual(0);
+    expect(next.weekday).toBeLessThanOrEqual(6);
+    expect(typeof next.name).toBe('string');
   });
 
   it('rejects a feeling outside the five v6 offers', async () => {

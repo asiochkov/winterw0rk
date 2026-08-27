@@ -103,6 +103,60 @@ function summaryOf(userId: number, session: any) {
   return { tonnage, setCount, prs };
 }
 
+/**
+ * v7's Session summary carries two blocks the app had no data for.
+ *
+ * CHANGE measures this session's tonnage against the last completed session of
+ * the same name — v7 compares against "the last time you ran this session", and
+ * the name is what identifies a session across days.
+ *
+ * NEXT SESSION names the next weekday the plan has something on, wrapping into
+ * next week when nothing is left in this one.
+ */
+function contextOf(userId: number, session: any, tonnage: number) {
+  const prevRow = db
+    .prepare(
+      `SELECT ws.id FROM workout_sessions ws
+       WHERE ws.user_id = ? AND ws.name = ? AND ws.status = 'completed' AND ws.id != ?
+       ORDER BY ws.date DESC, ws.id DESC LIMIT 1`
+    )
+    .get(userId, session.name, session.id) as any;
+
+  let previousTonnage: number | null = null;
+  if (prevRow) {
+    const row = db
+      .prepare(
+        `SELECT COALESCE(SUM(se.weight * se.reps), 0) AS ton FROM set_entries se
+         JOIN session_exercises sx ON sx.id = se.session_exercise_id
+         WHERE sx.session_id = ? AND se.is_warmup = 0`
+      )
+      .get(prevRow.id) as any;
+    previousTonnage = row.ton;
+  }
+
+  const changePct =
+    previousTonnage && previousTonnage > 0
+      ? Math.round(((tonnage - previousTonnage) / previousTonnage) * 100)
+      : null;
+
+  const days = db
+    .prepare('SELECT weekday, name FROM workout_plan_days WHERE user_id = ?')
+    .all(userId) as any[];
+  const byDay = new Map(days.map((d) => [d.weekday, d.name]));
+  const todayWeekday = weekdayOf(session.date);
+  let next: { weekday: number; name: string } | null = null;
+  for (let step = 1; step <= 7; step++) {
+    const wd = (todayWeekday + step) % 7;
+    const name = byDay.get(wd);
+    if (name) {
+      next = { weekday: wd, name };
+      break;
+    }
+  }
+
+  return { previousTonnage, changePct, next };
+}
+
 /** v6 offers five faces on the summary screen and a single free-text note. */
 const reflectionSchema = z.object({
   feeling: z.number().int().min(1).max(5).nullable().optional(),
@@ -269,7 +323,11 @@ router.get('/sessions/:id/summary', (req, res) => {
 
   const { tonnage, setCount, prs } = summaryOf(userId, session);
   const durationSec = session.duration_sec ?? 0;
-  res.json({ session: serializeSession(session), summary: { tonnage, setCount, durationSec, prs } });
+  const context = contextOf(userId, session, tonnage);
+  res.json({
+    session: serializeSession(session),
+    summary: { tonnage, setCount, durationSec, prs, ...context },
+  });
 });
 
 /**

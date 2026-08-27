@@ -330,6 +330,18 @@ export const ru: typeof en = {
 
   // session summary
   summaryLogged: 'Тренировка записана',
+  summaryChange: 'Изменение',
+  summaryChangeRead: 'Тоннаж против прошлой такой же сессии: {now} против {before} кг.',
+  summaryChangeNoPrior: 'Эта сессия проводится впервые, сравнивать пока не с чем.',
+  summaryNext: 'Следующая сессия',
+  summaryNextNone: 'Не запланирована',
+  weekdayMon: 'Пн',
+  weekdayTue: 'Вт',
+  weekdayWed: 'Ср',
+  weekdayThu: 'Чт',
+  weekdayFri: 'Пт',
+  weekdaySat: 'Сб',
+  weekdaySun: 'Вс',
   summaryDuration: 'Время',
   summarySets: 'Подходы',
   summaryTonnage: 'Тоннаж',

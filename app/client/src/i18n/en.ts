@@ -328,6 +328,18 @@ export const en = {
 
   // session summary
   summaryLogged: 'Session logged',
+  summaryChange: 'Change',
+  summaryChangeRead: 'Tonnage against the last time you ran this session: {now} versus {before} kg.',
+  summaryChangeNoPrior: 'First time this session has been run, so there is nothing to measure it against yet.',
+  summaryNext: 'Next session',
+  summaryNextNone: 'Not scheduled',
+  weekdayMon: 'Mon',
+  weekdayTue: 'Tue',
+  weekdayWed: 'Wed',
+  weekdayThu: 'Thu',
+  weekdayFri: 'Fri',
+  weekdaySat: 'Sat',
+  weekdaySun: 'Sun',
   summaryDuration: 'Duration',
   summarySets: 'Sets',
   summaryTonnage: 'Tonnage',

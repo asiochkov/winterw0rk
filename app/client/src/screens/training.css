@@ -143,11 +143,12 @@
   margin-top: var(--s6);
 }
 
-/* ── Session summary, transcribed from v6's "Session summary" screen ────
-   Every value below is copied from the inline styles of that screen in
-   project/Winterwork v6.dc.html (the <sc-if value="{{ isSSummary }}"> block).
-   The screen padding there is 80px 22px 60px; the head sits in a further
-   8px inset, and every block after the stat grid is 8px below the last. */
+/* ── Session summary, transcribed from v7's "Session summary" screen ────
+   v7 rebuilt this screen away from v6's stacked cards: the figures now sit in
+   a grid ruled top and bottom, and the rows below it are separated by single
+   edges rather than being tiles. Only the records card keeps a filled
+   surface. Values are copied from the inline styles of the
+   <sc-if value="{{ isSSummary }}"> block. */
 .sum {
   padding: 80px 22px 60px;
 }
@@ -167,8 +168,8 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
-  /* v6 sets this label in caps; the dictionaries hold sentence case. */
+  letter-spacing: 0.08em;
+  /* v7 sets this label in caps; the dictionaries hold sentence case. */
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -190,50 +191,74 @@
 .sum-stats {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
+  gap: 0 18px;
+  border-top: var(--edge);
+  border-bottom: var(--edge);
 }
 .sum-stat {
-  padding: 20px 16px;
-  border-radius: 18px;
-  background: rgba(var(--w), 0.035);
-  border: var(--edge);
+  padding: 22px 2px;
 }
-.sum-stat-l {
+.sum-label {
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
 .sum-stat-v {
   margin-top: 16px;
   font-weight: 800;
-  font-size: 26px;
+  font-size: 28px;
   line-height: 0.85;
+  letter-spacing: -0.03em;
   color: var(--tx);
   font-variant-numeric: tabular-nums;
 }
 
-/* The records card only appears when something was beaten — v6 wraps it in
-   <sc-if value="{{ sumHasPr }}">, so there is no empty-state variant. */
+/* Tonnage against the last run of this same session. */
+.sum-change {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 24px 2px;
+  border-bottom: var(--edge);
+}
+.sum-change-v {
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.sum-change-v.is-up {
+  color: var(--ok);
+}
+.sum-change-v.is-down {
+  color: var(--dg);
+}
+.sum-change-read {
+  flex: 1;
+  min-width: 220px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(var(--t), 0.62);
+  text-wrap: pretty;
+}
+
+/* The one filled surface left on the screen, and v7 only draws it when
+   something was actually beaten. */
 .sum-prs {
   margin-top: 8px;
   padding: 24px 22px;
-  border-radius: 18px;
+  border-radius: var(--r-lg);
   background: rgba(var(--acr), 0.1);
   border: 1px solid rgba(var(--acr), 0.26);
 }
-.sum-card-l {
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-.sum-prs .sum-card-l {
+.sum-prs .sum-label {
   color: var(--ac);
+  margin-bottom: 16px;
 }
 .sum-pr-list {
   display: flex;
@@ -261,24 +286,22 @@
 }
 
 .sum-feel {
-  margin-top: 8px;
-  padding: 24px 22px;
-  border-radius: 18px;
-  background: rgba(var(--w), 0.035);
-  border: var(--edge);
+  padding: 24px 2px;
+  border-bottom: var(--edge);
 }
-.sum-feel .sum-card-l {
+.sum-feel .sum-label {
   color: rgba(var(--t), 0.5);
+  margin-bottom: 16px;
 }
 .sum-feel-row {
   display: flex;
   gap: 6px;
 }
-/* v6's chip(): off is a faint tile, on is the text colour inverted. */
+/* v7's chip(): off is a faint tile, on is the text colour inverted. */
 .sum-feel-btn {
   flex: 1;
   height: 52px;
-  border-radius: 16px;
+  border-radius: var(--r-lg);
   border: 1px solid rgba(var(--w), 0.09);
   background: rgba(var(--w), 0.03);
   color: rgba(var(--t), 0.55);
@@ -297,25 +320,44 @@
   height: 56px;
   margin-top: 10px;
   padding: 0 16px;
-  border-radius: 16px;
+  border-radius: var(--r-lg);
   border: var(--edge2);
   background: var(--sf1);
   color: var(--tx);
   font-size: 14px;
 }
 
+.sum-next {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 24px 2px;
+}
+.sum-next .sum-label {
+  color: var(--ac);
+}
+.sum-next-v {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--tx);
+}
+.sum-next-day {
+  text-transform: uppercase;
+}
+
 .sum-save {
   width: 100%;
   height: 62px;
-  margin-top: 8px;
-  border-radius: 18px;
+  border-radius: var(--r-lg);
   border: none;
   background: var(--tx);
   color: var(--bg);
   font-weight: 700;
   font-size: 12px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }

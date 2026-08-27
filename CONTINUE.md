@@ -129,12 +129,18 @@ at 23/9/2 days clean, a session planned for today, arc day 17 of 90.
 | `d3c6021` | Reference switched to v7; tokens rewritten from v7 |
 | `ac029d5` | Divergence report (brief step 2) |
 | `4d1f0d2` | App icons and the mark; template leftovers removed |
-| _this one_ | Nav and rail to v7; breakpoints 760/1180 |
+| `92b6ab5` | Nav and rail to v7; breakpoints 760/1180 |
+| _this one_ | screen-diff tool; Session summary retranscribed from v7 |
 
 Everything is on `main` at `github.com/asiochkov/winterw0rk`. Render redeploys
 on push; the live URL is `winterwork.onrender.com`.
 
 ## Still to do
+
+**`node tools/screen-diff.mjs "<screen>"` before transcribing anything.** It
+prints what changed between v6 and v7 for one screen, at the granularity of a
+single CSS declaration. The navigation turned out to be three declarations;
+Session summary was a rebuild. Knowing which before starting saves the work.
 
 **Start from `docs/divergence.md`** — regenerate it with `node
 tools/divergence-report.mjs`. It lists all 25 v7 screens against what the app
