@@ -4,6 +4,14 @@ export const en = {
   navHabits: 'Habits',
   navQuit: 'Quit',
   navTrain: 'Train',
+  navPlanner: 'PLANNER',
+  navFocus: 'FOCUS',
+  navProgress: 'PROGRESS',
+  navBody: 'BODY',
+  navFood: 'FOOD',
+  navQuickAction: 'Quick action',
+  worldDiscipline: 'DISCIPLINE',
+  worldFitness: 'FITNESS',
   navMore: 'More',
 
   // common

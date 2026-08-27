@@ -50,50 +50,152 @@
   margin: 0;
 }
 
-/* Mobile bottom nav */
-.bottom-nav {
+/**
+ * The floating bottom bar, transcribed from v6's inline styles. Every number
+ * here comes from the prototype: 28px container radius, 8px padding, 34px
+ * world tabs, 40px round buttons, 52px tab row, 4px gaps.
+ */
+.ww-nav-wrap {
   position: fixed;
-  bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
-  justify-content: center;
-  gap: var(--s2);
-  padding: var(--s3) var(--s4) calc(var(--s3) + env(safe-area-inset-bottom));
-  background: rgba(13, 13, 13, 0.86);
-  backdrop-filter: blur(20px);
-  border-top: var(--edge);
+  bottom: 0;
+  z-index: 50;
+  padding: 0 12px calc(14px + env(safe-area-inset-bottom));
+  pointer-events: none;
 }
 
-.nav-item {
-  flex: 1;
-  max-width: 115px;
+.ww-nav {
+  pointer-events: auto;
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 28px;
+  background: var(--sheet);
+  border: var(--edge2);
+  box-shadow: 0 34px 70px -30px rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.ww-nav-top {
+  display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 0;
-  color: var(--mut);
-  font-size: 11px;
+  gap: 8px;
+}
+
+/* World switch: discipline / fitness */
+.ww-world {
+  position: relative;
+  flex: 1;
+  display: flex;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--sunk);
+}
+
+.ww-world-tab {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  border-radius: var(--r-pill);
+  border: none;
+  background: transparent;
+  color: rgba(var(--t), 0.5);
   font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  border-radius: var(--r-md);
-  transition: color var(--m-fast) var(--e-io);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background var(--m-sig) var(--e-io), color var(--m-cplx) ease;
 }
-.nav-icon {
-  width: 20px;
-  height: 20px;
-  opacity: 0.65;
-  transition: opacity var(--m-fast) var(--e-io), transform var(--m-fast) var(--e-io);
+.ww-world-tab.is-on {
+  background: var(--tx);
+  color: var(--bg);
 }
-.nav-item-active {
-  color: var(--tx);
+
+.ww-world-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(var(--t), 0.22);
+  transition: background var(--m-cplx) ease, box-shadow var(--m-cplx) ease;
 }
-.nav-item-active .nav-icon {
-  opacity: 1;
-  color: var(--ac);
-  transform: scale(1.08);
+.ww-world-dot.is-disc {
+  background: var(--ac);
+  box-shadow: 0 0 16px rgba(var(--acr), 0.55);
+}
+.ww-world-dot.is-fit {
+  background: var(--am);
+  box-shadow: 0 0 16px rgba(var(--amr), 0.55);
+}
+
+.ww-nav-round {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-pill);
+  border: none;
+  background: var(--sunk);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ww-nav-fab {
+  background: rgba(var(--acr), 0.16);
+  transition: transform var(--m-cplx) var(--e-io);
+}
+
+/* Tab row, with the pill that slides to the active tab */
+.ww-nav-tabs {
+  position: relative;
+  display: flex;
+  gap: 4px;
+}
+
+.ww-nav-pill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--r-pill);
+  background: linear-gradient(168deg, rgba(var(--acr), 0.3) 0%, rgba(var(--acr), 0.14) 100%);
+  box-shadow: inset 0 1px 0 rgba(var(--w), 0.14);
+  transition: left var(--m-std) var(--e-settle), opacity var(--m-fast) ease;
+  pointer-events: none;
+}
+
+.ww-nav-tab {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--r-pill);
+  background: none;
+  cursor: pointer;
+}
+.ww-nav-tab svg {
+  transition: transform var(--m-ctx) var(--e-settle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ww-nav-pill,
+  .ww-nav-tab svg,
+  .ww-world-tab,
+  .ww-nav-fab {
+    transition: none;
+  }
 }
 
 /* Desktop sidebar nav — hidden until the desktop breakpoint */
@@ -188,7 +290,7 @@
     padding-bottom: var(--s16);
   }
 
-  .bottom-nav {
+  .ww-nav-wrap {
     display: none;
   }
 }

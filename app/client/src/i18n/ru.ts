@@ -6,6 +6,14 @@ export const ru: typeof en = {
   navHabits: 'Привычки',
   navQuit: 'Отказ',
   navTrain: 'Трен-ки',
+  navPlanner: 'ПЛАНЕР',
+  navFocus: 'ФОКУС',
+  navProgress: 'ПРОГРЕСС',
+  navBody: 'ТЕЛО',
+  navFood: 'ПИТАНИЕ',
+  navQuickAction: 'Быстрое действие',
+  worldDiscipline: 'ДИСЦИПЛИНА',
+  worldFitness: 'ФИТНЕС',
   navMore: 'Ещё',
 
   // common
