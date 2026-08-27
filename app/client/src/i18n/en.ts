@@ -34,6 +34,13 @@ export const en = {
   todayNextDoneWhy: 'Nothing else is scheduled for today.',
   todayNextLog: 'Log',
   todayNextOpen: 'Open',
+  todayHabitDone: 'done',
+  todayHabitDaily: 'DAILY',
+  todayHabitPerWeek: '{n} / WEEK',
+  todayHabitComplete: 'Complete',
+  todayHabitMinus: 'Less',
+  todayHabitPlus: 'More',
+  todayHabitTimer: 'TIMER',
   navMore: 'More',
 
   // common

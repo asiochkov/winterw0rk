@@ -5,7 +5,8 @@ import type { Habit, MoodEntry, QuitCounter, WorkoutSession } from '../api/types
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
-import { NextStepCard, StreakCard, TodayHero, weekFrom } from './TodayHero';
+import { NextStepCard, StreakCard, TodayHero, phaseOf, weekFrom } from './TodayHero';
+import { TodayHabits } from './TodayHabits';
 import { useWorld } from '../context/WorldContext';
 import { Button, Section } from '../components/ui';
 import { ErrorState, LoadingRows } from '../components/states';
@@ -67,6 +68,12 @@ export default function Today() {
           ? 0
           : 1
         : Math.min((habit.target || 0) * 2, habit.todayValue + (habit.step || 1));
+    const ok = await mutation.run(() => api.post(`/habits/${habit.id}/complete`, { value }));
+    if (ok) load();
+  }
+
+  async function stepHabit(habit: Habit, delta: number) {
+    const value = Math.max(0, habit.todayValue + delta);
     const ok = await mutation.run(() => api.post(`/habits/${habit.id}/complete`, { value }));
     if (ok) load();
   }
@@ -191,6 +198,17 @@ export default function Today() {
     };
   })();
 
+  // v6 reorders Today's blocks by time of day and world: mind leads in the
+  // evening, training leads in the fitness world, habits lead otherwise.
+  const evening = phaseOf() === 'evening';
+  const order = isFit
+    ? evening
+      ? { workout: 3, habits: 4, quit: 5, mind: 1, body: 2 }
+      : { workout: 1, habits: 3, quit: 4, mind: 5, body: 2 }
+    : evening
+      ? { workout: 5, habits: 2, quit: 3, mind: 1, body: 6 }
+      : { workout: 4, habits: 1, quit: 2, mind: 3, body: 5 };
+
   return (
     <Screen nav bleed>
       <TodayHero
@@ -207,57 +225,58 @@ export default function Today() {
         <StreakCard days={bestStreak} week={week} />
       </div>
 
-      <div className="t-below">
-      <Section title={t('todayHabits')} action={<button className="today-link" onClick={() => navigate('/habits')}>{t('all')}</button>}>
-        {mutation.error && <p className="inline-error">{mutation.error}</p>}
-        <div className="today-habit-list">
-          {todaysHabits.length === 0 && <p className="today-empty">{t('todayNothingScheduled')}</p>}
-          {todaysHabits.map((h) => (
-            <button key={h.id} className={`today-habit ${h.doneToday ? 'today-habit-done' : ''}`} onClick={() => completeHabit(h)}>
-              <span className={`today-check ${h.doneToday ? 'today-check-on' : ''}`} />
-              <span className="today-habit-name">{h.name}</span>
-              <span className="today-habit-meta">
-                {h.type === 'bool' ? `${h.streak}${t('streakSuffix')}` : `${h.todayValue}/${h.target} ${h.unit || ''}`}
-              </span>
-            </button>
-          ))}
+      <div className="t-below t-blocks">
+        <div className="t-block" style={{ order: order.habits }}>
+          <TodayHabits
+            habits={todaysHabits}
+            doneCount={doneCount}
+            onToggle={completeHabit}
+            onStep={stepHabit}
+            onOpenAll={() => navigate('/habits')}
+          />
+          {mutation.error && <p className="inline-error">{mutation.error}</p>}
         </div>
-      </Section>
 
-      {counters.length > 0 && (
-        <Section title={t('todayQuit')} action={<button className="today-link" onClick={() => navigate('/quit')}>{t('all')}</button>}>
-          <div className="today-quit-row">
-            {counters.map((c) => (
-              <div key={c.id} className="today-quit-chip">
-                <span className="today-quit-days">{c.runDays}</span>
-                <span className="today-quit-kind">{c.kind}</span>
+        {counters.length > 0 && (
+          <div className="t-block" style={{ order: order.quit }}>
+            <Section title={t('todayQuit')} action={<button className="today-link" onClick={() => navigate('/quit')}>{t('all')}</button>}>
+              <div className="today-quit-row">
+                {counters.map((c) => (
+                  <div key={c.id} className="today-quit-chip">
+                    <span className="today-quit-days">{c.runDays}</span>
+                    <span className="today-quit-kind">{c.kind}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      <Section title={t('todayMood')}>
-        {mood ? (
-          <p className="today-mood-set">{t('todayMoodRecorded', { label: t(MOOD_KEYS[mood.mood - 1]) })}</p>
-        ) : (
-          <div className="today-mood-row">
-            {MOOD_KEYS.map((key, i) => (
-              <button key={key} className="today-mood-btn" onClick={() => pickMood(i + 1)} title={t(key)}>
-                {i + 1}
-              </button>
-            ))}
+            </Section>
           </div>
         )}
-      </Section>
 
-      {habits.length === 0 && (
-        <Section>
-          <Button full variant="secondary" onClick={() => navigate('/habits/new')}>
-            {t('todayAddFirstHabit')}
-          </Button>
-        </Section>
-      )}
+        <div className="t-block" style={{ order: order.mind }}>
+          <Section title={t('todayMood')}>
+            {mood ? (
+              <p className="today-mood-set">{t('todayMoodRecorded', { label: t(MOOD_KEYS[mood.mood - 1]) })}</p>
+            ) : (
+              <div className="today-mood-row">
+                {MOOD_KEYS.map((key, i) => (
+                  <button key={key} className="today-mood-btn" onClick={() => pickMood(i + 1)} title={t(key)}>
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+            )}
+          </Section>
+        </div>
+
+        {habits.length === 0 && (
+          <div className="t-block" style={{ order: 99 }}>
+            <Section>
+              <Button full variant="secondary" onClick={() => navigate('/habits/new')}>
+                {t('todayAddFirstHabit')}
+              </Button>
+            </Section>
+          </div>
+        )}
       </div>
     </Screen>
   );

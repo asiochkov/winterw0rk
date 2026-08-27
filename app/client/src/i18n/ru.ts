@@ -36,6 +36,13 @@ export const ru: typeof en = {
   todayNextDoneWhy: 'На сегодня больше ничего не запланировано.',
   todayNextLog: 'Записать',
   todayNextOpen: 'Открыть',
+  todayHabitDone: 'выполнено',
+  todayHabitDaily: 'ЕЖЕДНЕВНО',
+  todayHabitPerWeek: '{n} / НЕД',
+  todayHabitComplete: 'Отметить',
+  todayHabitMinus: 'Меньше',
+  todayHabitPlus: 'Больше',
+  todayHabitTimer: 'ТАЙМЕР',
   navMore: 'Ещё',
 
   // common
