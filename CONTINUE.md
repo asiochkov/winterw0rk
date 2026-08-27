@@ -130,7 +130,8 @@ at 23/9/2 days clean, a session planned for today, arc day 17 of 90.
 | `ac029d5` | Divergence report (brief step 2) |
 | `4d1f0d2` | App icons and the mark; template leftovers removed |
 | `92b6ab5` | Nav and rail to v7; breakpoints 760/1180 |
-| _this one_ | screen-diff tool; Session summary retranscribed from v7 |
+| `db07b75` | screen-diff tool; Session summary retranscribed from v7 |
+| _this one_ | v7's two global conventions applied across every stylesheet |
 
 Everything is on `main` at `github.com/asiochkov/winterw0rk`. Render redeploys
 on push; the live URL is `winterwork.onrender.com`.
@@ -184,6 +185,12 @@ build.
 - **Uppercase comes from CSS, not the dictionaries.** The prototype sets
   labels in caps;
   the dictionaries hold sentence case.
+- **v7 has exactly one positive letter-spacing: `.08em`.** v6 had ten
+  different ones (.06em 206 times, .2em 62, .1em 41, and so on); v7 uses .08em
+  387 times and nothing else. Negative tracking, which is display type, is
+  unchanged. v7 also dropped two radii — 18px and 14px are gone from it
+  entirely, having become 16px and 12px. Both conventions are already applied
+  across the app's stylesheets; keep new work inside them.
 - **Never invent design values.** Extract them from the prototype with a script
   and copy them. Every stylesheet added so far says where its numbers came from.
 - **Check which prototype the bundler is serving before you trust a

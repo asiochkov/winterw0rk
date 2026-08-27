@@ -32,7 +32,7 @@
 .auth-kicker {
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
   margin: 0;

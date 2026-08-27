@@ -20,7 +20,7 @@
 .quit-card-kind {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   margin: 6px 0 var(--s3);
 }
@@ -48,7 +48,7 @@
 .quit-live-l {
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
   margin-top: var(--s2);
@@ -138,7 +138,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -160,7 +160,7 @@
   font-weight: 500;
   font-size: 15px;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   color: rgba(var(--t), 0.55);
   font-variant-numeric: tabular-nums;
 }
@@ -169,7 +169,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -184,14 +184,14 @@
 .q-craving {
   width: 100%;
   height: 70px;
-  border-radius: 18px;
+  border-radius: 16px;
   border: none;
   background: var(--ac);
   color: var(--on-ac);
   font-weight: 700;
   font-size: 13px;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -203,7 +203,7 @@
 }
 .q-card {
   padding: 24px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -221,7 +221,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
 }
@@ -229,14 +229,14 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .q-stat-label {
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -253,7 +253,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1.4;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .q-stat-sub.is-accent {
@@ -303,7 +303,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 
@@ -324,7 +324,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1.4;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .q-ms.is-reached .q-ms-when {
@@ -362,7 +362,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }

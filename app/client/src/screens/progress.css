@@ -14,7 +14,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--ac);
 }
 .pr-chip-dot {
@@ -53,7 +53,7 @@
   font-weight: 600;
   font-size: 12px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   /* v6 sets these pills in caps; the dictionaries hold sentence case. */
   text-transform: uppercase;
   cursor: pointer;
@@ -74,7 +74,7 @@
 /* Headline card: rate, delta pill, 30-bar sparkline. */
 .pr-hero {
   padding: 30px 26px 26px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--acr), 0.07);
   border: 1px solid rgba(var(--acr), 0.18);
 }
@@ -89,7 +89,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   color: var(--ac);
 }
 .pr-delta {
@@ -98,7 +98,7 @@
   font-weight: 600;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 .pr-delta.is-up {
   background: rgba(var(--okr), 0.16);
@@ -146,7 +146,7 @@
 }
 .pr-area {
   padding: 20px 16px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sf1);
   border: var(--edge);
 }
@@ -154,7 +154,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -178,7 +178,7 @@
 .pr-week,
 .pr-habits {
   padding: 26px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -186,7 +186,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
   margin-bottom: 20px;
@@ -280,7 +280,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 

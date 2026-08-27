@@ -22,7 +22,7 @@
   color: var(--mut);
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
   margin: 0;
 }
 .tr-prev {
@@ -35,7 +35,7 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--mut);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0 0 4px;
 }
@@ -75,7 +75,7 @@
 .sess-field-label {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   text-transform: uppercase;
 }
@@ -376,7 +376,7 @@
 
 .tr-card {
   padding: 30px 26px 26px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--acr), 0.07);
   border: 1px solid rgba(var(--acr), 0.18);
 }
@@ -391,7 +391,7 @@
   font-weight: 600;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -399,7 +399,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -452,13 +452,13 @@
   height: 62px;
   margin-top: 22px;
   border: none;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--tx);
   color: var(--bg);
   font-weight: 700;
   font-size: 13px;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
   transition: transform var(--m-fast) ease;
@@ -469,7 +469,7 @@
 
 .tr-exercises {
   padding: 22px 18px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -483,7 +483,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
 }
@@ -491,7 +491,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -505,7 +505,7 @@
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sf1);
   border: var(--edge);
 }
@@ -533,7 +533,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -541,7 +541,7 @@
   flex: none;
   height: 40px;
   padding: 0 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: var(--edge2);
   background: var(--sf1);
   color: rgba(var(--t), 0.7);
@@ -552,7 +552,7 @@
 
 .tr-rest {
   padding: 30px 26px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -616,7 +616,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   font-variant-numeric: tabular-nums;
 }
@@ -644,7 +644,7 @@
   font-weight: 700;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -652,7 +652,7 @@
 .ss-rest {
   margin: 0 22px 8px;
   padding: 20px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--acr), 0.1);
   border: 1px solid rgba(var(--acr), 0.26);
   display: flex;
@@ -664,7 +664,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -690,7 +690,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   cursor: pointer;
 }
 
@@ -702,7 +702,7 @@
 }
 .ss-card {
   padding: 24px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -716,7 +716,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -724,7 +724,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -740,7 +740,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1.6;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 
@@ -748,7 +748,7 @@
 .ss-focus {
   margin-top: 22px;
   padding: 24px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sf-ac);
   border: 1px solid rgba(var(--acr), 0.28);
 }
@@ -756,7 +756,7 @@
   font-weight: 600;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -780,7 +780,7 @@
   font-weight: 500;
   font-size: 10px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -821,13 +821,13 @@
   height: 62px;
   margin-top: 22px;
   border: none;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--ac);
   color: var(--on-ac);
   font-weight: 700;
   font-size: 13px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -847,14 +847,14 @@
   width: 100%;
   height: 46px;
   margin-top: 12px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: var(--edge2);
   background: transparent;
   color: rgba(var(--t), 0.55);
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -869,7 +869,7 @@
   align-items: center;
   gap: 10px;
   padding: 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--sf1);
   border: var(--edge);
 }
@@ -914,7 +914,7 @@
   color: var(--tx);
   font-weight: 600;
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   cursor: pointer;
 }
 .ss-nav-btn:disabled {

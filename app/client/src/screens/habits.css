@@ -26,7 +26,7 @@
 .habit-card-cat {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   margin: 0;
 }
@@ -129,7 +129,7 @@
 .detail-stat-l {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   text-transform: uppercase;
 }
@@ -164,7 +164,7 @@
 
 .hb-row {
   padding: 18px 18px 16px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: 1px solid rgba(var(--w), 0.08);
 }
@@ -214,7 +214,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .hb-meta-line {
@@ -315,7 +315,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 
@@ -355,13 +355,13 @@
   margin: 8px 22px 0;
   width: calc(100% - 44px);
   height: 66px;
-  border-radius: 18px;
+  border-radius: 16px;
   border: 1px dashed rgba(var(--w), 0.18);
   background: transparent;
   color: var(--mut);
   font-weight: 600;
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -395,7 +395,7 @@
 .hd-back {
   width: 42px;
   height: 42px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(var(--w), 0.14);
   background: var(--sf2);
   color: var(--tx);
@@ -406,7 +406,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
   margin-bottom: 14px;
@@ -431,7 +431,7 @@
 }
 .hd-stat {
   padding: 20px 16px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -443,7 +443,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -472,7 +472,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
