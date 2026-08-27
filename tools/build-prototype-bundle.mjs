@@ -24,13 +24,13 @@ const VENDOR_DIR = path.join(STATIC_DIR, 'vendor');
 /**
  * The prototype export to build.
  *
- * v6 is the reference the app is being transferred from — see CONTINUE.md for
- * the token-by-token comparison that settled it. v7 is a later iteration that
- * left that design system, so building it here would make every comparison
- * screenshot the wrong screen. Override with PROTOTYPE=... to look at another
+ * v7 is the reference — the whole app is being transferred from it. v6 is the
+ * earlier iteration that realises the design pack's token values; it is kept
+ * in the repo because the pack and the brief still quote its palette, but it
+ * is not what the app follows. Override with PROTOTYPE=... to build another
  * version deliberately.
  */
-const EXPORT = process.env.PROTOTYPE || 'Winterwork v6.dc.html';
+const EXPORT = process.env.PROTOTYPE || 'Winterwork v7.dc.html';
 
 /** Each unpkg URL the export loads, and the npm package + path that replaces it. */
 const VENDORED = [

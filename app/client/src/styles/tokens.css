@@ -1,15 +1,18 @@
 /**
- * Design tokens, taken verbatim from `project/Winterwork v6.dc.html`.
+ * Design tokens, taken verbatim from `project/Winterwork v7.dc.html`.
  *
- * v6 is the prototype that realises Winterwork_FINAL_DESIGN_PACK: its palette
- * matches 03_UI/04_DESIGN_TOKENS.json value for value — canvas-0 #080B0F,
- * canvas-1 #0D1117, canvas-3 #17202A, ice-500 #8FD8FF. v7 departs from that
- * pack (neutral #0D0D0D, periwinkle #7E9BFF), so v6 is the reference here.
+ * v7 is the reference. That was not always the case, and the history is worth
+ * knowing because the two prototypes disagree everywhere: v6 realises
+ * Winterwork_FINAL_DESIGN_PACK/03_UI/04_DESIGN_TOKENS.json value for value
+ * (#080B0F / #0D1117 / #8FD8FF ice), while v7 moved to a neutral base with a
+ * periwinkle accent (#0D0D0D / #121214 / #7E9BFF). The design pack, and the
+ * brief's own palette section, still quote the v6 numbers — none of which
+ * appear anywhere in v7. The call to follow v7, palette included, was made
+ * deliberately; see CONTINUE.md.
  *
  * Do not adjust these by eye. Any change belongs in the prototype first.
  *
- * Names are the app's own where they already had one; the extra v6 variables
- * are added under v6's names.
+ * Where a name below is not v7's own it says so.
  */
 
 :root {
@@ -62,97 +65,109 @@
 /* Night is the default, exactly as in the prototype. */
 :root,
 [data-theme='night'] {
-  --bg: #080b0f;
-  --bgr: 8, 11, 15;
-  --solid: #0d1117;
-  --sheet: #17202a;
-  --sfr: 23, 32, 42;
+  --bg: #0d0d0d;
+  --bgr: 13, 13, 13;
+  --solid: #121214;
+  --sheet: #1b1b1e;
+  --sfr: 27, 27, 30;
 
-  --tx: #f3f7fa;
-  --t: 243, 247, 250;
+  --tx: #fafafa;
+  --t: 250, 250, 250;
   --w: 255, 255, 255;
 
-  --mut: #7c8791;
-  --mutr: 124, 135, 145;
-  /* Disabled text; the pack calls it text-disabled. */
-  --mut-dim: #56616b;
+  --mut: #84868c;
+  --mutr: 132, 134, 140;
+  /* Not a v7 token. v7 has no named disabled colour and dims text inline
+     instead; .38 is the faintest alpha it uses on --t. */
+  --mut-dim: rgba(250, 250, 250, 0.38);
 
-  --ac: #8fd8ff;
-  --ac2: #b9e9ff;
-  --acr: 143, 216, 255;
-  --on-ac: #080b0f;
+  --ac: #7e9bff;
+  --ac2: #a9bcff;
+  --acr: 126, 155, 255;
+  --onac: #0d0d0d;
+  /* The app spelled this --on-ac before v7 named it --onac; both are kept so
+     markup transcribed straight out of v7 works unchanged. */
+  --on-ac: #0d0d0d;
 
-  --dg: #e77a7a;
-  --dgr: 231, 122, 122;
-  --ok: #6fcb9a;
-  --okr: 111, 203, 154;
-  --am: #e4b96a;
-  --amr: 228, 185, 106;
+  --deep: #2a2fbe;
+  --deepr: 42, 47, 190;
 
-  --h1: #17202a;
-  --h2: #121820;
+  --dg: #e8756f;
+  --dgr: 232, 117, 111;
+  --ok: #63c79b;
+  --okr: 99, 199, 155;
+  --am: #ffb454;
+  --amr: 255, 180, 84;
 
-  --sf1: #0d1117;
-  --sf2: #121820;
-  --sf3: #1c2631;
-  --sf-ac: rgba(143, 216, 255, 0.1);
-  --sf-am: rgba(228, 185, 106, 0.1);
-  /* The app tints success and danger surfaces too; same 10% as the two above. */
-  --sf-ok: rgba(111, 203, 154, 0.1);
-  --sf-dg: rgba(231, 122, 122, 0.1);
+  --h1: #161a34;
+  --h2: #101120;
 
-  --sunk: #080b0f;
+  --sf1: #121214;
+  --sf2: #17171a;
+  --sf3: #212126;
+  --sf-ac: rgba(126, 155, 255, 0.11);
+  --sf-am: rgba(255, 180, 84, 0.11);
+  /* Not v7 tokens. The app tints success and danger surfaces too; same .11
+     as the two v7 defines above. */
+  --sf-ok: rgba(99, 199, 155, 0.11);
+  --sf-dg: rgba(232, 117, 111, 0.11);
+
+  --sunk: #0d0d0d;
   --edge: 1px solid rgba(255, 255, 255, 0.07);
   --edge2: 1px solid rgba(255, 255, 255, 0.11);
-  --lift: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --lift2: 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --lift: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --lift2: 0 8px 24px -12px rgba(0, 0, 0, 0.65);
   --glow-ac: none;
   --glow-am: none;
 }
 
 [data-theme='day'] {
-  --bg: #f7f7f8;
-  --bgr: 247, 247, 248;
+  --bg: #fafafa;
+  --bgr: 250, 250, 250;
   --solid: #ffffff;
   --sheet: #ffffff;
   --sfr: 255, 255, 255;
 
-  --tx: #111111;
-  --t: 17, 17, 17;
-  --w: 17, 17, 17;
+  --tx: #0d0d0d;
+  --t: 13, 13, 13;
+  --w: 13, 13, 13;
 
-  --mut: #6b6f74;
-  --mutr: 107, 111, 116;
-  --mut-dim: #9aa0a6;
+  --mut: #6a6d73;
+  --mutr: 106, 109, 115;
+  --mut-dim: rgba(13, 13, 13, 0.38);
 
-  --ac: #2a72d4;
-  --ac2: #1f5aae;
-  --acr: 42, 114, 212;
-  --on-ac: #ffffff;
+  --ac: #2a2fbe;
+  --ac2: #1c2091;
+  --acr: 42, 47, 190;
+  --onac: #fafafa;
+  --on-ac: #fafafa;
 
-  --dg: #c4453f;
-  --dgr: 196, 69, 63;
-  --ok: #1e8158;
-  --okr: 30, 129, 88;
-  --am: #8a6114;
-  --amr: 138, 97, 20;
+  --deep: #1e1e6b;
+  --deepr: 30, 30, 107;
 
-  --h1: #edeef0;
-  --h2: #f2f3f5;
+  --dg: #b8403a;
+  --dgr: 184, 64, 58;
+  --ok: #1c7a53;
+  --okr: 28, 122, 83;
+  --am: #8a5200;
+  --amr: 138, 82, 0;
+
+  --h1: #e3e6f6;
+  --h2: #f0f1f8;
 
   --sf1: #ffffff;
   --sf2: #ffffff;
-  --sf3: #f0f1f3;
-  --sf-ac: rgba(42, 114, 212, 0.07);
-  --sf-am: rgba(138, 97, 20, 0.07);
-  --sf-ok: rgba(30, 129, 88, 0.07);
-  --sf-dg: rgba(196, 69, 63, 0.07);
+  --sf3: #eff0f5;
+  --sf-ac: rgba(42, 47, 190, 0.065);
+  --sf-am: rgba(138, 82, 0, 0.075);
+  --sf-ok: rgba(28, 122, 83, 0.075);
+  --sf-dg: rgba(184, 64, 58, 0.075);
 
-  --sunk: #f0f1f3;
-  --edge: 1px solid rgba(17, 17, 17, 0.09);
-  --edge2: 1px solid rgba(17, 17, 17, 0.14);
-  --lift: 0 1px 2px rgba(17, 17, 17, 0.06);
-  --lift2: 0 8px 24px -12px rgba(17, 17, 17, 0.12);
+  --sunk: #eff0f5;
+  --edge: 1px solid rgba(13, 13, 13, 0.09);
+  --edge2: 1px solid rgba(13, 13, 13, 0.14);
+  --lift: 0 1px 2px rgba(13, 13, 13, 0.06);
+  --lift2: 0 8px 24px -12px rgba(13, 13, 13, 0.12);
   --glow-ac: none;
   --glow-am: none;
 }
