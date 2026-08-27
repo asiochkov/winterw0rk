@@ -64,6 +64,14 @@ export const en = {
   progressDailyCompletion: 'DAILY COMPLETION',
   progressPerHabit: 'PER HABIT · {days} DAYS',
   progressStreakBest: '{streak}d streak · best {best}d',
+  habitTypeBool: 'YES / NO',
+  habitTypeCount: 'COUNT',
+  habitTypeTime: 'TIME',
+  habitStreakDays: '{n}d streak',
+  habitNoStreak: 'no streak',
+  habitsTabList: 'HABITS',
+  habitsTabQuit: 'QUIT',
+  habitsConsistency: 'CONSISTENCY',
   navMore: 'More',
 
   // common

@@ -66,6 +66,14 @@ export const ru: typeof en = {
   progressDailyCompletion: 'ПО ДНЯМ',
   progressPerHabit: 'ПО ПРИВЫЧКАМ · {days} ДНЕЙ',
   progressStreakBest: 'серия {streak} д · лучшая {best} д',
+  habitTypeBool: 'ДА / НЕТ',
+  habitTypeCount: 'СЧЁТ',
+  habitTypeTime: 'ВРЕМЯ',
+  habitStreakDays: 'серия {n} д',
+  habitNoStreak: 'серии нет',
+  habitsTabList: 'ПРИВЫЧКИ',
+  habitsTabQuit: 'ОТКАЗ',
+  habitsConsistency: 'ПОСТОЯНСТВО',
   navMore: 'Ещё',
 
   // common

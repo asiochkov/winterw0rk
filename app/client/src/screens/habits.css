@@ -153,3 +153,220 @@
 .detail-history-value {
   font-weight: 600;
 }
+
+/* ── Habits list, transcribed from v6 ─────────────────────────────────── */
+.hb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 22px;
+}
+
+.hb-row {
+  padding: 18px 18px 16px;
+  border-radius: 18px;
+  background: rgba(var(--w), 0.035);
+  border: 1px solid rgba(var(--w), 0.08);
+}
+.hb-row.is-done {
+  background: rgba(var(--acr), 0.055);
+  border-color: rgba(var(--acr), 0.16);
+}
+
+.hb-row-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hb-pod {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: var(--r-md);
+}
+.hb-open {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.hb-name {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--tx);
+}
+.hb-row.is-done .hb-name {
+  color: rgba(var(--t), 0.62);
+  text-decoration: line-through;
+}
+.hb-meta {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+.hb-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.hb-meta-sep {
+  opacity: 0.45;
+}
+.hb-streak.is-on {
+  color: var(--am);
+}
+.hb-rate {
+  padding: 4px 7px;
+  border-radius: 6px;
+  background: rgba(var(--w), 0.05);
+  font-variant-numeric: tabular-nums;
+}
+
+.hb-box {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(var(--w), 0.18);
+  background: transparent;
+  color: var(--on-ac);
+  font-size: 16px;
+  cursor: pointer;
+}
+.hb-box.is-on {
+  background: var(--ac);
+  border-color: var(--ac);
+  animation: ww-pop 0.42s cubic-bezier(0.16, 0.84, 0.24, 1);
+}
+.hb-steppers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.hb-minus {
+  width: 44px;
+  height: 48px;
+  border-radius: var(--r-lg);
+  border: var(--edge2);
+  background: var(--sf1);
+  color: var(--tx);
+  font-size: 18px;
+  cursor: pointer;
+}
+.hb-plus {
+  width: 58px;
+  height: 48px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(var(--w), 0.18);
+  background: transparent;
+  color: var(--tx);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+.hb-plus.is-on {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: var(--on-ac);
+}
+
+.hb-readout {
+  margin-top: 16px;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--tx);
+}
+.hb-readout.is-met {
+  color: var(--ok);
+}
+.hb-bar-track {
+  margin-top: 12px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--sf2);
+  overflow: hidden;
+}
+.hb-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--ac);
+  transition: width var(--m-ctx) var(--e-io);
+}
+.hb-prog {
+  margin-top: 9px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+
+/* Week as seven cells rather than dots. */
+.hb-week {
+  margin-top: 16px;
+  display: flex;
+  gap: 4px;
+}
+.hb-cell {
+  flex: 1;
+  height: 26px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  background: rgba(var(--w), 0.04);
+  border: 1px solid transparent;
+  color: rgba(var(--t), 0.3);
+}
+.hb-cell.is-done {
+  background: rgba(var(--okr), 0.22);
+  border-color: rgba(var(--okr), 0.35);
+  color: var(--ok);
+}
+.hb-cell.is-miss {
+  border-color: rgba(var(--w), 0.08);
+  color: var(--mut);
+}
+
+/* Add-habit affordance: v6 uses a 66px dashed button. */
+.hb-add {
+  width: 100%;
+  margin: 8px 22px 0;
+  width: calc(100% - 44px);
+  height: 66px;
+  border-radius: 18px;
+  border: 1px dashed rgba(var(--w), 0.18);
+  background: transparent;
+  color: var(--mut);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hb-bar-fill { transition: none; }
+  .hb-box.is-on { animation: none; }
+}
