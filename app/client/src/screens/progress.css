@@ -1,0 +1,290 @@
+/* Progress — measurements from v6's Progress screen. */
+.pr-head {
+  padding: 24px 30px 0;
+}
+.pr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  margin-bottom: 18px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--acr), 0.1);
+  box-shadow: inset 0 1px 0 rgba(var(--w), 0.08);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--ac);
+}
+.pr-chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ac);
+}
+.pr-title {
+  margin: 0 0 22px;
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--tx);
+}
+
+.pr-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 22px 4px;
+  margin-bottom: 14px;
+}
+.pr-tab {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  border: 1px solid rgba(var(--w), 0.1);
+  background: transparent;
+  color: var(--mut);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  /* v6 sets these pills in caps; the dictionaries hold sentence case. */
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.pr-tab.is-on {
+  border-color: rgba(var(--acr), 0.3);
+  background: rgba(var(--acr), 0.12);
+  color: var(--ac);
+}
+
+.pr-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 22px;
+}
+
+/* Headline card: rate, delta pill, 30-bar sparkline. */
+.pr-hero {
+  padding: 30px 26px 26px;
+  border-radius: 18px;
+  background: rgba(var(--acr), 0.07);
+  border: 1px solid rgba(var(--acr), 0.18);
+}
+.pr-hero-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.pr-hero-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  color: var(--ac);
+}
+.pr-delta {
+  padding: 6px 10px;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+}
+.pr-delta.is-up {
+  background: rgba(var(--okr), 0.16);
+  color: var(--ok);
+}
+.pr-delta.is-down {
+  background: rgba(var(--dgr), 0.16);
+  color: var(--dg);
+}
+.pr-hero-value {
+  margin-top: 22px;
+  font-weight: 800;
+  font-size: 88px;
+  line-height: 0.78;
+  letter-spacing: -0.05em;
+  color: var(--tx);
+}
+.pr-spark {
+  margin-top: 26px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 74px;
+}
+.pr-spark-bar {
+  flex: 1;
+  border-radius: 3px;
+  background: var(--ac);
+}
+.pr-spark-bar.is-rest {
+  background: rgba(var(--w), 0.12);
+}
+.pr-hero-caption {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(var(--t), 0.6);
+  text-wrap: pretty;
+}
+
+.pr-areas {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.pr-area {
+  padding: 20px 16px;
+  border-radius: 18px;
+  background: var(--sf1);
+  border: var(--edge);
+}
+.pr-area-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.pr-area-value {
+  margin-top: 16px;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+  white-space: nowrap;
+}
+.pr-area-sub {
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--mut);
+}
+
+/* Daily completion, one bar a day. */
+.pr-week,
+.pr-habits {
+  padding: 26px 22px;
+  border-radius: 18px;
+  background: rgba(var(--w), 0.035);
+  border: var(--edge);
+}
+.pr-week-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(var(--t), 0.5);
+  margin-bottom: 20px;
+}
+.pr-week-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 120px;
+}
+.pr-week-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  justify-content: flex-end;
+}
+.pr-week-bar {
+  width: 100%;
+  border-radius: 10px 8px 4px 4px;
+  background: var(--ac);
+  transition: height var(--m-slow) var(--e-io);
+}
+.pr-week-bar.is-rest {
+  background: rgba(var(--w), 0.12);
+}
+.pr-week-day {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--mut);
+}
+.pr-week-day.is-today {
+  color: var(--ac);
+}
+
+/* Per-habit consistency. */
+.pr-habits {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pr-habit {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.pr-habit-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.pr-habit-name {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--tx);
+}
+.pr-habit-rate {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+.pr-habit-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--w), 0.07);
+  overflow: hidden;
+}
+.pr-habit-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--ac);
+  transition: width var(--m-slow) var(--e-io);
+}
+.pr-habit-fill.is-weak {
+  background: var(--am);
+}
+.pr-habit-sub {
+  margin-top: 8px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-week-bar,
+  .pr-habit-fill { transition: none; }
+}

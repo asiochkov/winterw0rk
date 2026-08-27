@@ -30,6 +30,7 @@ import Body from './screens/Body';
 import Nutrition from './screens/Nutrition';
 import Street from './screens/Street';
 import Planner from './screens/Planner';
+import Progress from './screens/Progress';
 import Profile from './screens/Profile';
 import Settings from './screens/Settings';
 import More from './screens/More';
@@ -87,6 +88,7 @@ export default function App() {
               <Route path="/body" element={<P><Body /></P>} />
               <Route path="/nutrition" element={<P><Nutrition /></P>} />
               <Route path="/street" element={<P><Street /></P>} />
+              <Route path="/progress" element={<Progress />} />
               <Route path="/planner" element={<P><Planner /></P>} />
               <Route path="/steps" element={<P><Steps /></P>} />
 

@@ -19,6 +19,7 @@ import stepRoutes from './routes/steps.js';
 import accountRoutes from './routes/account.js';
 import billingRoutes from './routes/billing.js';
 import adminRoutes from './routes/admin.js';
+import progressRoutes from './routes/progress.js';
 import { rateLimit, securityHeaders } from './security.js';
 import { errorHandler, requestLogger } from './observability.js';
 import { trackActivity } from './middleware.js';
@@ -99,6 +100,7 @@ export function createApp() {
   app.use('/api/steps', stepRoutes);
   app.use('/api/account', accountRoutes);
   app.use('/api/billing', billingRoutes);
+  app.use('/api/progress', progressRoutes);
 
   app.get('/api/health', (_req, res) => res.json({ ok: true }));
 

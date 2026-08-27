@@ -56,6 +56,16 @@ export const ru: typeof en = {
   todayMoodNone: 'нет',
   todayStartFocus: 'НАЧАТЬ ФОКУС',
   todayMoodNotLogged: 'СЕГОДНЯ НЕ ЗАПИСАНО',
+  progressTitle: 'Прогресс',
+  progressRecord: 'ЗАПИСЬ',
+  progressTabOverview: 'ОБЗОР',
+  progressConsistency: 'ПОСТОЯНСТВО',
+  progressCaption: 'За последние {days} дней. Предыдущие {days} дали {prev}%.',
+  progressLastDays: 'за {days} дней',
+  progressBestRun: 'самый долгий отрезок',
+  progressDailyCompletion: 'ПО ДНЯМ',
+  progressPerHabit: 'ПО ПРИВЫЧКАМ · {days} ДНЕЙ',
+  progressStreakBest: 'серия {streak} д · лучшая {best} д',
   navMore: 'Ещё',
 
   // common

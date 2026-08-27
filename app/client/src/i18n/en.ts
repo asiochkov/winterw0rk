@@ -54,6 +54,16 @@ export const en = {
   todayMoodNone: 'no',
   todayStartFocus: 'START FOCUS',
   todayMoodNotLogged: 'NOT LOGGED TODAY',
+  progressTitle: 'Progress',
+  progressRecord: 'THE RECORD',
+  progressTabOverview: 'OVERVIEW',
+  progressConsistency: 'CONSISTENCY',
+  progressCaption: 'Across the last {days} days. The previous {days} came to {prev}%.',
+  progressLastDays: 'last {days} days',
+  progressBestRun: 'longest clean run',
+  progressDailyCompletion: 'DAILY COMPLETION',
+  progressPerHabit: 'PER HABIT · {days} DAYS',
+  progressStreakBest: '{streak}d streak · best {best}d',
   navMore: 'More',
 
   // common
