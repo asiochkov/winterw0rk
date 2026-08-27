@@ -12,11 +12,15 @@ export function Screen({
   children,
   nav = true,
   rail,
+  bleed = false,
 }: {
   title?: string;
   kicker?: string;
   children: ReactNode;
   nav?: boolean;
+  /** Drop the main padding so a screen can lay itself out edge to edge, the
+   *  way v6's Today does with its full-bleed hero. */
+  bleed?: boolean;
   /** Optional secondary content shown as a right-hand rail on desktop only. */
   rail?: ReactNode;
 }) {
@@ -25,7 +29,7 @@ export function Screen({
       {nav && <SidebarNav />}
       <div className={`app-body ${nav ? 'app-body-with-sidebar' : ''}`}>
         <div className={`app-content ${rail ? 'app-content-with-rail' : ''}`}>
-          <main className={`app-main ${nav ? 'app-main-tabbed' : ''}`}>
+          <main className={`app-main ${nav ? 'app-main-tabbed' : ''} ${bleed ? 'app-main-bleed' : ''}`}>
             {(title || kicker) && (
               <header className="page-head">
                 {kicker && <p className="page-kicker">{kicker}</p>}

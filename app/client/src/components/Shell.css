@@ -24,8 +24,16 @@
   padding: var(--s6) var(--s4) var(--s8);
   min-height: 100vh;
 }
+/* The floating bar is ~124px tall with the world row; v6 reserves 150px. */
 .app-main-tabbed {
-  padding-bottom: 96px;
+  padding-bottom: 150px;
+}
+
+/* A screen that lays itself out edge to edge and supplies its own padding. */
+.app-main-bleed {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
 }
 
 .app-rail {

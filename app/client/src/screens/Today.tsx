@@ -5,7 +5,9 @@ import type { Habit, MoodEntry, QuitCounter, WorkoutSession } from '../api/types
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
-import { Button, Section, ProgressBar, Pill } from '../components/ui';
+import { NextStepCard, StreakCard, TodayHero, weekFrom } from './TodayHero';
+import { useWorld } from '../context/WorldContext';
+import { Button, Section } from '../components/ui';
 import { ErrorState, LoadingRows } from '../components/states';
 import { useMutation } from '../hooks/useAsyncData';
 import './today.css';
@@ -21,7 +23,8 @@ function dayOfArc(startDate: string | null): number {
 
 export default function Today() {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const { isFit } = useWorld();
   const navigate = useNavigate();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [counters, setCounters] = useState<QuitCounter[]>([]);
@@ -97,51 +100,115 @@ export default function Today() {
   const bestStreak = habits.reduce((m, h) => Math.max(m, h.streak), 0);
   const daysLeft = Math.max(0, (user?.arcLengthDays ?? 90) - day);
 
-  const rail = (
-    <Section title={t('profileArc')}>
-      <div className="detail-stats" style={{ marginBottom: 16 }}>
-        <div className="detail-stat">
-          <span className="detail-stat-n">{day}</span>
-          <span className="detail-stat-l">{t('profileDay')}</span>
-        </div>
-        <div className="detail-stat">
-          <span className="detail-stat-n">{bestStreak}</span>
-          <span className="detail-stat-l">{t('profileBestStreak')}</span>
-        </div>
-      </div>
-      <p style={{ fontSize: 13, color: 'var(--mut)', margin: '0 0 16px' }}>{t('daysLeftInArc', { days: daysLeft })}</p>
-      <button className="today-link" onClick={() => navigate('/profile')}>
-        {t('profileTitle')}
-      </button>
-    </Section>
+  const arcLen = user?.arcLengthDays ?? 90;
+  const started = Boolean(user?.arcStartDate) && day >= 1;
+
+  // v6 shows the countdown before the arc opens and the day count after it.
+  const dayText = started ? String(day) : String(daysLeft);
+  const ofText = started ? t('todayOfDays', { total: arcLen }) : t('todayDaysToStart');
+  const pct = started ? Math.min(100, Math.round((day / arcLen) * 100)) : 0;
+
+  const arcEnd = user?.arcStartDate
+    ? new Date(new Date(user.arcStartDate + 'T00:00:00Z').getTime() + (arcLen - 1) * 86400000)
+    : null;
+  const MONTHS =
+    lang === 'ru'
+      ? ['ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ', 'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ']
+      : ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const seasonLine = arcEnd
+    ? t('todayArcSeason', { end: `${arcEnd.getUTCDate()} ${MONTHS[arcEnd.getUTCMonth()]}` })
+    : '';
+
+  const initials =
+    (user?.name || user?.email || '?')
+      .split(/[\s@.]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((w) => w[0]!.toUpperCase())
+      .join('') || '?';
+
+  const cleanBest = counters.reduce((best, c) => (c.runDays > best ? c.runDays : best), 0);
+  const summary = t('todaySummary', {
+    done: doneCount,
+    total: todaysHabits.length,
+    session: restDay ? t('todaySessionRest') : session ? t('todaySessionPlanned') : t('todaySessionRest'),
+    clean: lang === 'ru' ? `без ${cleanBest} дн.` : `${cleanBest} days clean`,
+  });
+
+  // The week strip reads the habit marks, exactly as the prototype does: a day
+  // counts when everything scheduled for it was closed, which is the same rule
+  // that decides whether the streak survived.
+  const perDay = new Map<string, { scheduled: number; done: number }>();
+  for (const h of habits) {
+    for (const d of h.week) {
+      if (!d.scheduled) continue;
+      const cur = perDay.get(d.date) ?? { scheduled: 0, done: 0 };
+      cur.scheduled += 1;
+      if (d.done) cur.done += 1;
+      perDay.set(d.date, cur);
+    }
+  }
+  const doneDates = new Set<string>(
+    [...perDay.entries()].filter(([, v]) => v.scheduled > 0 && v.done === v.scheduled).map(([d]) => d)
   );
+  const week = weekFrom(doneDates, lang === 'ru');
+
+  // Priority in v6: unfinished session → today's workout → open habits → mood.
+  const openHabits = todaysHabits.filter((h) => !h.doneToday);
+  const next = (() => {
+    if (session && session.status !== 'completed' && !restDay) {
+      return {
+        kicker: t('todayNext'),
+        title: session.name,
+        why: t('trainingExercisesCount', { n: session.exercises.length }),
+        cta: t('todayStart'),
+        go: () => navigate('/training'),
+      };
+    }
+    if (openHabits.length) {
+      return {
+        kicker: t('todayNextHabitsKicker'),
+        title: t('todayNextHabitsTitle', { n: openHabits.length }),
+        why: t('todayNextHabitsWhy'),
+        cta: t('todayNextOpen'),
+        go: () => navigate('/habits'),
+      };
+    }
+    if (!mood) {
+      return {
+        kicker: t('todayNextMoodKicker'),
+        title: t('todayNextMoodTitle'),
+        why: t('todayNextMoodWhy'),
+        cta: t('todayNextLog'),
+        go: () => navigate('/mood'),
+      };
+    }
+    return {
+      kicker: t('todayNextDoneKicker'),
+      title: t('todayNextDoneTitle'),
+      why: t('todayNextDoneWhy'),
+      cta: t('todayNextOpen'),
+      go: () => navigate(isFit ? '/training' : '/habits'),
+    };
+  })();
 
   return (
-    <Screen nav rail={rail}>
-      <Section>
-        <p className="today-kicker">{t('todayDayOf', { day, total: user?.arcLengthDays ?? 90 })}</p>
-        <h1 className="today-headline">{t('todayHabitsClosed', { done: doneCount, total: todaysHabits.length })}</h1>
-        <ProgressBar value={todaysHabits.length ? (doneCount / todaysHabits.length) * 100 : 0} />
-      </Section>
+    <Screen nav bleed>
+      <TodayHero
+        seasonLine={seasonLine}
+        initials={initials}
+        dayText={dayText}
+        ofText={ofText}
+        pct={pct}
+        summary={summary}
+      />
 
-      <Section title={t('todayNext')}>
-        {!restDay && session ? (
-          <button className="today-next" onClick={() => navigate('/training')}>
-            <div>
-              <p className="today-next-title">{session.name}</p>
-              <p className="today-next-sub">
-                {t('trainingExercisesCount', { n: session.exercises.length })} · {session.status === 'completed' ? t('todayDoneLabel') : t('todayStart')}
-              </p>
-            </div>
-            <Pill tone={session.status === 'completed' ? 'ok' : 'ac'}>
-              {session.status === 'completed' ? t('todayDoneLabel') : t('todayStart')}
-            </Pill>
-          </button>
-        ) : restDay ? (
-          <p className="today-rest">{t('todayRestDay')}</p>
-        ) : null}
-      </Section>
+      <div className="t-tiles">
+        <NextStepCard kicker={next.kicker} title={next.title} why={next.why} cta={next.cta} onGo={next.go} />
+        <StreakCard days={bestStreak} week={week} />
+      </div>
 
+      <div className="t-below">
       <Section title={t('todayHabits')} action={<button className="today-link" onClick={() => navigate('/habits')}>{t('all')}</button>}>
         {mutation.error && <p className="inline-error">{mutation.error}</p>}
         <div className="today-habit-list">
@@ -192,6 +259,7 @@ export default function Today() {
           </Button>
         </Section>
       )}
+      </div>
     </Screen>
   );
 }

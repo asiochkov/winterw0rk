@@ -143,3 +143,280 @@
   color: var(--mut);
   margin: 0;
 }
+
+/* ── Today, transcribed from v6 ──────────────────────────────────────────
+   Sizes are the prototype's: hero 372px with 68/26/30 padding and a 72px
+   numeral on a phone, tiles lifted 18px with 10px gaps and 22px side padding.
+   Do not tune these by eye — change the prototype first.                    */
+
+.t-hero {
+  position: relative;
+  height: 372px;
+  overflow: hidden;
+}
+.t-hero-wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--h1) 0%, var(--h2) 46%, var(--bg) 100%);
+}
+.t-hero-glow {
+  position: absolute;
+  left: -90px;
+  top: -60px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--acr), 0.16) 0%, rgba(var(--acr), 0) 70%);
+  filter: blur(10px);
+}
+.t-hero-inner {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 68px 26px 30px;
+}
+.t-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.t-hero-season {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+.t-hero-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--w), 0.16);
+  background: var(--sf2);
+  color: var(--tx);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.8);
+}
+.t-hero-phase {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--ac);
+  margin-bottom: 18px;
+}
+.t-hero-numrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+.t-hero-num {
+  font-weight: 800;
+  font-size: 72px;
+  line-height: 0.78;
+  letter-spacing: -0.05em;
+  color: var(--tx);
+}
+.t-hero-of {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+  padding-bottom: 12px;
+}
+.t-hero-track {
+  margin-top: 22px;
+  max-width: 322px;
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--w), 0.09);
+  overflow: hidden;
+}
+.t-hero-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: linear-gradient(90deg, rgba(var(--acr), 0.55) 0%, var(--ac) 100%);
+  transition: width var(--m-sig) var(--e-io);
+}
+.t-hero-summary {
+  margin: 16px 0 0;
+  max-width: 340px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(var(--t), 0.62);
+  text-wrap: pretty;
+}
+
+/* Tiles ride 18px up into the hero. */
+.t-tiles {
+  position: relative;
+  z-index: 2;
+  margin-top: -18px;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 10px;
+  padding: 0 22px;
+}
+
+.t-next {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: var(--sf-ac);
+  border: 1px solid rgba(var(--acr), 0.28);
+}
+.t-next-body {
+  flex: 1;
+  min-width: 180px;
+}
+.t-next-kicker {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--ac);
+  margin-bottom: 9px;
+}
+.t-next-title {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.3;
+  color: var(--tx);
+  text-wrap: pretty;
+}
+.t-next-why {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--mut);
+  text-wrap: pretty;
+}
+.t-next-cta {
+  flex: none;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: var(--r-md);
+  border: none;
+  background: var(--ac);
+  color: var(--on-ac);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.t-streak {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: var(--sf1);
+  box-shadow: var(--lift);
+}
+.t-streak-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+}
+.t-streak-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: var(--r-lg);
+  background: linear-gradient(168deg, rgba(var(--amr), 0.42) 0%, rgba(var(--amr), 0.14) 100%);
+  box-shadow: var(--lift);
+}
+.t-streak-nums {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.t-streak-label,
+.t-streak-unit {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+.t-streak-value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.t-streak-days {
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--tx);
+}
+
+.t-week {
+  display: flex;
+  gap: 4px;
+  flex: 1 0 100%;
+  justify-content: space-between;
+  min-width: 0;
+}
+.t-week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.t-week-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--sf3);
+  transition: background var(--m-cplx) ease;
+}
+.t-week-dot svg {
+  stroke: transparent;
+}
+.t-week-dot.is-done {
+  background: rgba(var(--okr), 0.85);
+}
+.t-week-dot.is-done svg {
+  stroke: var(--bg);
+}
+.t-week-dot.is-today {
+  border: 1px solid rgba(var(--acr), 0.5);
+}
+.t-week-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  color: var(--mut);
+}
+.t-week-label.is-today {
+  color: var(--ac);
+}
+
+/* The sections under the tiles keep the same 22px gutter. */
+.t-below {
+  padding: 0 22px;
+  margin-top: 10px;
+}
