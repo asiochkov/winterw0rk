@@ -389,20 +389,25 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--sf3);
+  background: rgba(var(--w), 0.075);
   transition: background var(--m-cplx) ease;
 }
 .t-week-dot svg {
   stroke: transparent;
 }
+.t-week-dot.is-future {
+  background: rgba(var(--w), 0.045);
+}
 .t-week-dot.is-done {
-  background: rgba(var(--okr), 0.85);
+  background: linear-gradient(168deg, rgba(var(--okr), 0.92) 0%, rgba(var(--okr), 0.6) 100%);
+  box-shadow: 0 8px 22px -8px rgba(var(--okr), 0.4);
 }
 .t-week-dot.is-done svg {
   stroke: var(--bg);
 }
 .t-week-dot.is-today {
-  border: 1px solid rgba(var(--acr), 0.5);
+  border: 1.5px solid var(--ac);
+  box-shadow: 0 0 20px -4px rgba(var(--acr), 0.4);
 }
 .t-week-label {
   font-weight: 500;

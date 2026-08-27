@@ -23,20 +23,26 @@ export interface WeekDay {
   label: string;
   done: boolean;
   isToday: boolean;
+  future: boolean;
 }
+
+/** v6 counts a day as held when at least 60% of what was due got marked. */
+export const DAY_HELD_RATIO = 0.6;
 
 /**
  * The week strip is derived from the habit marks themselves, as in v6 — it is
- * not a separate record.
+ * not a separate record. `ratios` maps an ISO date to marked/due for that day.
  */
-export function weekFrom(doneDates: Set<string>, ru: boolean, now = new Date()): WeekDay[] {
+export function weekFrom(ratios: Map<string, number>, ru: boolean, now = new Date()): WeekDay[] {
   const labels = ru
     ? ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
     : ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
   const todayIdx = (now.getDay() + 6) % 7;
   return labels.map((label, i) => {
     const d = new Date(now.getTime() - (todayIdx - i) * 86400000);
-    return { label, done: doneDates.has(d.toISOString().slice(0, 10)), isToday: i === todayIdx };
+    const future = i > todayIdx;
+    const hit = ratios.get(d.toISOString().slice(0, 10)) ?? 0;
+    return { label, done: !future && hit >= DAY_HELD_RATIO, isToday: i === todayIdx, future };
   });
 }
 
@@ -143,7 +149,11 @@ export function StreakCard({ days, week }: { days: number; week: WeekDay[] }) {
       <div className="t-week">
         {week.map((d) => (
           <span key={d.label} className="t-week-day">
-            <span className={`t-week-dot ${d.done ? 'is-done' : ''} ${d.isToday ? 'is-today' : ''}`}>
+            <span
+              className={`t-week-dot ${d.done ? 'is-done' : ''} ${d.future ? 'is-future' : ''} ${
+                d.isToday && !d.done ? 'is-today' : ''
+              }`}
+            >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="m5 13 4 4L19 7" />
               </svg>

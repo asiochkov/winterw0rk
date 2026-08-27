@@ -136,8 +136,7 @@ export default function Today() {
   });
 
   // The week strip reads the habit marks, exactly as the prototype does: a day
-  // counts when everything scheduled for it was closed, which is the same rule
-  // that decides whether the streak survived.
+  // is held when most of what was due got marked, not all of it.
   const perDay = new Map<string, { scheduled: number; done: number }>();
   for (const h of habits) {
     for (const d of h.week) {
@@ -148,10 +147,10 @@ export default function Today() {
       perDay.set(d.date, cur);
     }
   }
-  const doneDates = new Set<string>(
-    [...perDay.entries()].filter(([, v]) => v.scheduled > 0 && v.done === v.scheduled).map(([d]) => d)
+  const ratios = new Map<string, number>(
+    [...perDay.entries()].map(([d, v]) => [d, v.scheduled ? v.done / v.scheduled : 0])
   );
-  const week = weekFrom(doneDates, lang === 'ru');
+  const week = weekFrom(ratios, lang === 'ru');
 
   // Priority in v6: unfinished session → today's workout → open habits → mood.
   const openHabits = todaysHabits.filter((h) => !h.doneToday);
