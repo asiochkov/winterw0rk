@@ -328,14 +328,17 @@ export const ru: typeof en = {
   trainingReps: 'Повторы',
 
   // session summary
-  summaryTitle: 'Тренировка завершена',
-  summaryDuration: 'Длительность',
+  summaryLogged: 'Тренировка записана',
+  summaryDuration: 'Время',
   summarySets: 'Подходы',
-  summaryTonnage: 'Тоннаж (кг)',
-  summaryWhatChanged: 'Что изменилось',
-  summaryNoPrior: 'Пока не с чем сравнивать.',
-  summaryPR: 'рекорд',
-  summaryBackToToday: 'Назад к «Сегодня»',
+  summaryTonnage: 'Тоннаж',
+  summaryRecords: 'Новые рекорды',
+  summaryFeeling: 'Как ощущения',
+  summaryNotePlaceholder: 'Заметка к тренировке',
+  summarySave: 'Сохранить и закрыть',
+  summaryTonnageValue: '{n}кг',
+  summaryPrValue: '{weight}кг × {reps}',
+  summaryReps: '{n} повт',
 
   // exercise library
   libraryTitle: 'Библиотека упражнений',

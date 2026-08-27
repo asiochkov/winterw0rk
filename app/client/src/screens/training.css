@@ -143,26 +143,185 @@
   margin-top: var(--s6);
 }
 
-.sum-hero {
-  text-align: center;
-  padding: var(--s8) 0;
+/* ── Session summary, transcribed from v6's "Session summary" screen ────
+   Every value below is copied from the inline styles of that screen in
+   project/Winterwork v6.dc.html (the <sc-if value="{{ isSSummary }}"> block).
+   The screen padding there is 80px 22px 60px; the head sits in a further
+   8px inset, and every block after the stat grid is 8px below the last. */
+.sum {
+  padding: 80px 22px 60px;
 }
-.sum-hero-n {
-  font-size: 44px;
+.sum-head {
+  position: relative;
+  padding: 0 8px;
+}
+.sum-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  margin-bottom: 18px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--acr), 0.1);
+  box-shadow: inset 0 1px 0 rgba(var(--w), 0.08);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  /* v6 sets this label in caps; the dictionaries hold sentence case. */
+  text-transform: uppercase;
+  color: var(--ac);
+}
+.sum-chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ac);
+}
+.sum-title {
+  margin: 0 0 24px;
   font-weight: 800;
+  font-size: 40px;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--tx);
 }
-.sum-metrics {
-  display: flex;
-  justify-content: center;
-  gap: var(--s8);
-  margin-top: var(--s4);
+
+.sum-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
 }
-.pr-row {
+.sum-stat {
+  padding: 20px 16px;
+  border-radius: 18px;
+  background: rgba(var(--w), 0.035);
+  border: var(--edge);
+}
+.sum-stat-l {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.sum-stat-v {
+  margin-top: 16px;
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 0.85;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The records card only appears when something was beaten — v6 wraps it in
+   <sc-if value="{{ sumHasPr }}">, so there is no empty-state variant. */
+.sum-prs {
+  margin-top: 8px;
+  padding: 24px 22px;
+  border-radius: 18px;
+  background: rgba(var(--acr), 0.1);
+  border: 1px solid rgba(var(--acr), 0.26);
+}
+.sum-card-l {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.sum-prs .sum-card-l {
+  color: var(--ac);
+}
+.sum-pr-list {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sum-pr {
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: var(--edge);
+  gap: 14px;
+}
+.sum-pr-ex {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--tx);
+}
+.sum-pr-val {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ac);
+  white-space: nowrap;
+}
+
+.sum-feel {
+  margin-top: 8px;
+  padding: 24px 22px;
+  border-radius: 18px;
+  background: rgba(var(--w), 0.035);
+  border: var(--edge);
+}
+.sum-feel .sum-card-l {
+  color: rgba(var(--t), 0.5);
+}
+.sum-feel-row {
+  display: flex;
+  gap: 6px;
+}
+/* v6's chip(): off is a faint tile, on is the text colour inverted. */
+.sum-feel-btn {
+  flex: 1;
+  height: 52px;
+  border-radius: 16px;
+  border: 1px solid rgba(var(--w), 0.09);
+  background: rgba(var(--w), 0.03);
+  color: rgba(var(--t), 0.55);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+.sum-feel-btn.is-on {
+  border-color: var(--tx);
+  background: var(--tx);
+  color: var(--bg);
+}
+.sum-note {
+  width: 100%;
+  height: 56px;
+  margin-top: 10px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: var(--edge2);
+  background: var(--sf1);
+  color: var(--tx);
   font-size: 14px;
+}
+
+.sum-save {
+  width: 100%;
+  height: 62px;
+  margin-top: 8px;
+  border-radius: 18px;
+  border: none;
+  background: var(--tx);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.sum-save:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
 /* ── Training, transcribed from v6 ────────────────────────────────────── */

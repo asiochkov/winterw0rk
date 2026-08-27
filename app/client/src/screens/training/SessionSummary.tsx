@@ -1,72 +1,175 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api/client';
 import type { WorkoutSession } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
-import { Button, Section } from '../../components/ui';
+import { ErrorState, LoadingRows } from '../../components/states';
 import '../training.css';
+
+interface SummaryPr {
+  exercise: string;
+  weight: number;
+  reps: number;
+}
+
+interface Summary {
+  tonnage: number;
+  setCount: number;
+  durationSec: number;
+  prs: SummaryPr[];
+}
+
+/** v6's fmt(): mm:ss, both halves zero-padded. */
+function clock(sec: number) {
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+/** The five faces v6 offers under "how did it feel". */
+const FEELINGS = [1, 2, 3, 4, 5];
 
 export default function SessionSummary() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [session, setSession] = useState<WorkoutSession | null>(null);
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [feeling, setFeeling] = useState<number | null>(null);
+  const [note, setNote] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setError(null);
+    try {
+      const r = await api.get<{ session: WorkoutSession; summary: Summary }>(
+        `/training/sessions/${id}/summary`
+      );
+      setSession(r.session);
+      setSummary(r.summary);
+      setFeeling(r.session.feeling);
+      setNote(r.session.notes || '');
+    } catch (err: any) {
+      setError(err.message || t('genericError'));
+    }
+  }, [id, t]);
 
   useEffect(() => {
-    api.get<{ session: WorkoutSession }>(`/training/sessions/${id}`).then((r) => setSession(r.session));
-  }, [id]);
+    load();
+  }, [load]);
 
-  if (!session) return <Screen nav>{null}</Screen>;
+  async function save() {
+    setSaving(true);
+    setError(null);
+    try {
+      await api.patch(`/training/sessions/${id}/reflection`, { feeling, notes: note });
+      navigate('/today');
+    } catch (err: any) {
+      setError(err.message || t('genericError'));
+      setSaving(false);
+    }
+  }
 
-  const workingSets = session.exercises.flatMap((e) => e.sets.filter((s) => !s.isWarmup));
-  const tonnage = workingSets.reduce((sum, s) => sum + (s.weight || 0) * (s.reps || 0), 0);
-  const durationMin = session.durationSec ? Math.round(session.durationSec / 60) : 0;
+  if (error && !session) {
+    return (
+      <Screen nav={false} bleed>
+        <div className="sum">
+          <ErrorState message={error} onRetry={load} retryLabel={t('tryAgain')} />
+        </div>
+      </Screen>
+    );
+  }
+
+  if (!session || !summary) {
+    return (
+      <Screen nav={false} bleed>
+        <div className="sum">
+          <LoadingRows rows={4} />
+        </div>
+      </Screen>
+    );
+  }
 
   return (
-    <Screen title={t('summaryTitle')} nav>
-      <div className="sum-hero">
-        <p className="sum-hero-n">{session.name}</p>
-        <div className="sum-metrics">
-          <div className="detail-stat">
-            <span className="detail-stat-n">{durationMin}m</span>
-            <span className="detail-stat-l">{t('summaryDuration')}</span>
+    <Screen nav={false} bleed>
+      <div className="sum">
+        <div className="sum-head">
+          <div className="sum-chip">
+            <span className="sum-chip-dot" aria-hidden="true" />
+            {t('summaryLogged')}
           </div>
-          <div className="detail-stat">
-            <span className="detail-stat-n">{workingSets.length}</span>
-            <span className="detail-stat-l">{t('summarySets')}</span>
+          <h1 className="sum-title">{session.name}</h1>
+        </div>
+
+        <div className="sum-stats">
+          <div className="sum-stat">
+            <div className="sum-stat-l">{t('summaryDuration')}</div>
+            <div className="sum-stat-v">{clock(summary.durationSec)}</div>
           </div>
-          <div className="detail-stat">
-            <span className="detail-stat-n">{Math.round(tonnage)}</span>
-            <span className="detail-stat-l">{t('summaryTonnage')}</span>
+          <div className="sum-stat">
+            <div className="sum-stat-l">{t('summarySets')}</div>
+            <div className="sum-stat-v">{summary.setCount}</div>
+          </div>
+          <div className="sum-stat">
+            <div className="sum-stat-l">{t('summaryTonnage')}</div>
+            {/* v6 writes the unit into the tile. It hardcodes "kg" here while its
+                own weight formatter says "кг" in Russian; the dictionary settles it. */}
+            <div className="sum-stat-v">{t('summaryTonnageValue', { n: Math.round(summary.tonnage) })}</div>
           </div>
         </div>
-      </div>
 
-      <Section title={t('summaryWhatChanged')}>
-        {session.exercises.some((e) => e.previous) ? (
-          session.exercises
-            .filter((e) => e.sets.some((s) => !s.isWarmup))
-            .map((e) => {
-              const best = e.sets.filter((s) => !s.isWarmup).sort((a, b) => (b.weight || 0) - (a.weight || 0))[0];
-              const isPR = best && e.previous && best.weight! > e.previous.weight;
-              return (
-                <div key={e.sessionExerciseId} className="pr-row">
-                  <span>{e.name}</span>
-                  <span style={{ color: isPR ? 'var(--am)' : 'var(--mut)', fontWeight: isPR ? 700 : 400 }}>
-                    {best ? `${best.weight}kg × ${best.reps}` : '—'} {isPR ? `· ${t('summaryPR')}` : ''}
+        {/* v6 only draws this card when something was actually beaten. */}
+        {summary.prs.length > 0 && (
+          <div className="sum-prs">
+            <div className="sum-card-l">{t('summaryRecords')}</div>
+            <div className="sum-pr-list">
+              {summary.prs.map((pr) => (
+                <div className="sum-pr" key={pr.exercise}>
+                  <span className="sum-pr-ex">{pr.exercise}</span>
+                  <span className="sum-pr-val">
+                    {pr.weight > 0
+                      ? t('summaryPrValue', { weight: pr.weight, reps: pr.reps })
+                      : t('summaryReps', { n: pr.reps })}
                   </span>
                 </div>
-              );
-            })
-        ) : (
-          <p className="today-empty">{t('summaryNoPrior')}</p>
+              ))}
+            </div>
+          </div>
         )}
-      </Section>
 
-      <Button full onClick={() => navigate('/today')}>
-        {t('summaryBackToToday')}
-      </Button>
+        <div className="sum-feel">
+          <div className="sum-card-l">{t('summaryFeeling')}</div>
+          <div className="sum-feel-row">
+            {FEELINGS.map((n) => (
+              <button
+                key={n}
+                type="button"
+                className={`sum-feel-btn ${feeling === n ? 'is-on' : ''}`}
+                aria-pressed={feeling === n}
+                onClick={() => setFeeling((cur) => (cur === n ? null : n))}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+          <input
+            type="text"
+            className="sum-note"
+            value={note}
+            maxLength={500}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder={t('summaryNotePlaceholder')}
+          />
+        </div>
+
+        {error && <p className="inline-error">{error}</p>}
+
+        <button type="button" className="sum-save" onClick={save} disabled={saving}>
+          {t('summarySave')}
+        </button>
+      </div>
     </Screen>
   );
 }

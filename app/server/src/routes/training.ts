@@ -68,6 +68,47 @@ function serializeSession(sessionRow: any) {
   };
 }
 
+/**
+ * The figures v6's Session summary shows: duration, working-set count,
+ * tonnage and the exercises that beat their previous best. Computed on
+ * demand so the summary screen can be reopened on a session that was
+ * already finished, not only in the response to /finish.
+ */
+function summaryOf(userId: number, session: any) {
+  const exRows = db.prepare('SELECT * FROM session_exercises WHERE session_id = ? ORDER BY order_idx ASC').all(session.id) as any[];
+  let tonnage = 0;
+  let setCount = 0;
+  const prs: { exercise: string; weight: number; reps: number }[] = [];
+
+  for (const sx of exRows) {
+    const sets = db.prepare('SELECT * FROM set_entries WHERE session_exercise_id = ?').all(sx.id) as any[];
+    const priorBest = previousBest(userId, sx.exercise_id, session.id);
+    let sessionBestWeight = 0;
+    let sessionBestReps = 0;
+    for (const s of sets) {
+      if (s.is_warmup) continue;
+      setCount++;
+      tonnage += (s.weight || 0) * (s.reps || 0);
+      if ((s.weight || 0) > sessionBestWeight) {
+        sessionBestWeight = s.weight || 0;
+        sessionBestReps = s.reps || 0;
+      }
+    }
+    if (sessionBestWeight > 0 && (!priorBest || sessionBestWeight > priorBest.weight)) {
+      const ex = exerciseRow(sx.exercise_id);
+      prs.push({ exercise: ex.name, weight: sessionBestWeight, reps: sessionBestReps });
+    }
+  }
+
+  return { tonnage, setCount, prs };
+}
+
+/** v6 offers five faces on the summary screen and a single free-text note. */
+const reflectionSchema = z.object({
+  feeling: z.number().int().min(1).max(5).nullable().optional(),
+  notes: z.string().max(500).nullable().optional(),
+});
+
 router.get('/today', (req, res) => {
   const userId = userIdOf(req);
   const today = todayStr();
@@ -216,35 +257,47 @@ router.patch('/session-exercises/:id/swap', (req, res) => {
   res.json({ session: serializeSession(session) });
 });
 
+/**
+ * v6's Session summary is a screen of its own, reachable after the session is
+ * already closed, so its figures come from here rather than from the response
+ * to /finish.
+ */
+router.get('/sessions/:id/summary', (req, res) => {
+  const userId = userIdOf(req);
+  const session = getOwnedSession(userId, Number(req.params.id));
+  if (!session) return res.status(404).json({ error: 'not_found' });
+
+  const { tonnage, setCount, prs } = summaryOf(userId, session);
+  const durationSec = session.duration_sec ?? 0;
+  res.json({ session: serializeSession(session), summary: { tonnage, setCount, durationSec, prs } });
+});
+
+/**
+ * "How did it feel" and the session note are answered on the summary screen,
+ * after /finish has already run, so they are saved separately.
+ */
+router.patch('/sessions/:id/reflection', (req, res) => {
+  const userId = userIdOf(req);
+  const session = getOwnedSession(userId, Number(req.params.id));
+  if (!session) return res.status(404).json({ error: 'not_found' });
+
+  const parsed = reflectionSchema.safeParse(req.body ?? {});
+  if (!parsed.success) return res.status(400).json({ error: 'invalid_body' });
+
+  const feeling = parsed.data.feeling ?? null;
+  const notes = parsed.data.notes?.trim() ? parsed.data.notes.trim() : null;
+  db.prepare('UPDATE workout_sessions SET feeling = ?, notes = ? WHERE id = ?').run(feeling, notes, session.id);
+
+  const updated = db.prepare('SELECT * FROM workout_sessions WHERE id = ?').get(session.id);
+  res.json({ session: serializeSession(updated) });
+});
+
 router.post('/sessions/:id/finish', (req, res) => {
   const userId = userIdOf(req);
   const session = getOwnedSession(userId, Number(req.params.id));
   if (!session) return res.status(404).json({ error: 'not_found' });
 
-  const exRows = db.prepare('SELECT * FROM session_exercises WHERE session_id = ?').all(session.id) as any[];
-  let tonnage = 0;
-  let setCount = 0;
-  const prs: { exercise: string; weight: number; reps: number }[] = [];
-
-  for (const sx of exRows) {
-    const sets = db.prepare('SELECT * FROM set_entries WHERE session_exercise_id = ?').all(sx.id) as any[];
-    const priorBest = previousBest(userId, sx.exercise_id, session.id);
-    let sessionBestWeight = 0;
-    let sessionBestReps = 0;
-    for (const s of sets) {
-      if (s.is_warmup) continue;
-      setCount++;
-      tonnage += (s.weight || 0) * (s.reps || 0);
-      if ((s.weight || 0) > sessionBestWeight) {
-        sessionBestWeight = s.weight || 0;
-        sessionBestReps = s.reps || 0;
-      }
-    }
-    if (sessionBestWeight > 0 && (!priorBest || sessionBestWeight > priorBest.weight)) {
-      const ex = exerciseRow(sx.exercise_id);
-      prs.push({ exercise: ex.name, weight: sessionBestWeight, reps: sessionBestReps });
-    }
-  }
+  const { tonnage, setCount, prs } = summaryOf(userId, session);
 
   const feeling = req.body?.feeling ?? null;
   const notes = req.body?.notes ?? null;

@@ -21,8 +21,16 @@ const OUT = path.join(ROOT, 'dist');
 const STATIC_DIR = path.join(OUT, 'prototype');
 const VENDOR_DIR = path.join(STATIC_DIR, 'vendor');
 
-/** The prototype export to publish. Bump this when a newer version lands. */
-const EXPORT = 'Winterwork v7.dc.html';
+/**
+ * The prototype export to build.
+ *
+ * v6 is the reference the app is being transferred from — see CONTINUE.md for
+ * the token-by-token comparison that settled it. v7 is a later iteration that
+ * left that design system, so building it here would make every comparison
+ * screenshot the wrong screen. Override with PROTOTYPE=... to look at another
+ * version deliberately.
+ */
+const EXPORT = process.env.PROTOTYPE || 'Winterwork v6.dc.html';
 
 /** Each unpkg URL the export loads, and the npm package + path that replaces it. */
 const VENDORED = [

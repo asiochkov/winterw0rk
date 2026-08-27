@@ -326,14 +326,17 @@ export const en = {
   trainingReps: 'Reps',
 
   // session summary
-  summaryTitle: 'Session complete',
+  summaryLogged: 'Session logged',
   summaryDuration: 'Duration',
   summarySets: 'Sets',
-  summaryTonnage: 'Tonnage (kg)',
-  summaryWhatChanged: 'What changed',
-  summaryNoPrior: 'No prior sessions to compare yet.',
-  summaryPR: 'PR',
-  summaryBackToToday: 'Back to Today',
+  summaryTonnage: 'Tonnage',
+  summaryRecords: 'New records',
+  summaryFeeling: 'How did it feel',
+  summaryNotePlaceholder: 'Note on the session',
+  summarySave: 'Save and close',
+  summaryTonnageValue: '{n}kg',
+  summaryPrValue: '{weight}kg × {reps}',
+  summaryReps: '{n} reps',
 
   // exercise library
   libraryTitle: 'Exercise library',

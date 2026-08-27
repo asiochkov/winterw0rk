@@ -481,6 +481,70 @@ describe('training', () => {
     expect(finished.body.summary.setCount).toBe(1);
     expect(finished.body.summary.tonnage).toBe(250);
   });
+
+  it('serves the same figures to the summary screen after the session is closed', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const session = today.body.session;
+    await agent.post(`/api/training/sessions/${session.id}/start`);
+    const first = session.exercises[0];
+    await agent
+      .post(`/api/training/sessions/${session.id}/sets`)
+      .send({ sessionExerciseId: first.sessionExerciseId, weight: 60, reps: 8, isWarmup: false });
+    const finished = await agent.post(`/api/training/sessions/${session.id}/finish`).send({});
+
+    const summary = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(summary.status).toBe(200);
+    expect(summary.body.summary.tonnage).toBe(finished.body.summary.tonnage);
+    expect(summary.body.summary.setCount).toBe(finished.body.summary.setCount);
+    expect(summary.body.summary.prs).toHaveLength(finished.body.summary.prs.length);
+    expect(summary.body.summary.durationSec).toBe(finished.body.session.durationSec);
+  });
+
+  it('saves the feeling and the note answered on the summary screen', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const session = today.body.session;
+    await agent.post(`/api/training/sessions/${session.id}/start`);
+    await agent.post(`/api/training/sessions/${session.id}/finish`).send({});
+
+    const saved = await agent
+      .patch(`/api/training/sessions/${session.id}/reflection`)
+      .send({ feeling: 4, notes: '  felt strong  ' });
+    expect(saved.status).toBe(200);
+    expect(saved.body.session.feeling).toBe(4);
+    expect(saved.body.session.notes).toBe('felt strong');
+
+    const reopened = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(reopened.body.session.feeling).toBe(4);
+    expect(reopened.body.session.notes).toBe('felt strong');
+  });
+
+  it('rejects a feeling outside the five v6 offers', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const session = today.body.session;
+    const res = await agent
+      .patch(`/api/training/sessions/${session.id}/reflection`)
+      .send({ feeling: 9 });
+    expect(res.status).toBe(400);
+  });
+
+  it('will not serve another user\'s session summary', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const other = await newUser();
+    const res = await other.agent.get(`/api/training/sessions/${today.body.session.id}/summary`);
+    expect(res.status).toBe(404);
+  });
 });
 
 describe('street / cardio', () => {

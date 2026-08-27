@@ -49,6 +49,16 @@ node tools/build-prototype-bundle.mjs   # vendors the libraries from npm
 cd dist/prototype && python3 -m http.server 8097
 ```
 
+The bundler builds **v6** — it used to build v7, which quietly meant every
+comparison screenshot was of the wrong prototype. `PROTOTYPE='Winterwork
+v7.dc.html' node tools/build-prototype-bundle.mjs` still builds the other one.
+
+The quickest way to a given screen is not clicking: v6 restores its whole
+state from `localStorage['winterwork.v6']`, so `app/e2e/prototype-screen.mjs`
+seeds the screen and its figures and screenshots it. The seed has to go in
+through `addInitScript` — set it after the first load and the prototype's own
+debounced save writes `screen: 'today'` back over it.
+
 Then drive it with Playwright (`/opt/pw-browsers/chromium`, `--no-sandbox`).
 Its bottom navigation is the widest row of same-height `<button>` elements —
 **not** the lowest row on the page, because the design canvas puts its own
@@ -102,14 +112,14 @@ at 23/9/2 days clean, a session planned for today, arc day 17 of 90.
 | `87e6863` | Quit counter rebuilt, milestone table carried over with its source |
 | `00edaaf` | Training screen rebuilt |
 | `29d66c1` | Active session rebuilt |
+| _this one_ | Session summary rebuilt; prototype bundler pointed back at v6 |
 
 Everything is on `main` at `github.com/asiochkov/winterw0rk`. Render redeploys
 on push; the live URL is `winterwork.onrender.com`.
 
 ## Still to do
 
-Screens: **Session summary** (next — the training flow is otherwise done),
-Exercise / Library / Plans / Program detail, Focus and Focus history, Mood,
+Screens: **Exercise / Library / Plans / Program detail** (next), Focus and Focus history, Mood,
 Street, Nutrition, Planner, Welcome / Sign in / Create account / Forgot
 password, Onboarding and Fitness setup, Profile and Settings.
 
@@ -141,6 +151,9 @@ build.
   the dictionaries hold sentence case.
 - **Never invent design values.** Extract them from the prototype with a script
   and copy them. Every stylesheet added so far says where its numbers came from.
+- **`tools/build-prototype-bundle.mjs` used to build v7 while CONTINUE.md said
+  v6.** It builds v6 now. If a screen you are transcribing renders with cards
+  the markup does not have, check which prototype is actually being served.
 - **Assets are extracted, not redrawn.** `app/client/src/assets/icons.v6.json`
   holds the prototype's 50 icon paths; `milestones.v6.json` holds its recovery
   table with the CDC attribution and the not-medical disclaimer intact.
