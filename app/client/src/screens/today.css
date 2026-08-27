@@ -207,6 +207,9 @@
   font-size: 12px;
   line-height: 1;
   letter-spacing: 0.06em;
+  /* The phase words were already caps in the dictionary; the world name was
+     too until the nav needed it in sentence case. Caps belong here. */
+  text-transform: uppercase;
   color: var(--ac);
   margin-bottom: 18px;
 }

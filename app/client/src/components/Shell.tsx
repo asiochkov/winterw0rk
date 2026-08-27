@@ -118,7 +118,8 @@ function BottomNav() {
             aria-label={t('navMore')}
             onClick={() => navigate('/more')}
           >
-            <V6Icon name="more" size={19} stroke="var(--mut)" strokeWidth={1.35} />
+            {/* v7 draws the more glyph at 2, heavier than every other nav icon. */}
+            <V6Icon name="more" size={19} stroke="var(--mut)" strokeWidth={2} />
           </button>
 
           {showFab && (
@@ -166,22 +167,88 @@ function BottomNav() {
   );
 }
 
+/**
+ * v7's rail, which replaces the bottom bar from 760px up. It has two shapes:
+ * a 196px icon-only column on tablet, centred and wordless, and a 232px column
+ * with labels on desktop. Transcribed from v7's isRailNav block.
+ */
 function SidebarNav() {
   const { t } = useLanguage();
+  const { world, setWorld } = useWorld();
   const tabs = useTabs();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const showFab = FAB_ROUTES.includes(pathname);
+
   return (
     <nav className="side-nav">
-      <div className="side-nav-mark">WW</div>
-      {tabs.map((tab) => (
-        <NavLink
-          key={tab.key}
-          to={tab.to}
-          className={({ isActive }) => `side-nav-item ${isActive ? 'side-nav-item-active' : ''}`}
+      {/* v7 sets the rail's logo as type, shortened to WW on tablet. */}
+      <div className="side-nav-logo">
+        <span className="side-nav-wide">WINTERWORK</span>
+        <span className="side-nav-narrow">WW</span>
+      </div>
+
+      <div className="side-nav-worlds">
+        {(['disc', 'fit'] as World[]).map((w) => {
+          const on = world === w;
+          const label = t(w === 'fit' ? 'worldFitness' : 'worldDiscipline');
+          return (
+            <button
+              key={w}
+              type="button"
+              className={`side-nav-world ${on ? 'is-on' : ''}`}
+              onClick={() => setWorld(w)}
+            >
+              {/* Tablet shows three letters, as v7 does with slice(0, 3). */}
+              <span className="side-nav-wide">{label}</span>
+              <span className="side-nav-narrow">{label.slice(0, 3)}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="side-nav-sections side-nav-wide">{t('navSections')}</div>
+
+      <div className="side-nav-items">
+        {tabs.map((tab) => {
+          const on = pathname === tab.to || pathname.startsWith(tab.to + '/');
+          return (
+            <NavLink
+              key={tab.key}
+              to={tab.to}
+              title={t(tab.label as never)}
+              className={`side-nav-item ${on ? 'is-on' : ''}`}
+            >
+              <V6Icon
+                name={tab.icon}
+                size={20}
+                strokeWidth={1.35}
+                stroke={on ? 'var(--ac2)' : 'var(--mut)'}
+              />
+              <span className="side-nav-label side-nav-wide">{t(tab.label as never)}</span>
+            </NavLink>
+          );
+        })}
+      </div>
+
+      <div className="side-nav-spacer" />
+
+      {showFab && (
+        <button
+          type="button"
+          className="side-nav-fab"
+          onClick={() => navigate(pathname === '/training' ? '/training/library' : '/habits/new')}
         >
-          <V6Icon name={tab.icon} size={22} />
-          <span>{t(tab.label as never)}</span>
-        </NavLink>
-      ))}
+          <V6Icon name="plus" size={20} stroke="var(--ac)" strokeWidth={1.35} />
+          <span className="side-nav-label side-nav-wide">{t('navQuickAction')}</span>
+        </button>
+      )}
+
+      <button type="button" className="side-nav-more" onClick={() => navigate('/more')}>
+        <V6Icon name="more" size={20} stroke="var(--mut)" strokeWidth={2} />
+        <span className="side-nav-label side-nav-more-label side-nav-wide">{t('navMore')}</span>
+        <span className="side-nav-key side-nav-wide">⌘K</span>
+      </button>
     </nav>
   );
 }

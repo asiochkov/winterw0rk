@@ -120,7 +120,10 @@
   font-weight: 600;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  /* v7 widened this from v6's .06em. */
+  letter-spacing: 0.08em;
+  /* The caps live here, not in the dictionaries. */
+  text-transform: uppercase;
   cursor: pointer;
   transition: background var(--m-sig) var(--e-io), color var(--m-cplx) ease;
 }
@@ -150,8 +153,10 @@
   width: 40px;
   height: 40px;
   border-radius: var(--r-pill);
-  border: none;
-  background: var(--sunk);
+  /* v6 left this borderless on --sunk, which is --bg and so invisible; v7
+     gives it an edge and lifts it onto --sf3. */
+  border: var(--edge2);
+  background: var(--sf3);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -206,13 +211,162 @@
   }
 }
 
-/* Desktop sidebar nav — hidden until the desktop breakpoint */
+/* ── The rail, transcribed from v7's <sc-if value="{{ isRailNav }}"> ──────
+   v7 switches on width: mobile below 760, tablet to 1179, desktop above. The
+   bottom bar is the mobile shape and the rail is the other two, so the rail
+   starts at 760 — not at 1024, which was this app's own invention. */
 .side-nav {
   display: none;
 }
 
-/* Tablet: content gets breathing room, bottom nav stays (thumb reach still wins) */
-@media (min-width: 700px) {
+@media (min-width: 760px) {
+  .ww-nav-wrap {
+    display: none;
+  }
+  .side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: none;
+    /* tablet */
+    width: 196px;
+    padding: 34px 12px 24px;
+    background: var(--sheet);
+    border-right: var(--edge);
+    /* v7 pins the rail to the frame with top:0;bottom:0, so it is the
+       viewport's height, not the content's. Without align-self the flex
+       parent stretches it to the scroll height and the footer buttons end up
+       below the fold. */
+    align-self: flex-start;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    text-align: center;
+  }
+
+  .side-nav-logo {
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: var(--tx);
+    padding: 0 6px;
+  }
+  /* Tablet is wordless: v7 swaps the logo to WW and drops every label. */
+  .side-nav-wide {
+    display: none;
+  }
+  .side-nav-narrow {
+    display: inline;
+  }
+
+  .side-nav-worlds {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--r-lg);
+    background: var(--sf1);
+    border: var(--edge);
+  }
+  .side-nav-world {
+    text-transform: uppercase;
+    height: 42px;
+    border-radius: var(--r-md);
+    border: none;
+    background: transparent;
+    color: rgba(var(--t), 0.5);
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background var(--m-sig) var(--e-io);
+  }
+  .side-nav-world.is-on {
+    background: var(--tx);
+    color: var(--bg);
+  }
+
+  .side-nav-sections {
+    display: none;
+    padding: 6px 6px 0;
+    /* v7 sets this in caps; the dictionaries hold sentence case. */
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: rgba(var(--t), 0.35);
+  }
+
+  .side-nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .side-nav-item,
+  .side-nav-fab,
+  .side-nav-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    height: 52px;
+    padding: 0;
+    border-radius: var(--r-lg);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--m-std) var(--e-io);
+  }
+  .side-nav-item.is-on {
+    background: rgba(var(--acr), 0.14);
+  }
+  .side-nav-label {
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mut);
+  }
+  .side-nav-item.is-on .side-nav-label {
+    color: var(--ac2);
+  }
+
+  .side-nav-spacer {
+    flex: 1;
+  }
+
+  .side-nav-fab {
+    border: 1px solid rgba(var(--acr), 0.28);
+    background: rgba(var(--acr), 0.12);
+  }
+  .side-nav-fab .side-nav-label {
+    font-weight: 600;
+    color: var(--ac);
+  }
+  .side-nav-more {
+    border: var(--edge2);
+    background: var(--sf1);
+  }
+  .side-nav-more-label {
+    flex: 1;
+  }
+  .side-nav-key {
+    display: none;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: var(--mut);
+    padding: 4px 6px;
+    border: var(--edge2);
+    border-radius: 6px;
+  }
+
   .app-content {
     max-width: 640px;
   }
@@ -221,59 +375,29 @@
   }
 }
 
-/* Desktop: sidebar rail replaces bottom nav, secondary rail can appear */
-@media (min-width: 1024px) {
+/* Desktop: v7 widens the rail and turns the words back on. */
+@media (min-width: 1180px) {
+  .side-nav {
+    width: 232px;
+    padding: 34px 18px 24px;
+    text-align: left;
+  }
+  .side-nav-wide {
+    display: block;
+  }
+  .side-nav-narrow {
+    display: none;
+  }
+  .side-nav-item,
+  .side-nav-fab,
+  .side-nav-more {
+    justify-content: flex-start;
+    padding: 0 14px;
+  }
+
   .app-shell {
     justify-content: flex-start;
   }
-  .side-nav {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s2);
-    width: 220px;
-    flex: none;
-    padding: var(--s8) var(--s4);
-    border-right: var(--edge);
-    min-height: 100vh;
-    position: sticky;
-    top: 0;
-  }
-  .side-nav-mark {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--r-md);
-    background: var(--tx);
-    color: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 13px;
-    margin-bottom: var(--s6);
-  }
-  .side-nav-item {
-    display: flex;
-    align-items: center;
-    gap: var(--s3);
-    padding: 10px 12px;
-    border-radius: var(--r-md);
-    color: var(--mut);
-    font-size: 14px;
-    font-weight: 600;
-    transition: background var(--m-fast) var(--e-io), color var(--m-fast) var(--e-io);
-  }
-  .side-nav-item:hover {
-    background: var(--sf1);
-  }
-  .side-nav-item-active {
-    background: var(--sf-ac);
-    color: var(--tx);
-  }
-  .side-nav-item-active .nav-icon {
-    color: var(--ac);
-    opacity: 1;
-  }
-
   .app-body-with-sidebar {
     justify-content: flex-start;
   }

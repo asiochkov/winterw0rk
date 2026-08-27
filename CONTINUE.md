@@ -128,7 +128,8 @@ at 23/9/2 days clean, a session planned for today, arc day 17 of 90.
 | `d9f07e7` | Session summary built (from v6 — needs redoing against v7) |
 | `d3c6021` | Reference switched to v7; tokens rewritten from v7 |
 | `ac029d5` | Divergence report (brief step 2) |
-| _this one_ | App icons and the mark; template leftovers removed |
+| `4d1f0d2` | App icons and the mark; template leftovers removed |
+| _this one_ | Nav and rail to v7; breakpoints 760/1180 |
 
 Everything is on `main` at `github.com/asiochkov/winterw0rk`. Render redeploys
 on push; the live URL is `winterwork.onrender.com`.
@@ -148,7 +149,7 @@ Street, Nutrition, Planner, Welcome / Sign in / Create account / Forgot
 password, Onboarding and Fitness setup, Profile and Settings.
 
 Cross-cutting: the More sheet with its command palette, the quick-action menu
-behind the plus button, the rail navigation for tablet and desktop, empty /
+behind the plus button, empty /
 loading / error states, the prototype's motion (directional screen
 transitions, the nav
 icon pop, press scales, the plus rotating 45°), the day theme wired to a
