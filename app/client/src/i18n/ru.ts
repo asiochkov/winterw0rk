@@ -75,6 +75,17 @@ export const ru: typeof en = {
   habitsTabQuit: 'ОТКАЗ',
   habitsConsistency: 'ПОСТОЯНСТВО',
   habitLastWeeks: 'ПОСЛЕДНИЕ {weeks} НЕДЕЛЬ',
+  quitThirtyDays: 'ПОСЛЕДНИЕ 30 ДНЕЙ',
+  quitStripNoRelapses: 'Срывов за {days} дней нет',
+  quitLastRelapse: 'Последний срыв {date}',
+  quitMilestones: 'ВОССТАНОВЛЕНИЕ',
+  quitNotMedical: 'Общая информация, не медицинская рекомендация. О своей ситуации говорите с врачом — и никогда не бросайте резко алкоголь или другое вещество там, где отмена может быть опасна.',
+  quitSavedLabel: 'СЭКОНОМЛЕНО',
+  quitNotConsumed: 'НЕ ВЫКУРЕНО',
+  quitSince: 'с {date}',
+  quitGoalToward: 'на {goal}',
+  quitNoGoal: 'цель не задана',
+  quitCurrentRunShort: 'ТЕКУЩИЙ',
   navMore: 'Ещё',
 
   // common

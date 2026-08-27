@@ -1,0 +1,98 @@
+{
+  "smoking": {
+    "source": "CDC · SURGEON GENERAL",
+    "medical": true,
+    "list": [
+      {
+        "days": 0.014,
+        "en": "20 minutes",
+        "ru": "20 минут",
+        "bodyEn": "Heart rate and blood pressure return to usual levels",
+        "bodyRu": "Пульс и давление возвращаются к обычным значениям"
+      },
+      {
+        "days": 0.5,
+        "en": "12 hours",
+        "ru": "12 часов",
+        "bodyEn": "Carbon monoxide in the blood returns to normal",
+        "bodyRu": "Уровень монооксида углерода в крови нормализуется"
+      },
+      {
+        "days": 14.0,
+        "en": "2–12 weeks",
+        "ru": "2–12 недель",
+        "bodyEn": "Circulation and lung function improve",
+        "bodyRu": "Улучшаются кровообращение и функция лёгких"
+      },
+      {
+        "days": 30.0,
+        "en": "1–9 months",
+        "ru": "1–9 месяцев",
+        "bodyEn": "Coughing and shortness of breath decrease",
+        "bodyRu": "Уменьшаются кашель и одышка"
+      },
+      {
+        "days": 365.0,
+        "en": "1 year",
+        "ru": "1 год",
+        "bodyEn": "Risk of coronary heart disease is about half that of a smoker",
+        "bodyRu": "Риск ишемической болезни сердца примерно вдвое ниже, чем у курящего"
+      },
+      {
+        "days": 1825.0,
+        "en": "5 years",
+        "ru": "5 лет",
+        "bodyEn": "Stroke risk continues to fall",
+        "bodyRu": "Риск инсульта продолжает снижаться"
+      },
+      {
+        "days": 3650.0,
+        "en": "10 years",
+        "ru": "10 лет",
+        "bodyEn": "Lung cancer death rate is about half that of a smoker",
+        "bodyRu": "Смертность от рака лёгких примерно вдвое ниже, чем у курящего"
+      }
+    ]
+  },
+  "behaviour": {
+    "source": "BEHAVIOURAL · NOT MEDICAL DATA",
+    "medical": false,
+    "list": [
+      {
+        "days": 1.0,
+        "en": "Day 1",
+        "ru": "День 1",
+        "bodyEn": "The decision is recorded. Note what the first evening without it looks like",
+        "bodyRu": "Решение зафиксировано. Отметь, как выглядит первый вечер без этого"
+      },
+      {
+        "days": 3.0,
+        "en": "Day 3",
+        "ru": "День 3",
+        "bodyEn": "The routine that carried the habit is now visible",
+        "bodyRu": "Становится видно, какая рутина держала привычку"
+      },
+      {
+        "days": 7.0,
+        "en": "Week 1",
+        "ru": "Неделя 1",
+        "bodyEn": "Enough craving episodes logged to see your triggers",
+        "bodyRu": "Записано достаточно эпизодов тяги, чтобы увидеть триггеры"
+      },
+      {
+        "days": 30.0,
+        "en": "Day 30",
+        "ru": "День 30",
+        "bodyEn": "A full month of data: time and money both measurable",
+        "bodyRu": "Полный месяц данных: время и деньги измеримы"
+      },
+      {
+        "days": 90.0,
+        "en": "Day 90",
+        "ru": "День 90",
+        "bodyEn": "The replacement behaviour, not the absence, is what holds",
+        "bodyRu": "Держит не отсутствие, а замещающее поведение"
+      }
+    ]
+  }
+}

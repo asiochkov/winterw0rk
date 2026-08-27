@@ -73,6 +73,17 @@ export const en = {
   habitsTabQuit: 'QUIT',
   habitsConsistency: 'CONSISTENCY',
   habitLastWeeks: 'LAST {weeks} WEEKS',
+  quitThirtyDays: 'LAST 30 DAYS',
+  quitStripNoRelapses: 'No relapses in {days} days',
+  quitLastRelapse: 'Last relapse {date}',
+  quitMilestones: 'RECOVERY',
+  quitNotMedical: 'General information, not medical advice. Talk to a clinician about your own situation — and never stop alcohol or another substance abruptly where withdrawal can be dangerous.',
+  quitSavedLabel: 'SAVED',
+  quitNotConsumed: 'NOT CONSUMED',
+  quitSince: 'since {date}',
+  quitGoalToward: 'toward {goal}',
+  quitNoGoal: 'no goal set',
+  quitCurrentRunShort: 'CURRENT',
   navMore: 'More',
 
   // common
