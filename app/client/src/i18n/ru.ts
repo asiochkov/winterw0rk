@@ -97,6 +97,11 @@ export const ru: typeof en = {
   trainingLastSet: 'прошлый раз {weight} кг × {reps}',
   trainingNoHistory: 'истории пока нет',
   trainingOpen: 'Открыть',
+  trainingExerciseOf: 'УПРАЖНЕНИЕ {n} / {total}',
+  trainingShowSets: 'ПОКАЗАТЬ ПОДХОДЫ ({n})',
+  trainingHideSets: 'СКРЫТЬ ПОДХОДЫ',
+  trainingNoSetsYet: 'Подходов пока нет.',
+  trainingFinishShort: 'ЗАВЕРШИТЬ',
   navMore: 'Ещё',
 
   // common

@@ -377,3 +377,355 @@
   .tr-start { transition: none; }
   .tr-start:hover { transform: none; }
 }
+
+/* ── Active session, transcribed from v6 ──────────────────────────────── */
+.ss-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 64px 22px 16px;
+  background: linear-gradient(180deg, var(--bg) 60%, rgba(var(--bgr), 0.86) 100%);
+}
+.ss-head-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ss-exit {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: var(--r-lg);
+  border: var(--edge2);
+  background: var(--sf2);
+  color: var(--tx);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.ss-progress {
+  flex: 1;
+  min-width: 0;
+}
+.ss-progress-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+.ss-progress-track {
+  margin-top: 9px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--sf2);
+  overflow: hidden;
+}
+.ss-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--ac);
+  transition: width var(--m-ctx) var(--e-io);
+}
+.ss-finish {
+  flex: none;
+  height: 46px;
+  padding: 0 16px;
+  border-radius: var(--r-lg);
+  border: none;
+  background: var(--tx);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ss-rest {
+  margin: 0 22px 8px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: rgba(var(--acr), 0.1);
+  border: 1px solid rgba(var(--acr), 0.26);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.ss-rest-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ac);
+}
+.ss-rest-time {
+  margin-top: 10px;
+  font-weight: 800;
+  font-size: 34px;
+  line-height: 0.85;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+}
+.ss-rest-actions {
+  display: flex;
+  gap: 8px;
+}
+.ss-rest-btn {
+  height: 48px;
+  padding: 0 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(var(--w), 0.14);
+  background: var(--sf2);
+  color: var(--tx);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.ss-body {
+  padding: 8px 22px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ss-card {
+  padding: 24px 22px;
+  border-radius: 18px;
+  background: rgba(var(--w), 0.035);
+  border: var(--edge);
+}
+.ss-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.ss-kicker {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ac);
+}
+.ss-group {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.ss-ex-name {
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+}
+.ss-ex-last {
+  margin-top: 12px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  color: var(--mut);
+}
+
+/* The set being logged, stated large before the controls. */
+.ss-focus {
+  margin-top: 22px;
+  padding: 24px 22px;
+  border-radius: 18px;
+  background: var(--sf-ac);
+  border: 1px solid rgba(var(--acr), 0.28);
+}
+.ss-focus-kicker {
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ac);
+}
+.ss-focus-nums {
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+.ss-focus-v {
+  font-weight: 800;
+  font-size: 46px;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+}
+.ss-focus-l {
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.ss-steppers {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ss-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px;
+  border-radius: var(--r-lg);
+  background: rgba(var(--w), 0.04);
+}
+.ss-stepper span {
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.ss-stepper button {
+  width: 52px;
+  height: 44px;
+  border-radius: var(--r-md);
+  border: var(--edge2);
+  background: var(--sf1);
+  color: var(--tx);
+  font-size: 18px;
+  cursor: pointer;
+}
+.ss-log {
+  width: 100%;
+  height: 62px;
+  margin-top: 22px;
+  border: none;
+  border-radius: 18px;
+  background: var(--ac);
+  color: var(--on-ac);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.ss-warm {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.ss-toggle {
+  width: 100%;
+  height: 46px;
+  margin-top: 12px;
+  border-radius: 14px;
+  border: var(--edge2);
+  background: transparent;
+  color: rgba(var(--t), 0.55);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.ss-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 20px;
+}
+.ss-set {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--sf1);
+  border: var(--edge);
+}
+.ss-set.is-warm {
+  opacity: 0.6;
+}
+.ss-set-tag {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: var(--edge2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--tx);
+}
+.ss-set-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+}
+
+.ss-links {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+}
+.ss-nav {
+  display: flex;
+  gap: 8px;
+}
+.ss-nav-btn {
+  flex: 1;
+  height: 52px;
+  border-radius: var(--r-lg);
+  border: var(--edge2);
+  background: var(--sf1);
+  color: var(--tx);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.ss-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.ss-nav-btn.is-primary {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: var(--on-ac);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-progress-fill { transition: none; }
+}

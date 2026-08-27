@@ -95,6 +95,11 @@ export const en = {
   trainingLastSet: 'last {weight}kg × {reps}',
   trainingNoHistory: 'no history yet',
   trainingOpen: 'Open',
+  trainingExerciseOf: 'EXERCISE {n} / {total}',
+  trainingShowSets: 'SHOW SETS ({n})',
+  trainingHideSets: 'HIDE SETS',
+  trainingNoSetsYet: 'No sets logged yet.',
+  trainingFinishShort: 'FINISH',
   navMore: 'More',
 
   // common
