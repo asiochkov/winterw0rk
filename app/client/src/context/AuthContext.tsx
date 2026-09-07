@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
-import { api, ApiError } from '../api/client';
+import { api, ApiError, setUnauthorizedHandler } from '../api/client';
 import type { User } from '../api/types';
 
 export interface SignupConsent {
@@ -16,6 +16,10 @@ interface AuthState {
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
   setUser: (u: User) => void;
+  /** True when the session ended under the user rather than never existing —
+   *  it is what tells sign-in to explain why they are looking at it. */
+  sessionExpired: boolean;
+  clearSessionExpired: () => void;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -23,6 +27,7 @@ const AuthContext = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -36,6 +41,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     refresh().finally(() => setLoading(false));
   }, [refresh]);
+
+  // One expired session drops the user everywhere at once. Clearing `user`
+  // is enough to route them to sign-in: the app renders the signed-out tree
+  // off this value.
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      setUser((current) => {
+        if (current) setSessionExpired(true);
+        return null;
+      });
+    });
+    return () => setUnauthorizedHandler(null);
+  }, []);
 
   const signUp = useCallback(
     async (email: string, password: string, name: string, consent: SignupConsent) => {
@@ -62,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(async (email: string, password: string) => {
     const { user } = await api.post<{ user: User }>('/auth/login', { email, password });
+    setSessionExpired(false);
     setUser(user);
     return user;
   }, []);
@@ -72,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, refresh, setUser }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, refresh, setUser, sessionExpired, clearSessionExpired: () => setSessionExpired(false) }}>
       {children}
     </AuthContext.Provider>
   );

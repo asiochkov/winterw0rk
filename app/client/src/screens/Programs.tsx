@@ -5,7 +5,7 @@ import { api } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { ErrorState, LoadingRows } from '../components/states';
-import { useMutation } from '../hooks/useAsyncData';
+import { useAsyncData, useMutation } from '../hooks/useAsyncData';
 import { Button, ProgressBar, Section } from '../components/ui';
 import './programs.css';
 
@@ -22,13 +22,23 @@ interface Program {
 export function ProgramsList() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [programs, setPrograms] = useState<Program[] | null>(null);
+  const state = useAsyncData(() => api.get<{ programs: Program[] }>('/programs'));
 
-  useEffect(() => {
-    api.get<{ programs: Program[] }>('/programs').then((r) => setPrograms(r.programs));
-  }, []);
-
-  if (!programs) return <Screen title={t('programsTitle')} nav>{null}</Screen>;
+  if (state.loading) {
+    return (
+      <Screen title={t('programsTitle')} nav>
+        <LoadingRows rows={3} />
+      </Screen>
+    );
+  }
+  if (state.error || !state.data) {
+    return (
+      <Screen title={t('programsTitle')} nav>
+        <ErrorState message={state.error ?? t('genericError')} onRetry={state.reload} retryLabel={t('tryAgain')} />
+      </Screen>
+    );
+  }
+  const programs = state.data.programs;
 
   return (
     <Screen title={t('programsTitle')} kicker={t('programsKicker')} nav>

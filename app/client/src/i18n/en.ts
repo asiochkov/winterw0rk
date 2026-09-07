@@ -148,6 +148,7 @@ export const en = {
 
   // common
   back: 'Back',
+  sessionExpired: 'Your session ended. Sign in to pick up where you left off.',
   cancel: 'Cancel',
   save: 'Save',
   add: 'Add',

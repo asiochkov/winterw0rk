@@ -1,22 +1,33 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api/client';
 import type { QuitCounter } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
+import { ErrorState, LoadingRows } from '../../components/states';
+import { useAsyncData } from '../../hooks/useAsyncData';
 import { Button, EmptyState } from '../../components/ui';
 import '../quit.css';
 
 export default function QuitList() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [counters, setCounters] = useState<QuitCounter[] | null>(null);
+  const state = useAsyncData(() => api.get<{ counters: QuitCounter[] }>('/quit'));
 
-  useEffect(() => {
-    api.get<{ counters: QuitCounter[] }>('/quit').then((r) => setCounters(r.counters));
-  }, []);
-
-  if (!counters) return <Screen title={t('quitTitle')} nav>{null}</Screen>;
+  if (state.loading) {
+    return (
+      <Screen title={t('quitTitle')} nav>
+        <LoadingRows rows={3} />
+      </Screen>
+    );
+  }
+  if (state.error || !state.data) {
+    return (
+      <Screen title={t('quitTitle')} nav>
+        <ErrorState message={state.error ?? t('genericError')} onRetry={state.reload} retryLabel={t('tryAgain')} />
+      </Screen>
+    );
+  }
+  const counters = state.data.counters;
 
   return (
     <Screen title={t('quitTitle')} kicker={t('quitKicker')} nav>

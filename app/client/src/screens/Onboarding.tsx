@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth, ApiError } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -36,16 +36,58 @@ const PICKABLE = [
 
 type Step = 'intro' | 'goal' | 'areas' | 'habits' | 'commit';
 
+const STEPS: Step[] = ['intro', 'goal', 'areas', 'habits', 'commit'];
+
+/** Onboarding is five screens deep and, until now, entirely in memory: a
+ *  refresh, a mistyped URL or a phone locking the tab threw the whole thing
+ *  away and started again at the intro. It is kept per account so a second
+ *  person signing in on the same device does not inherit the first one's
+ *  half-finished answers. */
+const DRAFT_KEY = 'ww.onboarding.draft';
+
+interface Draft {
+  userId: number;
+  step: Step;
+  goal: string;
+  areas: string[];
+  habits: string[];
+}
+
+function readDraft(userId: number | undefined): Draft | null {
+  if (userId == null) return null;
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const draft = JSON.parse(raw) as Draft;
+    if (draft.userId !== userId || !STEPS.includes(draft.step)) return null;
+    return draft;
+  } catch {
+    // A private window, cleared storage or a draft written by an older build.
+    return null;
+  }
+}
+
 export default function Onboarding() {
   const { user, loading, setUser } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [step, setStep] = useState<Step>('intro');
-  const [goal, setGoal] = useState('');
-  const [areas, setAreas] = useState<string[]>([]);
-  const [habits, setHabits] = useState<string[]>([]);
+  const draft = readDraft(user?.id);
+  const [step, setStep] = useState<Step>(draft?.step ?? 'intro');
+  const [goal, setGoal] = useState(draft?.goal ?? '');
+  const [areas, setAreas] = useState<string[]>(draft?.areas ?? []);
+  const [habits, setHabits] = useState<string[]>(draft?.habits ?? []);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  const userId = user?.id;
+  useEffect(() => {
+    if (userId == null) return;
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ userId, step, goal, areas, habits }));
+    } catch {
+      /* storage unavailable — the flow still works, it just won't survive a reload */
+    }
+  }, [userId, step, goal, areas, habits]);
 
   if (loading) return null;
   if (!user) return <Navigate to="/" replace />;
@@ -68,6 +110,11 @@ export default function Onboarding() {
         }),
       };
       const { user: updated } = await api.post<{ user: User }>('/auth/onboarding', payload);
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* nothing to clean up if storage was never available */
+      }
       setUser(updated);
       navigate('/today');
     } catch (err) {
@@ -77,14 +124,23 @@ export default function Onboarding() {
     }
   }
 
-  const stepIndex = ['intro', 'goal', 'areas', 'habits', 'commit'].indexOf(step);
+  const stepIndex = STEPS.indexOf(step);
 
   return (
     <div className="onb-shell">
-      <div className="onb-progress">
-        {['intro', 'goal', 'areas', 'habits', 'commit'].map((s, i) => (
-          <span key={s} className={`onb-dot ${i <= stepIndex ? 'onb-dot-on' : ''}`} />
-        ))}
+      <div className="onb-head">
+        {stepIndex > 0 ? (
+          <button type="button" className="onb-back" onClick={() => setStep(STEPS[stepIndex - 1])}>
+            <span aria-hidden="true">←</span> {t('back')}
+          </button>
+        ) : (
+          <span className="onb-back-spacer" />
+        )}
+        <div className="onb-progress">
+          {STEPS.map((s, i) => (
+            <span key={s} className={`onb-dot ${i <= stepIndex ? 'onb-dot-on' : ''}`} />
+          ))}
+        </div>
       </div>
 
       {step === 'intro' && (

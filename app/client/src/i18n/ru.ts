@@ -150,6 +150,7 @@ export const ru: typeof en = {
 
   // common
   back: 'Назад',
+  sessionExpired: 'Сессия завершена. Войдите, чтобы продолжить с того же места.',
   cancel: 'Отмена',
   save: 'Сохранить',
   add: 'Добавить',

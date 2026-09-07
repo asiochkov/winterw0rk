@@ -7,7 +7,7 @@ import { Button, Field, Input } from '../components/ui';
 import './auth.css';
 
 export default function SignIn() {
-  const { user, loading, signIn } = useAuth();
+  const { user, loading, signIn, sessionExpired } = useAuth();
   const { t } = useLanguage();
   const { passwordResetEnabled } = useServerConfig();
   const navigate = useNavigate();
@@ -43,6 +43,11 @@ export default function SignIn() {
           {t('signInTitle')}
         </h1>
         <p className="auth-sub">{t('signInSub')}</p>
+        {sessionExpired && (
+          <p className="auth-notice" role="status">
+            {t('sessionExpired')}
+          </p>
+        )}
         <form className="auth-form" onSubmit={onSubmit}>
           <Field label={t('emailLabel')}>
             <Input

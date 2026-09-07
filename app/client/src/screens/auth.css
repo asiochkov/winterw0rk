@@ -54,6 +54,19 @@
   max-width: 38ch;
 }
 
+/* Shown only when a session expired under the user, so it explains the
+   redirect rather than reading as an error they caused. */
+.auth-notice {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--w), 0.14);
+  background: var(--sf2);
+  color: var(--tx);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
 .auth-actions {
   display: flex;
   flex-direction: column;

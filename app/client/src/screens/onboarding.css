@@ -7,10 +7,40 @@
   flex-direction: column;
 }
 
+.onb-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: var(--s8);
+}
+.onb-back,
+.onb-back-spacer {
+  flex: none;
+  min-width: 74px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.onb-back {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--mut);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.onb-back:hover {
+  color: var(--tx);
+}
 .onb-progress {
   display: flex;
+  flex: 1;
   gap: 6px;
-  margin-bottom: var(--s8);
 }
 .onb-dot {
   height: 3px;
