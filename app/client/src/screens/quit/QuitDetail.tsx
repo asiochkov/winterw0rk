@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useBack } from '../../hooks/useBack';
-import { api } from '../../api/client';
+import { api, ApiError } from '../../api/client';
 import type { CravingEpisode, QuitCounter, RelapseEvent } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -52,7 +52,7 @@ export default function QuitDetail() {
       setCravings(r.cravings);
       setRelapses(r.relapses);
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load this counter.');
+      setLoadError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }

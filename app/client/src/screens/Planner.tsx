@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api } from '../api/client';
+import { api, ApiError } from '../api/client';
 import type { PlannerTask, TaskPriority, TaskRecurrence } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
@@ -40,7 +40,7 @@ export default function Planner() {
       const r = await api.get<{ tasks: PlannerTask[] }>('/planner');
       setTasks(r.tasks);
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load your planner.');
+      setLoadError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }

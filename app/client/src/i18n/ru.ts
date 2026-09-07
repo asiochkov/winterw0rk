@@ -186,6 +186,7 @@ export const ru: typeof en = {
   signingIn: 'Входим…',
   newHere: 'Впервые здесь?',
   createAnAccount: 'Создать аккаунт',
+  saveFailed: 'Не сохранилось. Попробуйте ещё раз.',
   genericError: 'Что-то пошло не так. Попробуй ещё раз.',
   forgotPassword: 'Забыл пароль?',
   forgotPasswordTitle: 'Сброс пароля',

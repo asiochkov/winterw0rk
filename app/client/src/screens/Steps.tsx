@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { api } from '../api/client';
+import { api, ApiError } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { usePedometer } from '../hooks/usePedometer';
 import { Screen } from '../components/Shell';
@@ -47,7 +47,7 @@ export default function Steps() {
       setDailyAverage(h.dailyAverage);
       return t1.entry;
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load your steps.');
+      setLoadError(err instanceof ApiError ? err.message : t('genericError'));
       return null;
     } finally {
       setLoading(false);

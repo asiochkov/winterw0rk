@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../api/client';
+import { api, ApiError } from '../api/client';
 import type { Habit } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
@@ -73,7 +73,7 @@ export default function Progress() {
       setData(ov);
       setHabits(hs.habits);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not load progress.');
+      setError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }

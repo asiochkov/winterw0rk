@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../api/client';
+import { api, ApiError } from '../api/client';
 import type { Habit, MoodEntry, QuitCounter, WorkoutSession } from '../api/types';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -61,7 +61,7 @@ export default function Today() {
       setFocusSec(f.totalSec);
       setMoodHistory(mh.entries);
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load today.');
+      setLoadError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }

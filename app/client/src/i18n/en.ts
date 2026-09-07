@@ -184,6 +184,7 @@ export const en = {
   signingIn: 'Signing in…',
   newHere: 'New here?',
   createAnAccount: 'Create an account',
+  saveFailed: 'That did not save. Try again.',
   genericError: 'Something went wrong. Try again.',
   forgotPassword: 'Forgot password?',
   forgotPasswordTitle: 'Reset your password',

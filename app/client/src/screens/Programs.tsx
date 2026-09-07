@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBack } from '../hooks/useBack';
-import { api } from '../api/client';
+import { api, ApiError } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { ErrorState, LoadingRows } from '../components/states';
@@ -80,7 +80,7 @@ export function ProgramDetail() {
       const r = await api.get<{ program: Program }>(`/programs/${id}`);
       setProgram(r.program);
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load this program.');
+      setLoadError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }

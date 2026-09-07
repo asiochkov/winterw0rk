@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBack } from '../../hooks/useBack';
 import { categoryLabel, HABIT_CATEGORIES } from '../../lib/habitCategories';
-import { api } from '../../api/client';
+import { api, ApiError } from '../../api/client';
 import type { Habit, HabitHistoryEntry } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
@@ -35,7 +35,7 @@ export default function HabitDetail() {
       setHabit(r.habit);
       setHistory(r.history);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not load this habit.');
+      setError(err instanceof ApiError ? err.message : t('genericError'));
     }
   }, [id]);
 
