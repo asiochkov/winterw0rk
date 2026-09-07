@@ -657,6 +657,32 @@ describe('training', () => {
   });
 });
 
+describe('progress report', () => {
+  it('states each dimension as the recent half against the earlier one', async () => {
+    const { agent } = await newUser();
+    const res = await agent.get('/api/progress/overview');
+    expect(res.status).toBe(200);
+
+    const r = res.body.report;
+    expect(r.halfDays).toBe(Math.floor(res.body.windowDays / 2));
+    for (const key of ['discipline', 'focus', 'training']) {
+      expect(typeof r[key].before).toBe('number');
+      expect(typeof r[key].now).toBe('number');
+    }
+  });
+
+  it('counts a logged set toward the recent half of the training row', async () => {
+    const { agent } = await newUser();
+    const before = (await agent.get('/api/progress/overview')).body.report.training.now;
+
+    const exercise = (await agent.get('/api/exercises')).body.exercises[0];
+    await agent.post(`/api/training/exercises/${exercise.id}/sets`).send({ weight: 50, reps: 10 });
+
+    const after = (await agent.get('/api/progress/overview')).body.report.training.now;
+    expect(after).toBe(before + 500);
+  });
+});
+
 describe('street / cardio', () => {
   it('derives distance from a GPS track rather than trusting the client', async () => {
     const { agent } = await newUser();
