@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api, ApiError } from '../../api/client';
 import type { Habit, HabitType } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -9,6 +10,7 @@ import '../habits.css';
 
 export default function AddHabit() {
   const navigate = useNavigate();
+  const back = useBack('/habits');
   const { t } = useLanguage();
   const DAYS = [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')];
   const [name, setName] = useState('');
@@ -47,7 +49,7 @@ export default function AddHabit() {
   }
 
   return (
-    <Screen title={t('addHabitTitle')} nav={false}>
+    <Screen title={t('addHabitTitle')} nav={false} back={back}>
       <div className="form-stack">
         <Field label={t('nameFieldLabel')}>
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Cold Shower" />
@@ -89,9 +91,6 @@ export default function AddHabit() {
         {error && <p className="onb-error">{error}</p>}
         <Button full disabled={!name.trim() || schedule.length === 0 || busy} onClick={submit}>
           {busy ? t('savingBtn') : t('addHabitBtn')}
-        </Button>
-        <Button full variant="ghost" onClick={() => navigate('/habits')}>
-          {t('cancel')}
         </Button>
       </div>
     </Screen>

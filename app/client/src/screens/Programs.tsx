@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useBack } from '../hooks/useBack';
 import { api } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
@@ -56,7 +57,7 @@ export function ProgramsList() {
 
 export function ProgramDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const back = useBack('/programs');
   const { t } = useLanguage();
   const [program, setProgram] = useState<Program | null>(null);
   const [loading, setLoading] = useState(true);
@@ -90,14 +91,14 @@ export function ProgramDetail() {
 
   if (loading) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <LoadingRows rows={4} />
       </Screen>
     );
   }
   if (!program) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <ErrorState
           message={loadError ?? t('genericError')}
           onRetry={() => {
@@ -111,10 +112,7 @@ export function ProgramDetail() {
   }
 
   return (
-    <Screen kicker={program.kind} title={program.name} nav={false}>
-      <button className="auth-back" onClick={() => navigate('/programs')} style={{ marginBottom: 16 }}>
-        ← {t('programsTitle')}
-      </button>
+    <Screen kicker={program.kind} title={program.name} nav={false} back={back}>
       <Section>
         <p style={{ fontSize: 14.5, color: 'var(--mut)', lineHeight: 1.6 }}>{program.description}</p>
       </Section>

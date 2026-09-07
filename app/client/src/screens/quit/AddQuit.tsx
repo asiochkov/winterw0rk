@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api, ApiError } from '../../api/client';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
@@ -10,6 +11,7 @@ const PRESETS = ['Smoking', 'Alcohol', 'Vaping', 'Sugar', 'Fast Food', 'Social M
 
 export default function AddQuit() {
   const navigate = useNavigate();
+  const back = useBack('/quit');
   const { t } = useLanguage();
   const [kind, setKind] = useState('');
   const [unitCost, setUnitCost] = useState('');
@@ -35,7 +37,7 @@ export default function AddQuit() {
   }
 
   return (
-    <Screen title={t('quitAddCounterTitle')} nav={false}>
+    <Screen title={t('quitAddCounterTitle')} nav={false} back={back}>
       <div className="form-stack">
         <Field label={t('quitWhatQuitting')}>
           <Input value={kind} onChange={(e) => setKind(e.target.value)} placeholder="Smoking" />
@@ -56,9 +58,6 @@ export default function AddQuit() {
         {error && <p className="onb-error">{error}</p>}
         <Button full disabled={!kind.trim() || busy} onClick={submit}>
           {busy ? t('quitStartingBtn') : t('quitStartCounterBtn')}
-        </Button>
-        <Button full variant="ghost" onClick={() => navigate('/quit')}>
-          {t('cancel')}
         </Button>
       </div>
     </Screen>

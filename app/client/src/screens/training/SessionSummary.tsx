@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api } from '../../api/client';
 import type { WorkoutSession } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -48,6 +49,7 @@ const WEEKDAY_KEYS = [
 export default function SessionSummary() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const back = useBack('/training');
   const { t } = useLanguage();
   const [session, setSession] = useState<WorkoutSession | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -89,7 +91,7 @@ export default function SessionSummary() {
 
   if (error && !session) {
     return (
-      <Screen nav={false} bleed>
+      <Screen nav={false} bleed back={back}>
         <div className="sum">
           <ErrorState message={error} onRetry={load} retryLabel={t('tryAgain')} />
         </div>
@@ -99,7 +101,7 @@ export default function SessionSummary() {
 
   if (!session || !summary) {
     return (
-      <Screen nav={false} bleed>
+      <Screen nav={false} bleed back={back}>
         <div className="sum">
           <LoadingRows rows={4} />
         </div>
@@ -108,7 +110,7 @@ export default function SessionSummary() {
   }
 
   return (
-    <Screen nav={false} bleed>
+    <Screen nav={false} bleed back="self">
       <div className="sum">
         <div className="sum-head">
           <div className="sum-chip">

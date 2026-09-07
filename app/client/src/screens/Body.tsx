@@ -61,14 +61,14 @@ export default function Body() {
 
   if (state.loading) {
     return (
-      <Screen title={t('bodyTitle')} kicker={t('bodyKicker')} nav={false}>
+      <Screen title={t('bodyTitle')} kicker={t('bodyKicker')}>
         <LoadingRows rows={4} />
       </Screen>
     );
   }
   if (state.error || !state.data) {
     return (
-      <Screen title={t('bodyTitle')} kicker={t('bodyKicker')} nav={false}>
+      <Screen title={t('bodyTitle')} kicker={t('bodyKicker')}>
         <ErrorState message={state.error ?? t('genericError')} onRetry={load} retryLabel={t('tryAgain')} />
       </Screen>
     );
@@ -77,7 +77,7 @@ export default function Body() {
   const history = state.data.history;
 
   return (
-    <Screen title={t('bodyTitle')} kicker={t('bodyKicker')} nav={false}>
+    <Screen title={t('bodyTitle')} kicker={t('bodyKicker')}>
       <Section>
         <div className="detail-stats">
           <div className="detail-stat">

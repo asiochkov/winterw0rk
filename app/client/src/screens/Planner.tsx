@@ -129,7 +129,7 @@ export default function Planner() {
   const visible = tab === 'backlog' ? [{ label: t('plannerBacklogLabel'), items: backlog }] : DAYS.map((label, i) => ({ label, items: byDay(i) }));
 
   return (
-    <Screen title={t('plannerTitle')} nav={false}>
+    <Screen title={t('plannerTitle')}>
       <div className="type-row" style={{ marginBottom: 16 }}>
         <button className={`type-btn ${tab === 'week' ? 'type-btn-on' : ''}`} onClick={() => setTab('week')}>
           {t('plannerWeek')}

@@ -6,30 +6,46 @@ import { useWorld, type World } from '../context/WorldContext';
 import { V6Icon, type IconName } from './V6Icon';
 import './Shell.css';
 
-export function Screen({
-  title,
-  kicker,
-  children,
-  nav = true,
-  rail,
-  bleed = false,
-}: {
+interface ScreenBase {
   title?: string;
   kicker?: string;
   children: ReactNode;
-  nav?: boolean;
   /** Drop the main padding so a screen can lay itself out edge to edge, the
-   *  way v6's Today does with its full-bleed hero. */
+   *  way v7's Today does with its full-bleed hero. */
   bleed?: boolean;
   /** Optional secondary content shown as a right-hand rail on desktop only. */
   rail?: ReactNode;
-}) {
+}
+
+/**
+ * Hiding the navigation obliges a screen to say how it is left.
+ *
+ * Eight screens had `nav={false}` and no way back — including Body, Nutrition
+ * and Planner, which are primary tabs, so the bar that brought the user there
+ * vanished on arrival and the only exit was the browser's own back gesture,
+ * which is not always available in a standalone PWA. Splitting the props into
+ * a union means TypeScript now refuses a screen that hides the navigation
+ * without providing an exit; `back="self"` is the deliberate opt-out for
+ * screens that draw their own, like the active session and a running focus
+ * block.
+ */
+type ScreenProps = ScreenBase &
+  ({ nav?: true; back?: never } | { nav: false; back: (() => void) | 'self' });
+
+export function Screen({ title, kicker, children, nav = true, rail, bleed = false, back }: ScreenProps) {
+  const { t } = useLanguage();
   return (
     <div className="app-shell">
       {nav && <SidebarNav />}
       <div className={`app-body ${nav ? 'app-body-with-sidebar' : ''}`}>
         <div className={`app-content ${rail ? 'app-content-with-rail' : ''}`}>
           <main className={`app-main ${nav ? 'app-main-tabbed' : ''} ${bleed ? 'app-main-bleed' : ''}`}>
+            {typeof back === 'function' && (
+              <button type="button" className="screen-back" onClick={back} aria-label={t('back')}>
+                <span aria-hidden="true">←</span>
+                {t('back')}
+              </button>
+            )}
             {(title || kicker) && (
               <header className="page-head">
                 {kicker && <p className="page-kicker">{kicker}</p>}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { useBack } from '../hooks/useBack';
 import { api } from '../api/client';
 import { useAsyncData, useMutation } from '../hooks/useAsyncData';
 import { Screen } from '../components/Shell';
@@ -34,7 +35,7 @@ function shortDate(value: string | null) {
 }
 
 export default function Admin() {
-  const navigate = useNavigate();
+  const back = useBack('/settings');
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const mutation = useMutation();
@@ -59,10 +60,7 @@ export default function Admin() {
   }
 
   return (
-    <Screen title="Admin" kicker="Registered accounts" nav={false}>
-      <button className="auth-back" onClick={() => navigate('/settings')} style={{ marginBottom: 16 }}>
-        ← Settings
-      </button>
+    <Screen title="Admin" kicker="Registered accounts" nav={false} back={back}>
 
       <Section title="Overview">
         {stats.loading ? (

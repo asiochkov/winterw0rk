@@ -5,6 +5,7 @@ import { usePedometer } from '../hooks/usePedometer';
 import { Screen } from '../components/Shell';
 import { ErrorState, LoadingRows } from '../components/states';
 import { useMutation } from '../hooks/useAsyncData';
+import { useBack } from '../hooks/useBack';
 import { Banner, Button, Field, Input, ProgressBar, Section } from '../components/ui';
 import './steps.css';
 
@@ -20,6 +21,7 @@ const SYNC_INTERVAL_MS = 15000;
 
 export default function Steps() {
   const { t } = useLanguage();
+  const back = useBack('/more');
   const [today, setToday] = useState<StepEntry | null>(null);
   const [history, setHistory] = useState<StepEntry[]>([]);
   const [dailyAverage, setDailyAverage] = useState(0);
@@ -128,14 +130,14 @@ export default function Steps() {
 
   if (loading) {
     return (
-      <Screen title={t('stepsTitle')} nav={false}>
+      <Screen title={t('stepsTitle')} nav={false} back={back}>
         <LoadingRows rows={3} />
       </Screen>
     );
   }
   if (!today) {
     return (
-      <Screen title={t('stepsTitle')} nav={false}>
+      <Screen title={t('stepsTitle')} nav={false} back={back}>
         <ErrorState
           message={loadError ?? t('genericError')}
           onRetry={() => {
@@ -153,7 +155,7 @@ export default function Steps() {
   const remaining = Math.max(0, today.goal - liveTotal);
 
   return (
-    <Screen title={t('stepsTitle')} kicker={t('stepsKicker')} nav={false}>
+    <Screen title={t('stepsTitle')} kicker={t('stepsKicker')} nav={false} back={back}>
       <Section>
         <p className="steps-count">{liveTotal.toLocaleString()}</p>
         <p className="steps-goal-line">{t('stepsOfGoal', { goal: today.goal.toLocaleString() })}</p>

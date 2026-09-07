@@ -5,6 +5,7 @@ import type { Habit } from '../api/types';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { useBack } from '../hooks/useBack';
 import { Section } from '../components/ui';
 
 function dayOfArc(startDate: string | null): number {
@@ -25,6 +26,7 @@ export default function Profile() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const back = useBack('/more');
   const [habits, setHabits] = useState<Habit[]>([]);
   const [focusToday, setFocusToday] = useState(0);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -57,7 +59,7 @@ export default function Profile() {
   ];
 
   return (
-    <Screen title={t('profileTitle')} nav={false}>
+    <Screen title={t('profileTitle')} nav={false} back={back}>
       {loadFailed && <p className="inline-error" role="alert">{t('profileLoadFailed')}</p>}
       <Section>
         <p className="page-title" style={{ fontSize: 20, marginBottom: 2 }}>

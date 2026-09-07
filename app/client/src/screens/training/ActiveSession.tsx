@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api } from '../../api/client';
 import type { ExerciseListItem, WorkoutSession } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -12,6 +13,7 @@ const REST_SECONDS = 90;
 export default function ActiveSession() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const back = useBack('/training');
   const { t } = useLanguage();
   const [session, setSession] = useState<WorkoutSession | null>(null);
   const [exIdx, setExIdx] = useState(0);
@@ -70,7 +72,7 @@ export default function ActiveSession() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exIdx, session?.id]);
 
-  if (!session) return <Screen nav={false}>{null}</Screen>;
+  if (!session) return <Screen nav={false} back={back}>{null}</Screen>;
   const ex = session.exercises[exIdx];
   if (!ex) return null;
 
@@ -119,7 +121,7 @@ export default function ActiveSession() {
   const donePct = Math.round(((exIdx + (workingSets ? 1 : 0)) / session.exercises.length) * 100);
 
   return (
-    <Screen nav={false} bleed>
+    <Screen nav={false} bleed back="self">
       <div className="ss-head">
         <div className="ss-head-row">
           <button type="button" className="ss-exit" onClick={() => navigate('/training')} aria-label={t('trainingExit')}>

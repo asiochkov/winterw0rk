@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useGeoTracker } from '../hooks/useGeoTracker';
 import { RouteMap } from '../components/RouteMap';
 import { Screen } from '../components/Shell';
+import { useBack } from '../hooks/useBack';
 import { Banner, Button, Field, Input, Section } from '../components/ui';
 import './training.css';
 import './focus.css';
@@ -46,6 +47,7 @@ function pace(sec: number, km: number) {
 
 export default function Street() {
   const { t } = useLanguage();
+  const back = useBack('/more');
   const geo = useGeoTracker();
   const MODES: { k: Mode; labelKey: 'streetRun' | 'streetWalk' | 'streetBike' }[] = [
     { k: 'run', labelKey: 'streetRun' },
@@ -114,7 +116,7 @@ export default function Street() {
   const liveKm = geo.liveDistanceM / 1000;
 
   return (
-    <Screen title={t('streetTitle')} nav={false}>
+    <Screen title={t('streetTitle')} nav={false} back={back}>
       {!running && !finishing && (
         <>
           <Section title={t('streetMode')}>

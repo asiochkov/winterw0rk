@@ -85,7 +85,9 @@ export default function Focus() {
 
   if (sessionId && !done) {
     return (
-      <Screen nav={false}>
+      /* The tab bar stays hidden while a block runs so it cannot be left by
+         accident; "Stop" is the way out. This is deliberate, not a dead end. */
+      <Screen nav={false} back="self">
         <div className="focus-active">
           <p className="sess-progress">{t(MODES.find((m) => m.k === mode)!.labelKey).toUpperCase()}</p>
           <p className="focus-clock">{fmt(remaining)}</p>

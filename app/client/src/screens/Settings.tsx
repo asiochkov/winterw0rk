@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useServerConfig } from '../hooks/useServerConfig';
+import { useBack } from '../hooks/useBack';
 import { Screen } from '../components/Shell';
 import { Button, Section } from '../components/ui';
 import './legal.css';
@@ -34,6 +35,7 @@ export default function Settings() {
   const { lang, setLang, t } = useLanguage();
   const { reminderEmailsEnabled } = useServerConfig();
   const navigate = useNavigate();
+  const back = useBack('/more');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [billing, setBilling] = useState<Billing | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -88,7 +90,7 @@ export default function Settings() {
   }
 
   return (
-    <Screen title={t('settingsTitle')} nav={false}>
+    <Screen title={t('settingsTitle')} nav={false} back={back}>
       <Section title={t('settingsAccount')}>
         <p style={{ fontSize: 14, color: 'var(--mut)' }}>{user?.email}</p>
       </Section>

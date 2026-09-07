@@ -16,15 +16,25 @@ export function QuitHero({
   days,
   clock,
   since,
+  onBack,
 }: {
   kicker: string;
   days: number;
   clock: string;
   since: string;
+  /** The screen is full-bleed and hides the tab bar, so the hero carries the
+   *  way out, the same way the habit detail hero does. */
+  onBack?: () => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div className="q-hero">
       <div className="q-hero-wash" />
+      {onBack && (
+        <button type="button" className="q-back" onClick={onBack} aria-label={t('back')}>
+          <span aria-hidden="true">←</span>
+        </button>
+      )}
       <div className="q-hero-inner">
         <div className="q-hero-chip">
           <span className="q-hero-dot" aria-hidden="true" />

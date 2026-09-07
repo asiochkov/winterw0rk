@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api } from '../../api/client';
 import type { ExerciseDetailData } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -19,6 +20,7 @@ interface HistoryRow {
 export default function ExerciseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const back = useBack('/training/library');
   const { t } = useLanguage();
   const [reps, setReps] = useState('');
   const [weight, setWeight] = useState('');
@@ -52,14 +54,14 @@ export default function ExerciseDetail() {
 
   if (state.loading) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <LoadingRows rows={4} />
       </Screen>
     );
   }
   if (state.error || !state.data) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <ErrorState message={state.error ?? t('genericError')} onRetry={state.reload} retryLabel={t('tryAgain')} />
       </Screen>
     );
@@ -70,10 +72,7 @@ export default function ExerciseDetail() {
   const canLog = Number(reps) > 0;
 
   return (
-    <Screen kicker={`${exercise.group} · ${exercise.equipment}`} title={exercise.name} nav={false}>
-      <button className="auth-back" onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>
-        ← {t('back')}
-      </button>
+    <Screen kicker={`${exercise.group} · ${exercise.equipment}`} title={exercise.name} nav={false} back={back}>
 
       {/* v7 puts a set logger on this screen so a set can be recorded without
           starting a session first. It writes into today's session. */}

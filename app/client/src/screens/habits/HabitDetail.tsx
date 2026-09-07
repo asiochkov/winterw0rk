@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api } from '../../api/client';
 import type { Habit, HabitHistoryEntry } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -14,6 +15,7 @@ const GRID_DAYS = 56;
 export default function HabitDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const back = useBack('/habits');
   const { t } = useLanguage();
   const [habit, setHabit] = useState<Habit | null>(null);
   const [history, setHistory] = useState<HabitHistoryEntry[]>([]);
@@ -41,14 +43,14 @@ export default function HabitDetail() {
 
   if (error) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <ErrorState message={error} onRetry={load} retryLabel={t('tryAgain')} />
       </Screen>
     );
   }
   if (!habit) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <LoadingRows rows={3} />
       </Screen>
     );
@@ -75,7 +77,7 @@ export default function HabitDetail() {
     habit.schedule.length === 7 ? t('todayHabitDaily') : t('todayHabitPerWeek', { n: habit.schedule.length });
 
   return (
-    <Screen nav={false} bleed>
+    <Screen nav={false} bleed back="self">
       <div className="hd-hero">
         <div className="hd-hero-wash" />
         <div className="hd-hero-inner">

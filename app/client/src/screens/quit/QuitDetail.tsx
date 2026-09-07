@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api } from '../../api/client';
 import type { CravingEpisode, QuitCounter, RelapseEvent } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -26,6 +27,7 @@ function formatClean(startDate: string) {
 export default function QuitDetail() {
   const { id } = useParams();
   const { t } = useLanguage();
+  const back = useBack('/quit');
   const [counter, setCounter] = useState<QuitCounter | null>(null);
   const [cravings, setCravings] = useState<CravingEpisode[]>([]);
   const [relapses, setRelapses] = useState<RelapseEvent[]>([]);
@@ -83,14 +85,14 @@ export default function QuitDetail() {
 
   if (loading) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <LoadingRows rows={4} />
       </Screen>
     );
   }
   if (!counter || !clean) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <ErrorState
           message={loadError ?? t('genericError')}
           onRetry={() => {
@@ -108,12 +110,13 @@ export default function QuitDetail() {
   const goalPct = counter.goalAmount ? Math.min(100, Math.round((saved / counter.goalAmount) * 100)) : 0;
 
   return (
-    <Screen nav={false} bleed>
+    <Screen nav={false} bleed back="self">
       <QuitHero
         kicker={counter.kind}
         days={clean.days}
         clock={clean.label}
         since={t('quitSince', { date: counter.startDate })}
+        onBack={back}
       />
 
       <div className="q-body">
