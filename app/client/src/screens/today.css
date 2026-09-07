@@ -351,10 +351,10 @@
   align-items: center;
   gap: 18px;
   flex-wrap: wrap;
-  padding: 22px 24px;
-  border-radius: 16px;
-  background: var(--sf1);
-  box-shadow: var(--lift);
+  /* v7 ruled this rather than carding it: no fill, no radius, no lift. */
+  padding: 20px 4px;
+  border-top: var(--edge);
+  border-bottom: var(--edge);
 }
 .t-streak-head {
   display: flex;
@@ -370,7 +370,9 @@
   height: 44px;
   flex: none;
   border-radius: var(--r-lg);
-  background: linear-gradient(168deg, rgba(var(--amr), 0.42) 0%, rgba(var(--amr), 0.14) 100%);
+  /* v7 made this a solid amber pod with the flame knocked out of it, rather
+     than a tinted gradient with an amber flame on top. */
+  background: var(--am);
   box-shadow: var(--lift);
 }
 .t-streak-nums {
@@ -378,13 +380,14 @@
   flex-direction: column;
   gap: 6px;
 }
+/* The whole streak block reads amber in v7, not just its badge. */
 .t-streak-label,
 .t-streak-unit {
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0.08em;
-  color: var(--mut);
+  color: var(--am);
 }
 .t-streak-value {
   display: flex;
@@ -396,7 +399,7 @@
   font-size: 30px;
   line-height: 1;
   letter-spacing: -0.035em;
-  color: var(--tx);
+  color: var(--am);
 }
 
 .t-week {
@@ -459,16 +462,13 @@
 
 /* Habits card on Today — v6's measurements. */
 .t-habits {
-  padding: 24px 20px 20px;
-  border-radius: 16px;
-  background: var(--sf1);
-  box-shadow: var(--lift);
+  padding: 2px 0 0;
 }
 .t-habits-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 0 4px 18px;
+  margin: 0 2px 14px;
 }
 .t-habits-label {
   font-weight: 500;
