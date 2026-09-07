@@ -467,17 +467,16 @@
   transform: translateY(-1px);
 }
 
+/* v7 ruled this section rather than carding it. */
 .tr-exercises {
-  padding: 22px 18px;
-  border-radius: 16px;
-  background: rgba(var(--w), 0.035);
-  border: var(--edge);
+  padding: 24px 2px 4px;
+  border-top: var(--edge);
 }
 .tr-exercises-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 0 4px 16px;
+  margin: 0 0 16px;
 }
 .tr-exercises-label {
   font-weight: 500;
@@ -538,6 +537,9 @@
   color: var(--mut);
 }
 .tr-row-swap {
+  /* v7 sets this label in caps, like every other control label. */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   flex: none;
   /* v7 paints this 40px; 44 is what a finger needs and there is nothing
      around it that the extra four pixels disturb. */
