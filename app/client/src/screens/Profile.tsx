@@ -27,10 +27,19 @@ export default function Profile() {
   const navigate = useNavigate();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [focusToday, setFocusToday] = useState(0);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
-    api.get<{ habits: Habit[] }>('/habits').then((r) => setHabits(r.habits));
-    api.get<{ totalSec: number }>('/focus/today').then((r) => setFocusToday(r.totalSec));
+    // Both were bare .then() with no rejection handler: a failed request
+    // showed a profile full of zeros rather than saying it could not load.
+    api
+      .get<{ habits: Habit[] }>('/habits')
+      .then((r) => setHabits(r.habits))
+      .catch(() => setLoadFailed(true));
+    api
+      .get<{ totalSec: number }>('/focus/today')
+      .then((r) => setFocusToday(r.totalSec))
+      .catch(() => setLoadFailed(true));
   }, []);
 
   const bestStreak = habits.reduce((m, h) => Math.max(m, h.streak), 0);
@@ -49,6 +58,7 @@ export default function Profile() {
 
   return (
     <Screen title={t('profileTitle')} nav={false}>
+      {loadFailed && <p className="inline-error" role="alert">{t('profileLoadFailed')}</p>}
       <Section>
         <p className="page-title" style={{ fontSize: 20, marginBottom: 2 }}>
           {user?.name || user?.email}

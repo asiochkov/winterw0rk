@@ -58,7 +58,13 @@ export default function SignUp() {
         <p className="auth-sub">{t('signUpSub')}</p>
         <form className="auth-form" onSubmit={onSubmit}>
           <Field label={t('nameLabel')}>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('namePlaceholder')} autoComplete="name" />
+            <Input
+              autoFocus
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t('namePlaceholder')}
+              autoComplete="name"
+            />
           </Field>
           <Field label={t('emailLabel')}>
             <Input

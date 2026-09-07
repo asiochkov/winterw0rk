@@ -72,6 +72,7 @@ export default function ForgotPassword() {
           <form className="auth-form" onSubmit={onSubmit}>
             <Field label={t('emailLabel')} error={error}>
               <Input
+                autoFocus
                 type="email"
                 required
                 value={email}

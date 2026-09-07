@@ -78,3 +78,22 @@ button:disabled {
   align-items: center;
   min-height: 44px;
 }
+
+/*
+ * Reduced motion, handled once rather than per stylesheet. Eight of the
+ * sixteen sheets had their own block and the rest did not, which is the kind
+ * of coverage that silently rots as screens are added. This cannot be missed.
+ *
+ * Durations are near-zero rather than zero so transitionend and animationend
+ * still fire and nothing that waits on them hangs.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

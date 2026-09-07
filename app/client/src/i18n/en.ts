@@ -537,6 +537,7 @@ export const en = {
   daySun: 'Sun',
 
   // profile
+  profileLoadFailed: 'Some of this could not be loaded. The figures below may be incomplete.',
   profileTitle: 'Profile',
   profileArc: 'This arc',
   profileDay: 'Day',

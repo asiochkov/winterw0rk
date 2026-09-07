@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api/client';
 import type { ExerciseListItem } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
+import { ErrorState, LoadingRows } from '../../components/states';
+import { useAsyncData } from '../../hooks/useAsyncData';
 import { EmptyState, Input } from '../../components/ui';
 import '../training.css';
 
@@ -12,19 +14,20 @@ export default function ExerciseLibrary() {
   const { t } = useLanguage();
   const [q, setQ] = useState('');
   const [group, setGroup] = useState('');
-  const [groups, setGroups] = useState<string[]>([]);
-  const [exercises, setExercises] = useState<ExerciseListItem[] | null>(null);
+  /*
+   * Both of these were bare .then() with no rejection handler, so a failed
+   * request left an empty library that read as "there are no exercises".
+   */
+  const groupState = useAsyncData(() => api.get<{ groups: string[] }>('/exercises/groups'), []);
+  const groups = groupState.data?.groups ?? [];
 
-  useEffect(() => {
-    api.get<{ groups: string[] }>('/exercises/groups').then((r) => setGroups(r.groups));
-  }, []);
-
-  useEffect(() => {
+  const listState = useAsyncData(() => {
     const params = new URLSearchParams();
     if (q) params.set('q', q);
     if (group) params.set('group', group);
-    api.get<{ exercises: ExerciseListItem[] }>(`/exercises?${params}`).then((r) => setExercises(r.exercises));
+    return api.get<{ exercises: ExerciseListItem[] }>(`/exercises?${params}`);
   }, [q, group]);
+  const exercises = listState.data?.exercises ?? null;
 
   return (
     <Screen title={t('libraryTitle')} nav={false}>
@@ -43,7 +46,11 @@ export default function ExerciseLibrary() {
         ))}
       </div>
 
-      {exercises && exercises.length === 0 ? (
+      {listState.error ? (
+        <ErrorState message={listState.error} onRetry={listState.reload} retryLabel={t('tryAgain')} />
+      ) : listState.loading ? (
+        <LoadingRows rows={5} />
+      ) : exercises && exercises.length === 0 ? (
         <EmptyState
           title={t('libraryEmptyTitle')}
           body={t('libraryEmptyBody')}

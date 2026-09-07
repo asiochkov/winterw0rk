@@ -539,6 +539,7 @@ export const ru: typeof en = {
   daySun: 'Вс',
 
   // profile
+  profileLoadFailed: 'Часть данных не загрузилась. Цифры ниже могут быть неполными.',
   profileTitle: 'Профиль',
   profileArc: 'Текущий арк',
   profileDay: 'День',

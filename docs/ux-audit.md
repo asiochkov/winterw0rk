@@ -139,19 +139,28 @@ hairline `--edge` gives them something to be seen by.
 ## P2 — noticeable
 
 - **P2-1** No route-level pending state: navigating renders the new screen's
-  empty shell before its data lands, so every transition flashes.
-- **P2-2** No form is focused on mount; sign-in needs a tap before typing.
-- **P2-3** `ExerciseLibrary`, `AddHabit`, `AddQuit`, `Profile`, `ResetPassword`
-  and `ForgotPassword` have no loading, error or empty state at all.
+  empty shell before its data lands, so every transition flashes. *Open.*
+- **P2-2** No form was focused on mount; sign-in needed a tap before typing.
+  **Fixed** on sign-in, sign-up, forgot and reset.
+- **P2-3** **Fixed**, and the finding was partly wrong: `AddHabit` and
+  `AddQuit` do handle their errors, through a `busy`/`error` pair rather than
+  the shared components, which is why the first sweep missed them. The two
+  that genuinely had nothing were `ExerciseLibrary` and `Profile`, both using
+  bare `.then()` with no rejection handler — a failed request showed an empty
+  library reading as "there are no exercises", and a profile of zeros.
 - **P2-4** The habits counter "4 / 9" is a link but is not styled as one.
+  *Open.*
 
 ## P3 — polish
 
 - **P3-1** No focus-visible ring is defined anywhere; keyboard users cannot
   see where they are.
-- **P3-2** `prefers-reduced-motion` is honoured in two stylesheets out of
-  sixteen.
-- **P3-3** The hero reserves ~350px on desktop with nothing in it.
+- **P3-2** **Fixed**, and the count in this finding was wrong: eight of the
+  sixteen sheets honoured `prefers-reduced-motion`, not two. Eight did not,
+  which is coverage that rots as screens are added, so it is handled once
+  globally instead. Durations go to 0.01ms rather than 0 so `transitionend`
+  still fires and nothing waiting on it hangs.
+- **P3-3** The hero reserves ~350px on desktop with nothing in it. *Open.*
 
 ---
 
@@ -163,4 +172,8 @@ hairline `--edge` gives them something to be seen by.
 4. P1-1 touch targets — **done**
 5. P1-2 sign-up — **done**
 6. P1-3 Today's lower blocks — **done**
-7. P2, then P3 — pending
+7. P2 — mostly done; route-level pending state and the habits counter remain
+8. P3 — reduced motion done; the hero's desktop dead space remains
+9. **Desktop layout**: v7 lays Today's tiles in two columns from 1180px and
+   the app rendered one at every width, which is why the laptop read as a
+   stretched phone. Done for Today; the other tiled screens still need it.

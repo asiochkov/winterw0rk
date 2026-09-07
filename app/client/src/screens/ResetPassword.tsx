@@ -48,6 +48,7 @@ export default function ResetPassword() {
           <form className="auth-form" onSubmit={onSubmit}>
             <Field label={t('passwordLabel')} error={error} hint={!error ? t('passwordHint') : undefined}>
               <Input
+                autoFocus
                 type="password"
                 required
                 minLength={8}

@@ -267,6 +267,14 @@
   gap: 10px;
   padding: 0 22px;
 }
+/* v7 widens the side padding from 22px to 40px above the phone. */
+@media (min-width: 760px) {
+  .t-tiles,
+  .t-below {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
 
 .t-next {
   display: flex;
@@ -579,12 +587,35 @@
 
 /* v6 reorders these by time of day and world, so they lay out as a flex column. */
 .t-blocks {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
   gap: 10px;
 }
 .t-block {
   min-width: 0;
+}
+
+/*
+ * v7 lays these out in two columns from the desktop breakpoint and only then:
+ * tileCols is repeat(2,1fr) on desktop and 1fr everywhere else. Habits, clean
+ * runs and the day overview take a column each; the mind pair spans both,
+ * because two half tiles inside a half column would be unreadable.
+ *
+ * Without this the desktop content column was a phone layout stretched wide,
+ * which is most of why the laptop build read as broken.
+ */
+@media (min-width: 1180px) {
+  .t-tiles,
+  .t-blocks {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .t-block-wide {
+    grid-column: span 2;
+  }
 }
 
 /* Clean runs — v6's quit strip on Today. */

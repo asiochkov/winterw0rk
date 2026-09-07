@@ -295,8 +295,14 @@ export default function Today() {
       />
 
       <div className="t-tiles">
-        <NextStepCard kicker={next.kicker} title={next.title} why={next.why} cta={next.cta} onGo={next.go} />
-        <StreakCard days={bestStreak} week={week} />
+        {/* The next step and the week strip both read across the full width;
+            v7 gives them span 2 rather than halving them. */}
+        <div className="t-block-wide">
+          <NextStepCard kicker={next.kicker} title={next.title} why={next.why} cta={next.cta} onGo={next.go} />
+        </div>
+        <div className="t-block-wide">
+          <StreakCard days={bestStreak} week={week} />
+        </div>
       </div>
 
       <div className="t-below t-blocks">
@@ -317,11 +323,13 @@ export default function Today() {
           </div>
         )}
 
-        <div className="t-block" style={{ order: order.quit }}>
+        {/* This carried order.quit, the same key as Clean runs, which left
+            order.body unused and the two tiles fighting for one position. */}
+        <div className="t-block" style={{ order: order.body }}>
           <DayOverview areas={overviewAreas} />
         </div>
 
-        <div className="t-block" style={{ order: order.mind }}>
+        <div className="t-block t-block-wide" style={{ order: order.mind }}>
           <MindTiles
             moodBars={moodBars}
             moodText={mood ? t(MOOD_KEYS[mood.mood - 1]) : t('todayMoodNotLogged')}
