@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
+import { BackButton } from '../components/BackButton';
 import { useServerConfig } from '../hooks/useServerConfig';
 import { Button, Field, Input } from '../components/ui';
 import './auth.css';
@@ -34,9 +35,7 @@ export default function ForgotPassword() {
   return (
     <div className="auth-shell">
       <div className="auth-form-wrap">
-        <button className="auth-back" onClick={() => navigate('/sign-in')}>
-          ← {t('back')}
-        </button>
+        <BackButton onClick={() => navigate('/sign-in')} />
         <h1 className="auth-headline" style={{ fontSize: 26, marginTop: 24 }}>
           {t('forgotPasswordTitle')}
         </h1>

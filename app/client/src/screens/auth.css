@@ -88,14 +88,6 @@
   text-align: center;
 }
 
-.auth-back {
-  background: none;
-  border: none;
-  color: var(--mut);
-  font-size: 14px;
-  padding: 0;
-  align-self: flex-start;
-}
 
 @media (min-width: 860px) {
   .auth-shell {

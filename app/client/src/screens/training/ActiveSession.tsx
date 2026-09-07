@@ -5,6 +5,7 @@ import { api } from '../../api/client';
 import type { ExerciseListItem, WorkoutSession } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
+import { BackButton } from '../../components/BackButton';
 import '../training.css';
 import '../legal.css';
 
@@ -124,9 +125,7 @@ export default function ActiveSession() {
     <Screen nav={false} bleed back="self">
       <div className="ss-head">
         <div className="ss-head-row">
-          <button type="button" className="ss-exit" onClick={() => navigate('/training')} aria-label={t('trainingExit')}>
-            ←
-          </button>
+          <BackButton onClick={() => navigate('/training')} variant="overlay" />
           <div className="ss-progress">
             <div className="ss-progress-top">
               <span>{clock(elapsedSec)}</span>

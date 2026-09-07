@@ -1,5 +1,6 @@
 import type { RelapseEvent } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
+import { BackButton } from '../../components/BackButton';
 import MILESTONES from '../../assets/milestones.v6.json';
 
 /**
@@ -26,15 +27,10 @@ export function QuitHero({
    *  way out, the same way the habit detail hero does. */
   onBack?: () => void;
 }) {
-  const { t } = useLanguage();
   return (
     <div className="q-hero">
       <div className="q-hero-wash" />
-      {onBack && (
-        <button type="button" className="q-back" onClick={onBack} aria-label={t('back')}>
-          <span aria-hidden="true">←</span>
-        </button>
-      )}
+      {onBack && <BackButton onClick={onBack} variant="overlay" />}
       <div className="q-hero-inner">
         <div className="q-hero-chip">
           <span className="q-hero-dot" aria-hidden="true" />

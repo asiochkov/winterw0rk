@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useWorld, type World } from '../context/WorldContext';
 import { V6Icon, type IconName } from './V6Icon';
+import { BackButton } from './BackButton';
 import './Shell.css';
 
 interface ScreenBase {
@@ -33,19 +34,13 @@ type ScreenProps = ScreenBase &
   ({ nav?: true; back?: never } | { nav: false; back: (() => void) | 'self' });
 
 export function Screen({ title, kicker, children, nav = true, rail, bleed = false, back }: ScreenProps) {
-  const { t } = useLanguage();
   return (
     <div className="app-shell">
       {nav && <SidebarNav />}
       <div className={`app-body ${nav ? 'app-body-with-sidebar' : ''}`}>
         <div className={`app-content ${rail ? 'app-content-with-rail' : ''}`}>
           <main className={`app-main ${nav ? 'app-main-tabbed' : ''} ${bleed ? 'app-main-bleed' : ''}`}>
-            {typeof back === 'function' && (
-              <button type="button" className="screen-back" onClick={back} aria-label={t('back')}>
-                <span aria-hidden="true">←</span>
-                {t('back')}
-              </button>
-            )}
+            {typeof back === 'function' && <BackButton onClick={back} />}
             {(title || kicker) && (
               <header className="page-head">
                 {kicker && <p className="page-kicker">{kicker}</p>}

@@ -6,6 +6,7 @@ import { api, ApiError } from '../../api/client';
 import type { Habit, HabitHistoryEntry } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
+import { BackButton } from '../../components/BackButton';
 import { Button, Field, Input } from '../../components/ui';
 import { useMutation } from '../../hooks/useAsyncData';
 import { ErrorState, LoadingRows } from '../../components/states';
@@ -117,9 +118,7 @@ export default function HabitDetail() {
       <div className="hd-hero">
         <div className="hd-hero-wash" />
         <div className="hd-hero-inner">
-          <button type="button" className="hd-back" onClick={() => navigate('/habits')} aria-label={t('back')}>
-            ←
-          </button>
+          <BackButton onClick={back} variant="overlay" />
           <div>
             <div className="hd-kicker">
               {categoryLabel(habit.category, t)} · {freq}

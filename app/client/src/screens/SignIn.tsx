@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth, ApiError } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { BackButton } from '../components/BackButton';
 import { useServerConfig } from '../hooks/useServerConfig';
 import { Button, Field, Input } from '../components/ui';
 import './auth.css';
@@ -36,9 +37,7 @@ export default function SignIn() {
   return (
     <div className="auth-shell">
       <div className="auth-form-wrap">
-        <button className="auth-back" onClick={() => navigate('/')}>
-          ← {t('back')}
-        </button>
+        <BackButton onClick={() => navigate('/')} />
         <h1 className="auth-headline" style={{ fontSize: 26, marginTop: 24 }}>
           {t('signInTitle')}
         </h1>

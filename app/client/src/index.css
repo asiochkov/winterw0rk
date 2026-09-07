@@ -72,7 +72,6 @@ button:disabled {
  * height directly.
  */
 .today-link,
-.auth-back,
 .auth-foot a {
   display: inline-flex;
   align-items: center;

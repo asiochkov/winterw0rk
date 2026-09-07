@@ -394,17 +394,6 @@
   justify-content: space-between;
   padding: 72px 30px 26px;
 }
-.hd-back {
-  width: 42px;
-  /* 42px is v7's paint; 44 is what a finger needs. */
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(var(--w), 0.14);
-  background: var(--sf2);
-  color: var(--tx);
-  font-size: 16px;
-  cursor: pointer;
-}
 .hd-kicker {
   font-weight: 500;
   font-size: 11px;

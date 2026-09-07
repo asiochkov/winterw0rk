@@ -596,19 +596,6 @@
   align-items: center;
   gap: 10px;
 }
-.ss-exit {
-  width: 46px;
-  height: 46px;
-  flex: none;
-  border-radius: var(--r-lg);
-  border: var(--edge2);
-  background: var(--sf2);
-  color: var(--tx);
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 1;
-  cursor: pointer;
-}
 .ss-progress {
   flex: 1;
   min-width: 0;

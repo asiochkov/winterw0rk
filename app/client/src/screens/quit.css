@@ -116,20 +116,6 @@
   height: 378px;
   overflow: hidden;
 }
-.q-back {
-  position: absolute;
-  top: 18px;
-  left: 22px;
-  z-index: 2;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(var(--w), 0.14);
-  background: var(--sf2);
-  color: var(--tx);
-  font-size: 16px;
-  cursor: pointer;
-}
 .q-hero-wash {
   position: absolute;
   inset: 0;
