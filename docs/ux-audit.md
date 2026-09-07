@@ -79,7 +79,16 @@ That is why the laptop build reads as broken.
 v7 fills it with `CTX` — a per-screen context panel ("DAY CONTEXT / Where you
 stand") whose metrics compare against the user's own 30-day average.
 
-**Plan:** build the context rail from v7's `CTX`, starting with Today.
+**Fixed** for the three screens v7 gives a panel and the app has real data
+for: Today, Habits and Progress.
+
+v7's own `CTX` is worth a warning. Its `today` and `habits` panels compute
+from state, but its `train` and `progress` panels are hardcoded demo
+figures — a 92kg bench, 78.4kg body weight, 14,200kg of tonnage, "+8%". None
+of that was carried over. Every figure in the app's panels comes from data it
+already holds, and a metric is dropped rather than invented when it does not.
+v7's `train` panel is therefore not built: the app has no seven-day volume to
+report yet.
 
 ---
 
@@ -150,7 +159,7 @@ hairline `--edge` gives them something to be seen by.
 
 1. P0-1 feedback on failure — **done**
 2. P0-2 loading and error states — **done**
-3. P0-3 the desktop context rail — **done for Today**, other screens pending
+3. P0-3 the desktop context rail — **done** (Today, Habits, Progress)
 4. P1-1 touch targets — **done**
 5. P1-2 sign-up — **done**
 6. P1-3 Today's lower blocks — **done**

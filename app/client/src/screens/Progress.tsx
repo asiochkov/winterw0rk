@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { Habit } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { ContextRail } from '../components/ContextRail';
 import { V6Icon, type IconName } from '../components/V6Icon';
 import { ErrorState, LoadingRows } from '../components/states';
 import './progress.css';
@@ -88,8 +89,45 @@ export default function Progress() {
   const weekdays = lang === 'ru' ? ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const week = data.days.slice(-7);
 
+  /*
+   * v7's reading panel. Its own version quotes a bench 1RM, a body weight and
+   * a tonnage that are hardcoded demo figures; these come from the same
+   * overview endpoint the screen already reads, so nothing here is invented.
+   */
+  const rail = (
+    <ContextRail
+      kicker={t('progressRecord')}
+      title={t('ctxReadingTitle')}
+      body={t('ctxReadingBody')}
+      metrics={[
+        {
+          label: t('ctxWindowRate'),
+          value: `${data.rate}%`,
+          delta: `${data.delta >= 0 ? '+' : ''}${data.delta}`,
+          direction: data.delta >= 0 ? 'up' : 'down',
+          meaning: t('ctxWindowMeaning', { n: data.windowDays, prev: data.prevRate }),
+        },
+        {
+          label: t('ctxSessions'),
+          value: String(data.sessions),
+          meaning: t('ctxSessionsMeaning'),
+        },
+        {
+          label: t('ctxFocusMinutes'),
+          value: String(data.focusMinutes),
+          meaning: t('ctxFocusMeaning'),
+        },
+      ]}
+      nextLabel={t('ctxNext')}
+      actions={[
+        { label: t('navHabits'), onClick: () => navigate('/habits') },
+        { label: t('navBody'), onClick: () => navigate('/body') },
+      ]}
+    />
+  );
+
   return (
-    <Screen nav bleed>
+    <Screen nav bleed rail={rail}>
       <div className="pr-head">
         <div className="pr-chip">
           <span className="pr-chip-dot" aria-hidden="true" />

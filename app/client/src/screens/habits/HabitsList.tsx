@@ -4,6 +4,7 @@ import { api } from '../../api/client';
 import type { Habit, QuitCounter } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
+import { ContextRail } from '../../components/ContextRail';
 import { ScreenHead, Segmented } from '../../components/ScreenHead';
 import { ErrorState, LoadingRows } from '../../components/states';
 import { useMutation } from '../../hooks/useAsyncData';
@@ -69,8 +70,62 @@ export default function HabitsList() {
     );
   }
 
+  /*
+   * v7's context panel for this screen. Its own version of the panel invents
+   * several of its figures; these are all computed from the habits actually
+   * loaded, and a metric is dropped rather than faked when the data is not
+   * there.
+   */
+  const active = (habits ?? []).filter((h) => !h.archived);
+  const avgRate = active.length
+    ? Math.round(active.reduce((sum, h) => sum + h.rate, 0) / active.length)
+    : 0;
+  const dueToday = active.filter((h) => h.scheduledToday);
+  const todayRate = dueToday.length
+    ? Math.round((dueToday.filter((h) => h.doneToday).length / dueToday.length) * 100)
+    : 0;
+  const atRisk = active.filter((h) => h.rate < 60).sort((a, b) => a.rate - b.rate);
+  const bestEver = active.reduce((m, h) => Math.max(m, h.best), 0);
+
+  const rail = (
+    <ContextRail
+      kicker={t('habitsConsistency')}
+      title={t('ctxHabitsTitle')}
+      body={t('ctxHabitsBody')}
+      metrics={[
+        {
+          label: t('ctxCompletion30'),
+          value: `${avgRate}%`,
+          delta: dueToday.length ? `${todayRate >= avgRate ? '+' : ''}${todayRate - avgRate}` : undefined,
+          direction: todayRate >= avgRate ? 'up' : 'down',
+          meaning: dueToday.length
+            ? t('ctxCompletionMeaning', { today: todayRate, avg: avgRate })
+            : t('ctxNothingDue'),
+        },
+        {
+          label: t('ctxBestStreak'),
+          value: String(bestEver),
+          meaning: t('ctxBestStreakMeaning'),
+        },
+        {
+          label: t('ctxAtRisk'),
+          value: String(atRisk.length),
+          direction: atRisk.length ? 'down' : 'up',
+          meaning: atRisk.length
+            ? t('ctxAtRiskMeaning', { name: atRisk[0].name, rate: atRisk[0].rate })
+            : t('ctxAtRiskNone'),
+        },
+      ]}
+      nextLabel={t('ctxNext')}
+      actions={[
+        { label: t('habitsAddHabit'), onClick: () => navigate('/habits/new') },
+        { label: t('navProgress'), onClick: () => navigate('/progress') },
+      ]}
+    />
+  );
+
   return (
-    <Screen nav bleed>
+    <Screen nav bleed rail={rail}>
       <ScreenHead chip={t('habitsConsistency')} title={t('habitsTitle')} />
 
       <Segmented<Tab>
