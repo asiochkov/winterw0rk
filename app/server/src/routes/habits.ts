@@ -22,7 +22,8 @@ function serializeHabit(row: any) {
   const today = todayStr();
   const todayEntry = entries.find((e) => e.date === today);
 
-  const week: { date: string; scheduled: boolean; done: boolean; value: number }[] = [];
+  const forgiven = new Set(stats.forgiven);
+  const week: { date: string; scheduled: boolean; done: boolean; forgiven: boolean; value: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = addDays(today, -i);
     const e = entries.find((x) => x.date === d);
@@ -31,6 +32,7 @@ function serializeHabit(row: any) {
       date: d,
       scheduled,
       done: scheduled && !!e && (habit.type === 'bool' ? e.value >= 1 : row.target != null ? e.value >= row.target : e.value > 0),
+      forgiven: forgiven.has(d),
       value: e?.value ?? 0,
     });
   }
@@ -51,6 +53,9 @@ function serializeHabit(row: any) {
     streak: stats.streak,
     best: stats.best,
     rate: stats.rate,
+    // Days the streak survived without being completed, so the interface can
+    // draw them as forgiven rather than as done or as a miss.
+    forgiven: stats.forgiven,
     week,
   };
 }

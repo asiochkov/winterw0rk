@@ -24,6 +24,9 @@ export interface HabitWeekDay {
   date: string;
   scheduled: boolean;
   done: boolean;
+  /** A missed day the streak was allowed to survive — one per week. Neither
+   *  done nor a break, and drawn as neither. */
+  forgiven: boolean;
   value: number;
 }
 
@@ -43,6 +46,7 @@ export interface Habit {
   streak: number;
   best: number;
   rate: number;
+  forgiven: string[];
   week: HabitWeekDay[];
 }
 

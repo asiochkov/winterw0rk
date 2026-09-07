@@ -99,6 +99,7 @@ export default function HabitDetail() {
   // The API returns the entries that exist, not one per day, so the calendar is
   // built from today backwards and looks each date up.
   const byDate = new Map(history.map((e) => [e.date, e]));
+  const forgivenDays = new Set(habit.forgiven);
   const grid = Array.from({ length: GRID_DAYS }, (_, i) => {
     const date = new Date(Date.now() - (GRID_DAYS - 1 - i) * 86400000).toISOString().slice(0, 10);
     const entry = byDate.get(date);
@@ -107,6 +108,7 @@ export default function HabitDetail() {
       date,
       scheduled: habit.schedule.includes(dow),
       done: entry ? completed(entry.value) : false,
+      forgiven: forgivenDays.has(date),
     };
   });
 
@@ -129,6 +131,9 @@ export default function HabitDetail() {
           <div className="hd-stat is-current">
             <div className="hd-stat-label">{t('habitStreak')}</div>
             <div className="hd-stat-value">{habit.streak}</div>
+            {habit.streak === 0 && habit.best > 0 && (
+              <div className="hd-stat-note">{t('habitComeback', { n: habit.best })}</div>
+            )}
           </div>
           <div className="hd-stat">
             <div className="hd-stat-label">{t('habitBest')}</div>
@@ -148,7 +153,7 @@ export default function HabitDetail() {
             {grid.map((c) => (
               <div
                 key={c.date}
-                className={`hd-cell ${!c.scheduled ? 'is-off' : c.done ? 'is-done' : 'is-miss'}`}
+                className={`hd-cell ${!c.scheduled ? 'is-off' : c.done ? 'is-done' : c.forgiven ? 'is-grace' : 'is-miss'}`}
                 title={c.date}
               />
             ))}

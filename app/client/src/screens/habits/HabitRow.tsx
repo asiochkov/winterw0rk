@@ -61,8 +61,15 @@ export function HabitRow({
               <span>{schedText}</span>
             </div>
             <div className="hb-meta-line">
+              {/* A run that has been broken says what the record was rather
+                  than reporting a bare nothing: the best number is never
+                  deleted, only the current one resets. */}
               <span className={habit.streak > 0 ? 'hb-streak is-on' : 'hb-streak'}>
-                {habit.streak > 0 ? t('habitStreakDays', { n: habit.streak }) : t('habitNoStreak')}
+                {habit.streak > 0
+                  ? t('habitStreakDays', { n: habit.streak })
+                  : habit.best > 0
+                    ? t('habitBestWas', { n: habit.best })
+                    : t('habitNoStreak')}
               </span>
               <span className="hb-rate">{habit.rate}%</span>
             </div>
@@ -116,7 +123,7 @@ export function HabitRow({
         {habit.week.map((d) => (
           <div
             key={d.date}
-            className={`hb-cell ${!d.scheduled ? 'is-off' : d.done ? 'is-done' : 'is-miss'}`}
+            className={`hb-cell ${!d.scheduled ? 'is-off' : d.done ? 'is-done' : d.forgiven ? 'is-grace' : 'is-miss'}`}
             title={d.date}
           >
             {labelFor(d.date)}

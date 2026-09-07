@@ -350,6 +350,13 @@
   border-color: rgba(var(--w), 0.08);
   color: var(--mut);
 }
+/* Forgiven: a day that was missed but that the streak survived. Amber, not
+   green — it must not read as "done" — and not the flat grey of a miss. */
+.hb-cell.is-grace {
+  background: rgba(var(--amr), 0.12);
+  border-color: rgba(var(--amr), 0.3);
+  color: var(--am);
+}
 
 /* Add-habit affordance: v6 uses a 66px dashed button. */
 .hb-add {
@@ -455,6 +462,12 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
 }
+.hd-stat-note {
+  margin-top: 6px;
+  font-size: var(--fs-2);
+  line-height: var(--lh-body);
+  color: var(--mut);
+}
 .hd-cell {
   aspect-ratio: 1;
   border-radius: 10px;
@@ -463,6 +476,10 @@
 }
 .hd-cell.is-miss {
   border-color: rgba(var(--w), 0.08);
+}
+.hd-cell.is-grace {
+  background: rgba(var(--amr), 0.14);
+  border-color: rgba(var(--amr), 0.3);
 }
 .hd-cell.is-done {
   background: linear-gradient(168deg, rgba(var(--okr), 0.92) 0%, rgba(var(--okr), 0.6) 100%);
