@@ -1,12 +1,12 @@
 .today-kicker {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   margin: 0 0 6px;
 }
 .today-headline {
-  font-size: 22px;
+  font-size: var(--fs-6);
   font-weight: 800;
   letter-spacing: -0.015em;
   margin: 0 0 var(--s3);
@@ -43,10 +43,10 @@
   background: none;
   border: none;
   color: var(--mut);
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
 }
 
 .today-habit-list {
@@ -81,7 +81,7 @@
 }
 .today-habit-name {
   flex: 1;
-  font-size: 15px;
+  font-size: var(--fs-4);
   font-weight: 600;
 }
 .today-habit-done .today-habit-name {
@@ -89,7 +89,7 @@
   text-decoration: line-through;
 }
 .today-habit-meta {
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--mut);
   font-weight: 600;
 }
@@ -114,12 +114,12 @@
   min-width: 88px;
 }
 .today-quit-days {
-  font-size: 22px;
+  font-size: var(--fs-6);
   font-weight: 800;
   color: var(--ok);
 }
 .today-quit-kind {
-  font-size: 11px;
+  font-size: var(--fs-1);
   color: var(--mut);
   text-transform: uppercase;
   font-weight: 700;
@@ -184,9 +184,9 @@
 }
 .t-hero-season {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .t-hero-avatar {
@@ -197,16 +197,16 @@
   background: var(--sf2);
   color: var(--tx);
   font-weight: 600;
-  font-size: 12px;
-  line-height: 1;
+  font-size: var(--fs-2);
+  line-height: var(--lh-flat);
   cursor: pointer;
   box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.8);
 }
 .t-hero-phase {
   font-weight: 500;
-  font-size: 12px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   /* The phase words were already caps in the dictionary; the world name was
      too until the nav needed it in sentence case. Caps belong here. */
   text-transform: uppercase;
@@ -222,14 +222,14 @@
   font-weight: 800;
   font-size: 72px;
   line-height: 0.78;
-  letter-spacing: -0.05em;
+  letter-spacing: var(--ls-h1);
   color: var(--tx);
 }
 .t-hero-of {
   font-weight: 500;
-  font-size: 12px;
-  line-height: 1.5;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   padding-bottom: 12px;
 }
@@ -251,7 +251,7 @@
   margin: 16px 0 0;
   max-width: 340px;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: var(--lh-loose);
   color: rgba(var(--t), 0.62);
   text-wrap: pretty;
 }
@@ -310,9 +310,9 @@
 }
 .t-next-kicker {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   /* Caps live in CSS here, not in the dictionaries. */
   text-transform: uppercase;
   color: var(--ac);
@@ -320,14 +320,14 @@
 }
 .t-next-title {
   font-weight: 600;
-  font-size: 17px;
+  font-size: var(--fs-5);
   line-height: 1.3;
   color: var(--tx);
   text-wrap: pretty;
 }
 .t-next-why {
   margin-top: 6px;
-  font-size: 13px;
+  font-size: var(--fs-3);
   line-height: 1.45;
   color: var(--mut);
   text-wrap: pretty;
@@ -341,7 +341,7 @@
   background: var(--ac);
   color: var(--on-ac);
   font-weight: 600;
-  font-size: 15px;
+  font-size: var(--fs-4);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -384,9 +384,9 @@
 .t-streak-label,
 .t-streak-unit {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--am);
 }
 .t-streak-value {
@@ -396,8 +396,8 @@
 }
 .t-streak-days {
   font-weight: 800;
-  font-size: 30px;
-  line-height: 1;
+  font-size: var(--fs-7);
+  line-height: var(--lh-flat);
   letter-spacing: -0.035em;
   color: var(--am);
 }
@@ -445,9 +445,9 @@
 }
 .t-week-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .t-week-label.is-today {
@@ -472,9 +472,9 @@
 }
 .t-habits-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   /* v6 sets these labels in caps; the dictionaries hold sentence case. */
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
@@ -492,9 +492,9 @@
   padding: 0 12px;
   margin-right: -12px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--ac);
   background: none;
   border: none;
@@ -542,7 +542,7 @@
 .t-habit-name {
   font-weight: 600;
   font-size: 14px;
-  line-height: 1.2;
+  line-height: var(--lh-snug);
   color: var(--tx);
 }
 .t-habit.is-done .t-habit-name {
@@ -552,9 +552,9 @@
 .t-habit-sub {
   margin-top: 5px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 
@@ -566,7 +566,7 @@
   border: 1px solid rgba(var(--w), 0.18);
   background: transparent;
   color: var(--on-ac);
-  font-size: 15px;
+  font-size: var(--fs-4);
   cursor: pointer;
 }
 .t-habit-box.is-on {
@@ -588,7 +588,7 @@
   border: var(--edge2);
   background: var(--sf1);
   color: var(--tx);
-  font-size: 17px;
+  font-size: var(--fs-5);
   cursor: pointer;
 }
 .t-habit-plus {
@@ -599,8 +599,8 @@
   background: transparent;
   color: var(--tx);
   font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   cursor: pointer;
 }
 .t-habit-plus.is-on {
@@ -664,9 +664,9 @@
 .t-runs-label,
 .t-overview-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .t-runs-label {
@@ -693,9 +693,9 @@
 .t-run-days {
   flex: none;
   font-weight: 800;
-  font-size: 22px;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  font-size: var(--fs-6);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
 }
 .t-run-body {
@@ -710,12 +710,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
 }
 .t-run-kicker {
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--ac);
 }
 .t-run-saved {
@@ -758,8 +758,8 @@
 .t-ring-text {
   font-weight: 800;
   font-size: 23px;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
 }
 .t-areas {
@@ -777,15 +777,15 @@
 }
 .t-area-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .t-area-value {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   color: var(--tx);
 }
 .t-area-track {
@@ -843,9 +843,9 @@
 }
 .t-mind-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -867,17 +867,17 @@
 .t-mind-big {
   margin-top: 18px;
   font-weight: 800;
-  font-size: 30px;
-  line-height: 0.85;
-  letter-spacing: -0.03em;
+  font-size: var(--fs-7);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
 }
 .t-mind-foot {
   margin-top: 14px;
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-1);
   line-height: 1.4;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .t-mind-foot.is-accent {

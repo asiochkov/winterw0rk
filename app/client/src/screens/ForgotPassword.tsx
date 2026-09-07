@@ -36,7 +36,7 @@ export default function ForgotPassword() {
     <div className="auth-shell">
       <div className="auth-form-wrap">
         <BackButton onClick={() => navigate('/sign-in')} />
-        <h1 className="auth-headline" style={{ fontSize: 26, marginTop: 24 }}>
+        <h1 className="auth-headline auth-headline-form">
           {t('forgotPasswordTitle')}
         </h1>
         <p className="auth-sub">

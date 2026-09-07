@@ -13,7 +13,7 @@
   border-bottom: none;
 }
 .tr-name {
-  font-size: 15px;
+  font-size: var(--fs-4);
   font-weight: 600;
   margin: 0 0 2px;
 }
@@ -22,31 +22,31 @@
   color: var(--mut);
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   margin: 0;
 }
 .tr-prev {
-  font-size: 13px;
+  font-size: var(--fs-3);
   color: var(--mut);
   font-variant-numeric: tabular-nums;
 }
 
 .sess-progress {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
   color: var(--mut);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   margin: 0 0 4px;
 }
 .sess-ex-name {
-  font-size: 30px;
+  font-size: var(--fs-7);
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--ls-h4);
   margin: 0 0 4px;
 }
 .sess-ex-meta {
-  font-size: 13px;
+  font-size: var(--fs-3);
   color: var(--mut);
   margin: 0 0 var(--s6);
 }
@@ -73,9 +73,9 @@
   gap: var(--s2);
 }
 .sess-field-label {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   text-transform: uppercase;
 }
@@ -166,9 +166,9 @@
   background: rgba(var(--acr), 0.1);
   box-shadow: inset 0 1px 0 rgba(var(--w), 0.08);
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   /* v7 sets this label in caps; the dictionaries hold sentence case. */
   text-transform: uppercase;
   color: var(--ac);
@@ -184,7 +184,7 @@
   font-weight: 800;
   font-size: 40px;
   line-height: 0.92;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--ls-h2);
   color: var(--tx);
 }
 
@@ -200,9 +200,9 @@
 }
 .sum-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -210,8 +210,8 @@
   margin-top: 16px;
   font-weight: 800;
   font-size: 28px;
-  line-height: 0.85;
-  letter-spacing: -0.03em;
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
   font-variant-numeric: tabular-nums;
 }
@@ -227,9 +227,9 @@
 }
 .sum-change-v {
   font-weight: 800;
-  font-size: 30px;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  font-size: var(--fs-7);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-h3);
   font-variant-numeric: tabular-nums;
 }
 .sum-change-v.is-up {
@@ -241,7 +241,7 @@
 .sum-change-read {
   flex: 1;
   min-width: 220px;
-  font-size: 13px;
+  font-size: var(--fs-3);
   line-height: 1.55;
   color: rgba(var(--t), 0.62);
   text-wrap: pretty;
@@ -273,14 +273,14 @@
 }
 .sum-pr-ex {
   font-weight: 600;
-  font-size: 15px;
-  line-height: 1.2;
+  font-size: var(--fs-4);
+  line-height: var(--lh-snug);
   color: var(--tx);
 }
 .sum-pr-val {
   font-weight: 500;
-  font-size: 12px;
-  line-height: 1;
+  font-size: var(--fs-2);
+  line-height: var(--lh-flat);
   color: var(--ac);
   white-space: nowrap;
 }
@@ -306,8 +306,8 @@
   background: rgba(var(--w), 0.03);
   color: rgba(var(--t), 0.55);
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   cursor: pointer;
 }
 .sum-feel-btn.is-on {
@@ -340,7 +340,7 @@
 .sum-next-v {
   font-weight: 600;
   font-size: 16px;
-  line-height: 1.2;
+  line-height: var(--lh-snug);
   color: var(--tx);
 }
 .sum-next-day {
@@ -355,9 +355,9 @@
   background: var(--tx);
   color: var(--bg);
   font-weight: 700;
-  font-size: 12px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -389,26 +389,26 @@
 }
 .tr-card-day {
   font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--ac);
 }
 .tr-card-place {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
 .tr-card-name {
   margin-top: 20px;
   font-weight: 800;
-  font-size: 44px;
+  font-size: var(--fs-8);
   line-height: 0.9;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--ls-h2);
   color: var(--tx);
   text-wrap: pretty;
 }
@@ -424,8 +424,8 @@
 .tr-metric-v {
   font-weight: 800;
   font-size: 24px;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
   white-space: nowrap;
 }
@@ -433,8 +433,8 @@
   margin-top: 10px;
   font-weight: 500;
   font-size: 10px;
-  line-height: 1.2;
-  letter-spacing: 0.08em;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -442,7 +442,7 @@
   margin-top: 24px;
   padding-top: 20px;
   border-top: 1px solid rgba(var(--w), 0.09);
-  font-size: 13px;
+  font-size: var(--fs-3);
   line-height: 1.55;
   color: rgba(var(--t), 0.6);
   text-wrap: pretty;
@@ -456,9 +456,9 @@
   background: var(--tx);
   color: var(--bg);
   font-weight: 700;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
   transition: transform var(--m-fast) ease;
@@ -480,17 +480,17 @@
 }
 .tr-exercises-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
 }
 .tr-exercises-note {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -512,8 +512,8 @@
   flex: none;
   width: 22px;
   font-weight: 500;
-  font-size: 12px;
-  line-height: 1;
+  font-size: var(--fs-2);
+  line-height: var(--lh-flat);
   color: var(--mut);
   font-variant-numeric: tabular-nums;
 }
@@ -524,22 +524,22 @@
 .tr-row-name {
   font-weight: 600;
   font-size: 14px;
-  line-height: 1.2;
+  line-height: var(--lh-snug);
   color: var(--tx);
 }
 .tr-row-meta {
   margin-top: 5px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
 .tr-row-swap {
   /* v7 sets this label in caps, like every other control label. */
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   flex: none;
   /* v7 paints this 40px; 44 is what a finger needs and there is nothing
      around it that the extra four pixels disturb. */
@@ -550,7 +550,7 @@
   background: var(--sf1);
   color: rgba(var(--t), 0.7);
   font-weight: 500;
-  font-size: 12px;
+  font-size: var(--fs-2);
   cursor: pointer;
 }
 
@@ -563,13 +563,13 @@
 .tr-rest-title {
   font-weight: 800;
   font-size: 26px;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
 }
 .tr-rest-body {
   margin: 14px 0 18px;
-  font-size: 13px;
+  font-size: var(--fs-3);
   line-height: 1.55;
   color: var(--mut);
 }
@@ -605,9 +605,9 @@
   align-items: baseline;
   justify-content: space-between;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   font-variant-numeric: tabular-nums;
 }
@@ -633,9 +633,9 @@
   background: var(--tx);
   color: var(--bg);
   font-weight: 700;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -663,15 +663,15 @@
 .ss-rest-next {
   margin-top: 18px;
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-1);
   line-height: 1.4;
   color: var(--mut);
 }
 .ss-rest-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -696,8 +696,8 @@
   color: var(--tx);
   font-weight: 600;
   font-size: 14px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   cursor: pointer;
 }
 
@@ -724,17 +724,17 @@
 }
 .ss-kicker {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--ac);
 }
 .ss-group {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -743,16 +743,16 @@
   font-weight: 800;
   font-size: 34px;
   line-height: 0.98;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
   text-wrap: pretty;
 }
 .ss-ex-last {
   margin-top: 12px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1.6;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-loose);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 
@@ -766,9 +766,9 @@
 }
 .ss-focus-kicker {
   font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -782,8 +782,8 @@
 .ss-focus-v {
   font-weight: 800;
   font-size: 46px;
-  line-height: 0.85;
-  letter-spacing: -0.04em;
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-h2);
   color: var(--tx);
   font-variant-numeric: tabular-nums;
 }
@@ -791,8 +791,8 @@
   margin-top: 10px;
   font-weight: 500;
   font-size: 10px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -813,8 +813,8 @@
 }
 .ss-stepper span {
   font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -837,9 +837,9 @@
   background: var(--ac);
   color: var(--on-ac);
   font-weight: 700;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -852,8 +852,8 @@
   min-height: 44px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -867,9 +867,9 @@
   background: transparent;
   color: rgba(var(--t), 0.55);
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -901,12 +901,12 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 11px;
+  font-size: var(--fs-1);
   color: var(--tx);
 }
 .ss-set-label {
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--tx);
   font-variant-numeric: tabular-nums;
 }
@@ -928,8 +928,8 @@
   background: var(--sf1);
   color: var(--tx);
   font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
   cursor: pointer;
 }
 .ss-nav-btn:disabled {
@@ -965,15 +965,15 @@
 }
 .ex-log-label {
   font-weight: 500;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
 .ex-log-hint {
-  font-size: 12px;
-  line-height: 1;
+  font-size: var(--fs-2);
+  line-height: var(--lh-flat);
   color: var(--mut);
   text-align: right;
 }
@@ -990,7 +990,7 @@
   border: var(--edge2);
   background: var(--sunk);
   color: var(--tx);
-  font-size: 15px;
+  font-size: var(--fs-4);
 }
 .ex-log-add {
   flex: none;

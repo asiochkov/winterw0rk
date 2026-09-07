@@ -38,7 +38,7 @@ export default function SignIn() {
     <div className="auth-shell">
       <div className="auth-form-wrap">
         <BackButton onClick={() => navigate('/')} />
-        <h1 className="auth-headline" style={{ fontSize: 26, marginTop: 24 }}>
+        <h1 className="auth-headline auth-headline-form">
           {t('signInTitle')}
         </h1>
         <p className="auth-sub">{t('signInSub')}</p>

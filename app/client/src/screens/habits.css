@@ -24,9 +24,9 @@
   margin: 0 0 2px;
 }
 .habit-card-cat {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   margin: 0;
 }
@@ -39,12 +39,12 @@
   font-size: 20px;
   font-weight: 800;
   color: var(--am);
-  line-height: 1;
+  line-height: var(--lh-flat);
 }
 .habit-card-streak-l {
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .habit-week-strip {
@@ -106,7 +106,7 @@
   border: var(--edge);
   background: var(--sf1);
   color: var(--mut);
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
 }
 .day-btn-on {
@@ -129,9 +129,9 @@
   font-weight: 800;
 }
 .detail-stat-l {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   text-transform: uppercase;
 }
@@ -201,7 +201,7 @@
 .hb-name {
   font-weight: 600;
   font-size: 16px;
-  line-height: 1.2;
+  line-height: var(--lh-snug);
   color: var(--tx);
 }
 .hb-row.is-done .hb-name {
@@ -214,9 +214,9 @@
   flex-direction: column;
   gap: 7px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .hb-meta-line {
@@ -278,8 +278,8 @@
   background: transparent;
   color: var(--tx);
   font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   cursor: pointer;
 }
 .hb-plus.is-on {
@@ -292,8 +292,8 @@
   margin-top: 16px;
   font-weight: 800;
   font-size: 20px;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-h4);
   color: var(--tx);
 }
 .hb-readout.is-met {
@@ -315,9 +315,9 @@
 .hb-prog {
   margin-top: 9px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 
@@ -335,8 +335,8 @@
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   background: rgba(var(--w), 0.04);
   border: 1px solid transparent;
   color: rgba(var(--t), 0.3);
@@ -362,8 +362,8 @@
   background: transparent;
   color: var(--mut);
   font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -396,9 +396,9 @@
 }
 .hd-kicker {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--ac);
   margin-bottom: 14px;
@@ -406,9 +406,9 @@
 .hd-title {
   margin: 0;
   font-weight: 800;
-  font-size: 44px;
+  font-size: var(--fs-8);
   line-height: 0.95;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--ls-h2);
   color: var(--tx);
 }
 
@@ -433,9 +433,9 @@
 }
 .hd-stat-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -446,8 +446,8 @@
   margin-top: 16px;
   font-weight: 800;
   font-size: 32px;
-  line-height: 0.85;
-  letter-spacing: -0.03em;
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
 }
 
@@ -462,9 +462,9 @@
 }
 .hd-section-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -493,9 +493,9 @@
 .hd-settings-label {
   margin-top: 36px;
   font-weight: 600;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: rgba(var(--t), 0.45);
 }

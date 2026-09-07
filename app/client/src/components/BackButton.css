@@ -21,8 +21,8 @@
   align-self: flex-start;
   margin-bottom: var(--s4);
   font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 }
 
@@ -44,5 +44,5 @@
 }
 .ww-back-arrow {
   font-size: 16px;
-  line-height: 1;
+  line-height: var(--lh-flat);
 }

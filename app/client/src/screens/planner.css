@@ -13,16 +13,16 @@
   border-radius: var(--r-md);
   color: var(--tx);
   padding: 0 10px;
-  font-size: 13px;
+  font-size: var(--fs-3);
 }
 
 .planner-day {
   margin-bottom: var(--s6);
 }
 .planner-day-label {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin: 0 0 8px;
@@ -60,7 +60,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: var(--fs-3);
   color: var(--mut);
 }
 .planner-menu {

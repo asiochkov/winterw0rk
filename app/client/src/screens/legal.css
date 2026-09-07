@@ -1,5 +1,5 @@
 .legal-intro {
-  font-size: 15px;
+  font-size: var(--fs-4);
   line-height: 1.65;
   color: var(--tx);
   margin: 0 0 var(--s8);
@@ -12,9 +12,9 @@
 }
 
 .legal-heading {
-  font-size: 15px;
+  font-size: var(--fs-4);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--ls-h5);
   margin: 0 0 var(--s3);
 }
 
@@ -27,7 +27,7 @@
 }
 
 .legal-version {
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--mut-dim);
   border-top: var(--edge);
   padding-top: var(--s4);
@@ -83,8 +83,8 @@
   align-items: center;
   justify-content: center;
   color: transparent;
-  font-size: 13px;
-  line-height: 1;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
   transition: background var(--m-fast) var(--e-io), border-color var(--m-fast) var(--e-io);
 }
 .consent-row input:checked + .consent-box {
@@ -133,7 +133,7 @@ body.has-cookie-notice .onb-shell {
 }
 .cookie-notice p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-3);
   line-height: 1.55;
   color: var(--mut);
 }

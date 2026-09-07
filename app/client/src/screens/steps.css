@@ -1,15 +1,15 @@
 .steps-count {
   font-size: 52px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--ls-h3);
   font-variant-numeric: tabular-nums;
   margin: 0;
-  line-height: 1;
+  line-height: var(--lh-flat);
 }
 .steps-goal-line {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin: 6px 0 var(--s4);

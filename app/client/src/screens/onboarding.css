@@ -30,8 +30,8 @@
   color: var(--mut);
   font-family: inherit;
   font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 }
 .onb-back:hover {
@@ -60,9 +60,9 @@
 }
 
 .onb-kicker {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin: 0;
@@ -70,15 +70,15 @@
 .onb-title {
   font-size: 28px;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  letter-spacing: var(--ls-h4);
+  line-height: var(--lh-snug);
   margin: -12px 0 0;
 }
 .onb-body {
-  font-size: 15px;
+  font-size: var(--fs-4);
   color: var(--mut);
   margin: -12px 0 0;
-  line-height: 1.5;
+  line-height: var(--lh-body);
 }
 
 .onb-list {
@@ -152,8 +152,8 @@
   color: var(--mut);
   font-family: inherit;
   font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 }
 .onb-more:hover {
@@ -164,18 +164,18 @@
   background: var(--sf-ac);
 }
 .onb-option-label {
-  font-size: 15px;
+  font-size: var(--fs-4);
   font-weight: 600;
 }
 .onb-option-hint {
   font-size: 12.5px;
   color: var(--mut);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
 }
 .onb-option-main .onb-option-hint {
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 11px;
+  font-size: var(--fs-1);
 }
 
 .onb-chips {
@@ -215,14 +215,14 @@
   border-bottom: var(--edge);
 }
 .onb-summary-label {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
 .onb-summary-value {
-  font-size: 15px;
+  font-size: var(--fs-4);
   font-weight: 600;
 }
 .onb-error {

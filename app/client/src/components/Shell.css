@@ -64,9 +64,9 @@
   margin-bottom: var(--s6);
 }
 .page-kicker {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin: 0 0 4px;
@@ -74,7 +74,7 @@
 .page-title {
   font-size: 26px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--ls-h4);
   margin: 0;
 }
 
@@ -161,10 +161,10 @@
   background: transparent;
   color: rgba(var(--t), 0.5);
   font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   /* v7 widened this from v6's .06em. */
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   /* The caps live here, not in the dictionaries. */
   text-transform: uppercase;
   cursor: pointer;
@@ -290,9 +290,9 @@
 
   .side-nav-logo {
     font-weight: 700;
-    font-size: 12px;
-    line-height: 1;
-    letter-spacing: 0.08em;
+    font-size: var(--fs-2);
+    line-height: var(--lh-flat);
+    letter-spacing: var(--ls-label);
     color: var(--tx);
     padding: 0 6px;
   }
@@ -322,9 +322,9 @@
     background: transparent;
     color: rgba(var(--t), 0.5);
     font-weight: 600;
-    font-size: 11px;
-    line-height: 1;
-    letter-spacing: 0.08em;
+    font-size: var(--fs-1);
+    line-height: var(--lh-flat);
+    letter-spacing: var(--ls-label);
     cursor: pointer;
     transition: background var(--m-sig) var(--e-io);
   }
@@ -340,8 +340,8 @@
     text-transform: uppercase;
     font-weight: 500;
     font-size: 10px;
-    line-height: 1;
-    letter-spacing: 0.08em;
+    line-height: var(--lh-flat);
+    letter-spacing: var(--ls-label);
     color: rgba(var(--t), 0.35);
   }
 
@@ -371,9 +371,9 @@
   }
   .side-nav-label {
     font-weight: 500;
-    font-size: 11px;
-    line-height: 1;
-    letter-spacing: 0.08em;
+    font-size: var(--fs-1);
+    line-height: var(--lh-flat);
+    letter-spacing: var(--ls-label);
     text-transform: uppercase;
     color: var(--mut);
   }
@@ -403,9 +403,9 @@
   .side-nav-key {
     display: none;
     font-weight: 500;
-    font-size: 11px;
-    line-height: 1;
-    letter-spacing: 0.08em;
+    font-size: var(--fs-1);
+    line-height: var(--lh-flat);
+    letter-spacing: var(--ls-label);
     color: var(--mut);
     padding: 4px 6px;
     border: var(--edge2);
