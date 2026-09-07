@@ -145,7 +145,7 @@ export default function QuitDetail() {
 
         <RecoveryMilestones kind={counter.kind} daysClean={clean.days} />
 
-        <div className="q-card">
+        <div className="q-section">
           <div className="q-card-label" style={{ marginBottom: 18 }}>
             {t('quitAttempts')}
           </div>

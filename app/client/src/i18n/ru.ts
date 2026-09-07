@@ -276,7 +276,7 @@ export const ru: typeof en = {
   habitRate: 'За 30 дней',
   habitHistory: 'История',
   habitNoEntries: 'Записей пока нет.',
-  habitSettings: 'Настройки',
+  habitSettings: 'Настройки привычки',
   habitArchive: 'В архив',
   habitRestore: 'Восстановить',
   doneValue: 'Готово',

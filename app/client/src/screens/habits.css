@@ -427,20 +427,20 @@
   padding: 0 22px 60px;
 }
 
+/*
+ * v7 took the three figures out of cards and set them in a grid ruled top and
+ * bottom, the same move it made on Session summary. The current streak is no
+ * longer a tinted tile — only its label carries the accent.
+ */
 .hd-stats {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
+  gap: 0 18px;
+  border-top: var(--edge);
+  border-bottom: var(--edge);
 }
 .hd-stat {
-  padding: 20px 16px;
-  border-radius: 16px;
-  background: rgba(var(--w), 0.035);
-  border: var(--edge);
-}
-.hd-stat.is-current {
-  background: rgba(var(--acr), 0.08);
-  border: 1px solid rgba(var(--acr), 0.18);
+  padding: 22px 2px;
 }
 .hd-stat-label {
   font-weight: 500;
@@ -498,4 +498,20 @@
 .hd-cell.is-done {
   background: linear-gradient(168deg, rgba(var(--okr), 0.92) 0%, rgba(var(--okr), 0.6) 100%);
   border-color: rgba(var(--okr), 0.35);
+}
+
+/* v7's settings heading above the habit's own controls. */
+.hd-settings-label {
+  margin-top: 36px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(var(--t), 0.45);
+}
+.hd-settings {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
 }

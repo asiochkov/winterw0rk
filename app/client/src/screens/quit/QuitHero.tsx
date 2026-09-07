@@ -70,7 +70,7 @@ export function CleanStrip({
     : t('quitStripNoRelapses', { days: STRIP_DAYS });
 
   return (
-    <div className="q-card">
+    <div className="q-section">
       <div className="q-card-label">{t('quitThirtyDays')}</div>
       <div className="q-strip">
         {bars.map((b) => (
@@ -98,7 +98,7 @@ export function RecoveryMilestones({ kind, daysClean }: { kind: string; daysClea
   const set = (MILESTONES as Record<string, (typeof MILESTONES)['behaviour']>)[kind] ?? MILESTONES.behaviour;
 
   return (
-    <div className="q-card">
+    <div className="q-section">
       <div className="q-card-head">
         <span className="q-card-label">{t('quitMilestones')}</span>
         <span className="q-card-source">{set.source}</span>

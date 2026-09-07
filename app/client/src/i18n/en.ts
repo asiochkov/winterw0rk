@@ -274,7 +274,7 @@ export const en = {
   habitRate: '30-day rate',
   habitHistory: 'History',
   habitNoEntries: 'No entries yet.',
-  habitSettings: 'Settings',
+  habitSettings: 'Habit settings',
   habitArchive: 'Archive habit',
   habitRestore: 'Restore habit',
   doneValue: 'Done',

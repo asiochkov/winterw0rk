@@ -191,6 +191,15 @@ build.
   unchanged. v7 also dropped two radii — 18px and 14px are gone from it
   entirely, having become 16px and 12px. Both conventions are already applied
   across the app's stylesheets; keep new work inside them.
+- **v7 de-carded the app, and this is the biggest remaining transfer.** Where
+  v6 wrapped a block in `padding:24px 22px; border-radius:18px;
+  background:rgba(var(--w),.035); border:var(--edge)`, v7 rules it instead:
+  `padding:26px 2px 28px; border-top:var(--edge)`, no fill. Across the
+  prototype the filled surface drops from 39 uses to 11 and the hairline rule
+  rises from 5 to 43. It is not a blanket substitution — the eleven that keep
+  a fill keep it deliberately, and paired half-width tiles stay carded — so do
+  it per screen with `tools/screen-diff.mjs`, not with a regex. Session
+  summary, Habit detail and Quit counter are done.
 - **Never invent design values.** Extract them from the prototype with a script
   and copy them. Every stylesheet added so far says where its numbers came from.
 - **Check which prototype the bundler is serving before you trust a

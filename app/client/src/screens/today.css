@@ -256,6 +256,24 @@
   text-wrap: pretty;
 }
 
+/*
+ * v7 grows the hero above the phone: 400px rather than 372, padding
+ * 60/40/34 rather than 68/26/30, and the day numeral from 72px to 84. The app
+ * had the phone values hardcoded at every width, which left the wide hero
+ * with its content clustered top and bottom and a dead band between them.
+ */
+@media (min-width: 760px) {
+  .t-hero {
+    height: 400px;
+  }
+  .t-hero-inner {
+    padding: 60px 40px 34px;
+  }
+  .t-hero-num {
+    font-size: 84px;
+  }
+}
+
 /* Tiles ride 18px up into the hero. */
 .t-tiles {
   position: relative;

@@ -213,6 +213,17 @@
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
+/*
+ * v7 took the standalone sections out of cards and ruled them instead:
+ * padding 26px 2px 28px with a border-top and no fill. The paired figures
+ * above keep their cards — it de-carded the full-width blocks, not everything.
+ * Across the prototype the filled surface went from 39 uses to 11 and the
+ * hairline rule from 5 to 43.
+ */
+.q-section {
+  padding: 26px 2px 28px;
+  border-top: var(--edge);
+}
 .q-pair .q-card {
   padding: 22px 20px;
 }
