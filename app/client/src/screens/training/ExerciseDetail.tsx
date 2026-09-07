@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api/client';
 import type { ExerciseDetailData } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
 import { Section } from '../../components/ui';
+import { ErrorState, LoadingRows } from '../../components/states';
+import { useAsyncData, useMutation } from '../../hooks/useAsyncData';
+import { V6Icon } from '../../components/V6Icon';
 import '../training.css';
 
 interface HistoryRow {
@@ -17,29 +20,100 @@ export default function ExerciseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [exercise, setExercise] = useState<ExerciseDetailData | null>(null);
-  const [history, setHistory] = useState<HistoryRow[]>([]);
-  const [alternatives, setAlternatives] = useState<{ id: string; name: string }[]>([]);
+  const [reps, setReps] = useState('');
+  const [weight, setWeight] = useState('');
 
-  useEffect(() => {
-    api
-      .get<{ exercise: ExerciseDetailData; history: HistoryRow[]; alternatives: { id: string; name: string }[] }>(`/exercises/${id}`)
-      .then((r) => {
-        setExercise(r.exercise);
-        setHistory(r.history);
-        setAlternatives(r.alternatives);
-      });
-  }, [id]);
+  // This was a bare .then() with no rejection handler, so a failed load left
+  // the screen blank for good.
+  const state = useAsyncData(
+    () =>
+      api.get<{
+        exercise: ExerciseDetailData;
+        history: HistoryRow[];
+        alternatives: { id: string; name: string }[];
+      }>(`/exercises/${id}`),
+    [id]
+  );
+  const mutation = useMutation();
 
-  if (!exercise) return <Screen nav={false}>{null}</Screen>;
+  async function logSet() {
+    const r = Number(reps);
+    if (!Number.isFinite(r) || r <= 0) return;
+    const w = weight === '' ? null : Number(weight);
+    const ok = await mutation.run(
+      () => api.post(`/training/exercises/${id}/sets`, { reps: r, weight: w }),
+      { success: t('exerciseSetLogged') }
+    );
+    if (!ok) return;
+    setReps('');
+    setWeight('');
+    state.reload();
+  }
 
+  if (state.loading) {
+    return (
+      <Screen nav={false}>
+        <LoadingRows rows={4} />
+      </Screen>
+    );
+  }
+  if (state.error || !state.data) {
+    return (
+      <Screen nav={false}>
+        <ErrorState message={state.error ?? t('genericError')} onRetry={state.reload} retryLabel={t('tryAgain')} />
+      </Screen>
+    );
+  }
+
+  const { exercise, history, alternatives } = state.data;
   const best = history.reduce((m, h) => (h.weight > m ? h.weight : m), 0);
+  const canLog = Number(reps) > 0;
 
   return (
     <Screen kicker={`${exercise.group} · ${exercise.equipment}`} title={exercise.name} nav={false}>
       <button className="auth-back" onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>
         ← {t('back')}
       </button>
+
+      {/* v7 puts a set logger on this screen so a set can be recorded without
+          starting a session first. It writes into today's session. */}
+      <div className="ex-log">
+        <div className="ex-log-head">
+          <span className="ex-log-label">{t('exerciseLogSet')}</span>
+          <span className="ex-log-hint">
+            {best ? t('exerciseLastBest', { kg: best }) : t('exerciseNoSets')}
+          </span>
+        </div>
+        <div className="ex-log-row">
+          <input
+            type="number"
+            inputMode="numeric"
+            className="ex-log-input"
+            value={reps}
+            onChange={(e) => setReps(e.target.value)}
+            placeholder={t('trainingReps')}
+            aria-label={t('trainingReps')}
+          />
+          <input
+            type="number"
+            inputMode="decimal"
+            className="ex-log-input"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            placeholder={t('trainingWeightKg')}
+            aria-label={t('trainingWeightKg')}
+          />
+          <button
+            type="button"
+            className="ex-log-add"
+            onClick={logSet}
+            disabled={!canLog || mutation.busy}
+            aria-label={t('exerciseLogSet')}
+          >
+            <V6Icon name="plus" size={20} stroke="currentColor" strokeWidth={1.7} />
+          </button>
+        </div>
+      </div>
 
       <Section title={t('trainingTechnique')}>
         <p style={{ fontSize: 14.5, lineHeight: 1.6, color: 'var(--tx)', margin: 0 }}>{exercise.cue}</p>

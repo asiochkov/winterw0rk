@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { api } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { ErrorState, LoadingRows } from '../components/states';
+import { useAsyncData, useMutation } from '../hooks/useAsyncData';
 import { Button, Field, Input, ProgressBar, Section } from '../components/ui';
 import './nutrition.css';
 
@@ -27,23 +29,22 @@ interface Day {
 
 export default function Nutrition() {
   const { t } = useLanguage();
-  const [day, setDay] = useState<Day | null>(null);
   const [name, setName] = useState('');
   const [calories, setCalories] = useState('');
   const [protein, setProtein] = useState('');
 
-  async function load() {
-    const r = await api.get<{ day: Day }>('/nutrition/today');
-    setDay(r.day);
-  }
-
-  useEffect(() => {
-    load();
-  }, []);
+  const state = useAsyncData(() => api.get<{ day: Day }>('/nutrition/today'), []);
+  const mutation = useMutation();
+  const load = state.reload;
 
   async function addFood() {
     if (!name || !calories) return;
-    await api.post('/nutrition/today/food', { name, calories: Number(calories), protein: Number(protein) || 0 });
+    const ok = await mutation.run(() =>
+      api.post('/nutrition/today/food', { name, calories: Number(calories), protein: Number(protein) || 0 })
+    );
+    // The fields are only cleared once the entry is actually saved. Clearing
+    // first threw the typed meal away whenever the request failed.
+    if (!ok) return;
     setName('');
     setCalories('');
     setProtein('');
@@ -51,16 +52,28 @@ export default function Nutrition() {
   }
 
   async function addWater(ml: number) {
-    await api.post('/nutrition/today/water', { deltaMl: ml });
-    load();
+    if (await mutation.run(() => api.post('/nutrition/today/water', { deltaMl: ml }))) load();
   }
 
   async function removeFood(id: number) {
-    await api.delete(`/nutrition/food/${id}`);
-    load();
+    if (await mutation.run(() => api.delete(`/nutrition/food/${id}`))) load();
   }
 
-  if (!day) return <Screen title={t('nutritionTitle')} nav={false}>{null}</Screen>;
+  if (state.loading) {
+    return (
+      <Screen title={t('nutritionTitle')} nav={false}>
+        <LoadingRows rows={4} />
+      </Screen>
+    );
+  }
+  if (state.error || !state.data) {
+    return (
+      <Screen title={t('nutritionTitle')} nav={false}>
+        <ErrorState message={state.error ?? t('genericError')} onRetry={load} retryLabel={t('tryAgain')} />
+      </Screen>
+    );
+  }
+  const day = state.data.day;
 
   const pct = day.calorieTarget ? (day.consumed / day.calorieTarget) * 100 : 0;
 

@@ -68,6 +68,101 @@ function serializeSession(sessionRow: any) {
   };
 }
 
+/**
+ * The figures v6's Session summary shows: duration, working-set count,
+ * tonnage and the exercises that beat their previous best. Computed on
+ * demand so the summary screen can be reopened on a session that was
+ * already finished, not only in the response to /finish.
+ */
+function summaryOf(userId: number, session: any) {
+  const exRows = db.prepare('SELECT * FROM session_exercises WHERE session_id = ? ORDER BY order_idx ASC').all(session.id) as any[];
+  let tonnage = 0;
+  let setCount = 0;
+  const prs: { exercise: string; weight: number; reps: number }[] = [];
+
+  for (const sx of exRows) {
+    const sets = db.prepare('SELECT * FROM set_entries WHERE session_exercise_id = ?').all(sx.id) as any[];
+    const priorBest = previousBest(userId, sx.exercise_id, session.id);
+    let sessionBestWeight = 0;
+    let sessionBestReps = 0;
+    for (const s of sets) {
+      if (s.is_warmup) continue;
+      setCount++;
+      tonnage += (s.weight || 0) * (s.reps || 0);
+      if ((s.weight || 0) > sessionBestWeight) {
+        sessionBestWeight = s.weight || 0;
+        sessionBestReps = s.reps || 0;
+      }
+    }
+    if (sessionBestWeight > 0 && (!priorBest || sessionBestWeight > priorBest.weight)) {
+      const ex = exerciseRow(sx.exercise_id);
+      prs.push({ exercise: ex.name, weight: sessionBestWeight, reps: sessionBestReps });
+    }
+  }
+
+  return { tonnage, setCount, prs };
+}
+
+/**
+ * v7's Session summary carries two blocks the app had no data for.
+ *
+ * CHANGE measures this session's tonnage against the last completed session of
+ * the same name — v7 compares against "the last time you ran this session", and
+ * the name is what identifies a session across days.
+ *
+ * NEXT SESSION names the next weekday the plan has something on, wrapping into
+ * next week when nothing is left in this one.
+ */
+function contextOf(userId: number, session: any, tonnage: number) {
+  const prevRow = db
+    .prepare(
+      `SELECT ws.id FROM workout_sessions ws
+       WHERE ws.user_id = ? AND ws.name = ? AND ws.status = 'completed' AND ws.id != ?
+       ORDER BY ws.date DESC, ws.id DESC LIMIT 1`
+    )
+    .get(userId, session.name, session.id) as any;
+
+  let previousTonnage: number | null = null;
+  if (prevRow) {
+    const row = db
+      .prepare(
+        `SELECT COALESCE(SUM(se.weight * se.reps), 0) AS ton FROM set_entries se
+         JOIN session_exercises sx ON sx.id = se.session_exercise_id
+         WHERE sx.session_id = ? AND se.is_warmup = 0`
+      )
+      .get(prevRow.id) as any;
+    previousTonnage = row.ton;
+  }
+
+  const changePct =
+    previousTonnage && previousTonnage > 0
+      ? Math.round(((tonnage - previousTonnage) / previousTonnage) * 100)
+      : null;
+
+  const days = db
+    .prepare('SELECT weekday, name FROM workout_plan_days WHERE user_id = ?')
+    .all(userId) as any[];
+  const byDay = new Map(days.map((d) => [d.weekday, d.name]));
+  const todayWeekday = weekdayOf(session.date);
+  let next: { weekday: number; name: string } | null = null;
+  for (let step = 1; step <= 7; step++) {
+    const wd = (todayWeekday + step) % 7;
+    const name = byDay.get(wd);
+    if (name) {
+      next = { weekday: wd, name };
+      break;
+    }
+  }
+
+  return { previousTonnage, changePct, next };
+}
+
+/** v6 offers five faces on the summary screen and a single free-text note. */
+const reflectionSchema = z.object({
+  feeling: z.number().int().min(1).max(5).nullable().optional(),
+  notes: z.string().max(500).nullable().optional(),
+});
+
 router.get('/today', (req, res) => {
   const userId = userIdOf(req);
   const today = todayStr();
@@ -122,6 +217,13 @@ router.post('/sessions/:id/start', (req, res) => {
   res.json({ session: serializeSession(updated) });
 });
 
+/** A set logged from the exercise screen carries no session of its own. */
+const quickSetSchema = z.object({
+  weight: z.number().min(0).max(1000).nullable().optional(),
+  reps: z.number().int().min(0).max(1000).nullable().optional(),
+  isWarmup: z.boolean().default(false),
+});
+
 const setSchema = z.object({
   sessionExerciseId: z.number(),
   weight: z.number().min(0).nullable().optional(),
@@ -152,6 +254,68 @@ router.post('/sessions/:id/sets', (req, res) => {
 
   const updated = db.prepare('SELECT * FROM workout_sessions WHERE id = ?').get(session.id);
   res.status(201).json({ session: serializeSession(updated), setId: info.lastInsertRowid });
+});
+
+/**
+ * Logs a set straight from the exercise screen, which v7 offers there and the
+ * app had no way to do.
+ *
+ * It records against today's session rather than inventing a second place for
+ * sets to live, creating the session and the exercise's slot in it when they
+ * do not exist yet. A set logged this way is therefore part of the day's
+ * record like any other, and DELETE /sets/:id undoes it.
+ */
+router.post('/exercises/:exerciseId/sets', (req, res) => {
+  const userId = userIdOf(req);
+  const exerciseId = String(req.params.exerciseId);
+  if (!exerciseRow(exerciseId)) return res.status(404).json({ error: 'unknown_exercise' });
+
+  const parsed = quickSetSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'invalid_input' });
+  const { weight, reps, isWarmup } = parsed.data;
+
+  const today = todayStr();
+  const result = db.transaction(() => {
+    let session = db
+      .prepare("SELECT * FROM workout_sessions WHERE user_id = ? AND date = ? AND status != 'skipped'")
+      .get(userId, today) as any;
+    if (!session) {
+      // A day with no plan still gets a session, so a set logged off-plan is
+      // not thrown away.
+      const plan = db
+        .prepare('SELECT * FROM workout_plan_days WHERE user_id = ? AND weekday = ?')
+        .get(userId, weekdayOf(today)) as any;
+      const info = db
+        .prepare("INSERT INTO workout_sessions (user_id, date, name, status) VALUES (?, ?, ?, 'active')")
+        .run(userId, today, plan?.name || exerciseRow(exerciseId).name);
+      session = db.prepare('SELECT * FROM workout_sessions WHERE id = ?').get(info.lastInsertRowid);
+    }
+
+    let sx = db
+      .prepare('SELECT * FROM session_exercises WHERE session_id = ? AND exercise_id = ?')
+      .get(session.id, exerciseId) as any;
+    if (!sx) {
+      const nextOrder =
+        ((db.prepare('SELECT MAX(order_idx) as m FROM session_exercises WHERE session_id = ?').get(session.id) as any).m ?? -1) + 1;
+      const info = db
+        .prepare('INSERT INTO session_exercises (session_id, exercise_id, order_idx) VALUES (?, ?, ?)')
+        .run(session.id, exerciseId, nextOrder);
+      sx = db.prepare('SELECT * FROM session_exercises WHERE id = ?').get(info.lastInsertRowid);
+    }
+
+    const nextIndex =
+      ((db.prepare('SELECT MAX(set_index) as m FROM set_entries WHERE session_exercise_id = ?').get(sx.id) as any).m ?? -1) + 1;
+    const setInfo = db
+      .prepare(
+        `INSERT INTO set_entries (session_exercise_id, set_index, weight, reps, is_warmup, completed_at)
+         VALUES (?, ?, ?, ?, ?, datetime('now'))`
+      )
+      .run(sx.id, nextIndex, weight ?? null, reps ?? null, isWarmup ? 1 : 0);
+
+    return { sessionId: session.id, setId: setInfo.lastInsertRowid };
+  })();
+
+  res.status(201).json(result);
 });
 
 router.patch('/sets/:id', (req, res) => {
@@ -216,35 +380,51 @@ router.patch('/session-exercises/:id/swap', (req, res) => {
   res.json({ session: serializeSession(session) });
 });
 
+/**
+ * v6's Session summary is a screen of its own, reachable after the session is
+ * already closed, so its figures come from here rather than from the response
+ * to /finish.
+ */
+router.get('/sessions/:id/summary', (req, res) => {
+  const userId = userIdOf(req);
+  const session = getOwnedSession(userId, Number(req.params.id));
+  if (!session) return res.status(404).json({ error: 'not_found' });
+
+  const { tonnage, setCount, prs } = summaryOf(userId, session);
+  const durationSec = session.duration_sec ?? 0;
+  const context = contextOf(userId, session, tonnage);
+  res.json({
+    session: serializeSession(session),
+    summary: { tonnage, setCount, durationSec, prs, ...context },
+  });
+});
+
+/**
+ * "How did it feel" and the session note are answered on the summary screen,
+ * after /finish has already run, so they are saved separately.
+ */
+router.patch('/sessions/:id/reflection', (req, res) => {
+  const userId = userIdOf(req);
+  const session = getOwnedSession(userId, Number(req.params.id));
+  if (!session) return res.status(404).json({ error: 'not_found' });
+
+  const parsed = reflectionSchema.safeParse(req.body ?? {});
+  if (!parsed.success) return res.status(400).json({ error: 'invalid_body' });
+
+  const feeling = parsed.data.feeling ?? null;
+  const notes = parsed.data.notes?.trim() ? parsed.data.notes.trim() : null;
+  db.prepare('UPDATE workout_sessions SET feeling = ?, notes = ? WHERE id = ?').run(feeling, notes, session.id);
+
+  const updated = db.prepare('SELECT * FROM workout_sessions WHERE id = ?').get(session.id);
+  res.json({ session: serializeSession(updated) });
+});
+
 router.post('/sessions/:id/finish', (req, res) => {
   const userId = userIdOf(req);
   const session = getOwnedSession(userId, Number(req.params.id));
   if (!session) return res.status(404).json({ error: 'not_found' });
 
-  const exRows = db.prepare('SELECT * FROM session_exercises WHERE session_id = ?').all(session.id) as any[];
-  let tonnage = 0;
-  let setCount = 0;
-  const prs: { exercise: string; weight: number; reps: number }[] = [];
-
-  for (const sx of exRows) {
-    const sets = db.prepare('SELECT * FROM set_entries WHERE session_exercise_id = ?').all(sx.id) as any[];
-    const priorBest = previousBest(userId, sx.exercise_id, session.id);
-    let sessionBestWeight = 0;
-    let sessionBestReps = 0;
-    for (const s of sets) {
-      if (s.is_warmup) continue;
-      setCount++;
-      tonnage += (s.weight || 0) * (s.reps || 0);
-      if ((s.weight || 0) > sessionBestWeight) {
-        sessionBestWeight = s.weight || 0;
-        sessionBestReps = s.reps || 0;
-      }
-    }
-    if (sessionBestWeight > 0 && (!priorBest || sessionBestWeight > priorBest.weight)) {
-      const ex = exerciseRow(sx.exercise_id);
-      prs.push({ exercise: ex.name, weight: sessionBestWeight, reps: sessionBestReps });
-    }
-  }
+  const { tonnage, setCount, prs } = summaryOf(userId, session);
 
   const feeling = req.body?.feeling ?? null;
   const notes = req.body?.notes ?? null;

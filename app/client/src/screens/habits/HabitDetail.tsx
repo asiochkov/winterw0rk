@@ -146,7 +146,10 @@ export default function HabitDetail() {
           )}
         </div>
 
-        <div className="hd-section">
+        {/* v7 titles this group rather than leaving a bare destructive button
+            at the foot of the screen. */}
+        <div className="hd-settings-label">{t('habitSettings')}</div>
+        <div className="hd-settings">
           <Button full variant="danger" onClick={archive}>
             {habit.archived ? t('habitRestore') : t('habitArchive')}
           </Button>

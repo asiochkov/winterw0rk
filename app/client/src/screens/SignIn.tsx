@@ -46,6 +46,8 @@ export default function SignIn() {
         <form className="auth-form" onSubmit={onSubmit}>
           <Field label={t('emailLabel')}>
             <Input
+              // The first field of a form the user came here to fill.
+              autoFocus
               type="email"
               required
               value={email}

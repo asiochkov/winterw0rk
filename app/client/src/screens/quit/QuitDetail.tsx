@@ -4,6 +4,8 @@ import { api } from '../../api/client';
 import type { CravingEpisode, QuitCounter, RelapseEvent } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
+import { ErrorState, LoadingRows } from '../../components/states';
+import { useMutation } from '../../hooks/useAsyncData';
 import { Button, Section } from '../../components/ui';
 import { CleanStrip, QuitHero, RecoveryMilestones } from './QuitHero';
 import '../quit.css';
@@ -32,12 +34,22 @@ export default function QuitDetail() {
   const [intensity, setIntensity] = useState(0);
   const [trigger, setTrigger] = useState('');
   const [relapseConfirm, setRelapseConfirm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const mutation = useMutation();
 
   async function load() {
-    const r = await api.get<{ counter: QuitCounter; cravings: CravingEpisode[]; relapses: RelapseEvent[] }>(`/quit/${id}`);
-    setCounter(r.counter);
-    setCravings(r.cravings);
-    setRelapses(r.relapses);
+    setLoadError(null);
+    try {
+      const r = await api.get<{ counter: QuitCounter; cravings: CravingEpisode[]; relapses: RelapseEvent[] }>(`/quit/${id}`);
+      setCounter(r.counter);
+      setCravings(r.cravings);
+      setRelapses(r.relapses);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Could not load this counter.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -50,19 +62,46 @@ export default function QuitDetail() {
   const clean = useMemo(() => (counter ? formatClean(counter.startDate) : null), [counter, tick]);
 
   async function finishCraving(actionKey: (typeof COPING_KEYS)[number]) {
-    await api.post(`/quit/${id}/craving`, { intensity, trigger, copingAction: t(actionKey) });
+    // The "you got through it" state is only shown once the episode is
+    // actually recorded. It used to be shown before the request resolved, so
+    // a failure congratulated the user on something that was never saved.
+    const ok = await mutation.run(() =>
+      api.post(`/quit/${id}/craving`, { intensity, trigger, copingAction: t(actionKey) })
+    );
+    if (!ok) return;
     setFlow('done');
     setTimeout(() => setFlow('idle'), 2200);
     load();
   }
 
   async function logRelapse() {
-    await api.post(`/quit/${id}/relapse`, {});
+    const ok = await mutation.run(() => api.post(`/quit/${id}/relapse`, {}));
+    if (!ok) return;
     setRelapseConfirm(false);
     load();
   }
 
-  if (!counter || !clean) return <Screen nav={false}>{null}</Screen>;
+  if (loading) {
+    return (
+      <Screen nav={false}>
+        <LoadingRows rows={4} />
+      </Screen>
+    );
+  }
+  if (!counter || !clean) {
+    return (
+      <Screen nav={false}>
+        <ErrorState
+          message={loadError ?? t('genericError')}
+          onRetry={() => {
+            setLoading(true);
+            load();
+          }}
+          retryLabel={t('tryAgain')}
+        />
+      </Screen>
+    );
+  }
 
   const saved = Math.round(counter.moneySaved);
   const notConsumed = Math.floor(clean.days * counter.dailyAmount);
@@ -106,7 +145,7 @@ export default function QuitDetail() {
 
         <RecoveryMilestones kind={counter.kind} daysClean={clean.days} />
 
-        <div className="q-card">
+        <div className="q-section">
           <div className="q-card-label" style={{ marginBottom: 18 }}>
             {t('quitAttempts')}
           </div>

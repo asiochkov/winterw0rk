@@ -38,7 +38,10 @@ export function weekFrom(ratios: Map<string, number>, ru: boolean, now = new Dat
     ? ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
     : ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
   const todayIdx = (now.getDay() + 6) % 7;
-  return labels.map((label, i) => {
+  return labels.map((full, i) => {
+    // v7 renders these two letters wide — day.slice(0, 2). The Russian labels
+    // are already two characters, so only the English row changes.
+    const label = full.slice(0, 2);
     const d = new Date(now.getTime() - (todayIdx - i) * 86400000);
     const future = i > todayIdx;
     const hit = ratios.get(d.toISOString().slice(0, 10)) ?? 0;
@@ -136,7 +139,9 @@ export function StreakCard({ days, week }: { days: number; week: WeekDay[] }) {
     <div className="t-streak">
       <div className="t-streak-head">
         <div className="t-streak-badge">
-          <V6Icon name="flame" size={22} stroke="var(--am)" strokeWidth={1.35} />
+          {/* The pod is solid amber in v7, so the flame is knocked out of it in
+              the page colour at a heavier weight. */}
+          <V6Icon name="flame" size={22} stroke="var(--bg)" strokeWidth={1.7} />
         </div>
         <div className="t-streak-nums">
           <span className="t-streak-label">{t('todayStreak')}</span>

@@ -9,30 +9,42 @@ is a design brief — the design is finished and lives in the repo. The job is t
 transfer it, not to improve it. When a choice comes up between "this would look
 better" and "this is what the prototype does", the prototype wins every time.
 
-**The reference is `project/Winterwork v6.dc.html`.** Not v5, not v7.
+**The reference is `project/Winterwork v7.dc.html`.** Not v6, not v5.
 
-This was decided by comparing values, not filenames, and it is worth
-re-checking rather than trusting:
+This was contested, and the reasoning matters, because everything in the repo
+that predates the decision argues the other way.
 
-| Token in `04_DESIGN_TOKENS.json` | value | v6 | v7 |
-| --- | --- | --- | --- |
-| canvas-0 | `#080B0F` | `#080B0F` ✅ | `#0D0D0D` |
-| canvas-1 | `#0D1117` | `#0D1117` ✅ | `#121214` |
-| canvas-3 | `#17202A` | `#17202A` ✅ | `#1B1B1E` |
-| ice-500 | `#8FD8FF` | `#8FD8FF` ✅ | `#7E9BFF` |
-| success | `#6FCB9A` | `#6FCB9A` ✅ | `#63C79B` |
+`CLAUDE_TASK.md` (the brief) names v7 as the source of truth and says that when
+the current site and v7 disagree, v7 wins. But its own palette section forbids
+any colour outside a list that **appears nowhere in v7**:
 
-v6 realises `project/uploads/Winterwork_FINAL_DESIGN_PACK/03_UI/04_DESIGN_TOKENS.json`
-value for value. v7 is a later iteration that left that system. The app followed
-v7 for months; commit `57e8075` moved it to v6.
+| token the brief mandates | in v6 | in v7 |
+| --- | --- | --- |
+| `#080B0F` `#0D1117` `#121820` `#17202A` `#1C2631` `#8FD8FF` `#6FCB9A` | all seven | none |
+
+v7 runs on its own palette instead — `#0D0D0D`, `#121214`, `#1B1B1E`,
+`#7E9BFF`, `#63C79B` — and `04_DESIGN_TOKENS.json` is the older pack that v6
+implements. So the brief contradicts itself: it was measured against v7 (it
+cites 6548 lines, which is v7's exact length; v6 is 6117) but quotes the pack's
+palette without re-checking.
+
+**The owner resolved it: follow v7 in full, palette included.** The brief's
+palette section is void. Do not "restore" the ice-blue values from the pack.
+
+The cost was accepted knowingly: all 25 screens differ between v6 and v7, so
+the eleven screens transferred from v6 (see the table below) have to be
+transcribed again from v7. Some differ in content, not just colour — v6's
+Session summary has three cards, v7's has five.
 
 ## What is in the repo (no ZIP needed)
 
 The contents of `Winterwork mobile app prototype (8).zip` are already committed:
 
-- `project/Winterwork v6.dc.html` — the reference. 517 KB, read it with a script,
-  not by eye.
-- `project/Winterwork v5.dc.html`, `v7.dc.html` — the older and newer iterations.
+- `project/Winterwork v7.dc.html` — the reference. Read it with a script, not
+  by eye.
+- `project/Winterwork v6.dc.html`, `v5.dc.html` — earlier iterations. v6 is the
+  one that implements the design pack's tokens; keep it for reference, do not
+  transfer from it.
 - `project/support.js`, `project/image-slot.js` — the runtime the prototype needs.
 - `project/uploads/Winterwork_FINAL_DESIGN_PACK/` — `01_product_inventory.json`,
   `03_UI/04_DESIGN_TOKENS.json`, `03_UI/current_tokens.json`, the UX documents,
@@ -48,6 +60,17 @@ its runtime re-fetches its own URL and re-parses it. Both have to be handled.
 node tools/build-prototype-bundle.mjs   # vendors the libraries from npm
 cd dist/prototype && python3 -m http.server 8097
 ```
+
+The bundler builds **v7**. `PROTOTYPE='Winterwork v6.dc.html' node
+tools/build-prototype-bundle.mjs` builds the other one when you need to
+compare the two.
+
+The quickest way to a given screen is not clicking: the prototype restores its
+whole state from `localStorage['winterwork.v6']` — v7 kept v6's storage key —
+so `app/e2e/prototype-screen.mjs`
+seeds the screen and its figures and screenshots it. The seed has to go in
+through `addInitScript` — set it after the first load and the prototype's own
+debounced save writes `screen: 'today'` back over it.
 
 Then drive it with Playwright (`/opt/pw-browsers/chromium`, `--no-sandbox`).
 Its bottom navigation is the widest row of same-height `<button>` elements —
@@ -102,22 +125,43 @@ at 23/9/2 days clean, a session planned for today, arc day 17 of 90.
 | `87e6863` | Quit counter rebuilt, milestone table carried over with its source |
 | `00edaaf` | Training screen rebuilt |
 | `29d66c1` | Active session rebuilt |
+| `d9f07e7` | Session summary built (from v6 — needs redoing against v7) |
+| `d3c6021` | Reference switched to v7; tokens rewritten from v7 |
+| `ac029d5` | Divergence report (brief step 2) |
+| `4d1f0d2` | App icons and the mark; template leftovers removed |
+| `92b6ab5` | Nav and rail to v7; breakpoints 760/1180 |
+| `db07b75` | screen-diff tool; Session summary retranscribed from v7 |
+| _this one_ | v7's two global conventions applied across every stylesheet |
 
 Everything is on `main` at `github.com/asiochkov/winterw0rk`. Render redeploys
 on push; the live URL is `winterwork.onrender.com`.
 
 ## Still to do
 
-Screens: **Session summary** (next — the training flow is otherwise done),
-Exercise / Library / Plans / Program detail, Focus and Focus history, Mood,
+**`node tools/screen-diff.mjs "<screen>"` before transcribing anything.** It
+prints what changed between v6 and v7 for one screen, at the granularity of a
+single CSS declaration. The navigation turned out to be three declarations;
+Session summary was a rebuild. Knowing which before starting saves the work.
+
+**Start from `docs/divergence.md`** — regenerate it with `node
+tools/divergence-report.mjs`. It lists all 25 v7 screens against what the app
+has: nine transcribed from v6 and needing redoing, fourteen never transcribed
+from any prototype at all, two with no screen yet.
+
+**First: re-transcribe the v6 screens against v7.** The token swap changed
+every colour under them, but their layout and content are still v6's.
+
+Screens not yet built: **Exercise / Library / Plans / Program detail**, Focus and Focus history, Mood,
 Street, Nutrition, Planner, Welcome / Sign in / Create account / Forgot
 password, Onboarding and Fitness setup, Profile and Settings.
 
 Cross-cutting: the More sheet with its command palette, the quick-action menu
-behind the plus button, the rail navigation for tablet and desktop, empty /
-loading / error states, v6's motion (directional screen transitions, the nav
+behind the plus button, empty /
+loading / error states, the prototype's motion (directional screen
+transitions, the nav
 icon pop, press scales, the plus rotating 45°), the day theme wired to a
-toggle, and the free-plan gating v6 shows (Today's habit card capped at three,
+toggle, and the free-plan gating the prototype shows (Today's habit card
+capped at three,
 programs behind a paywall).
 
 Then: automate the screenshot comparison as a regression check, and run the
@@ -131,23 +175,56 @@ build.
 - **A day with nothing scheduled is not a failed day.** Rest days are excluded
   from the consistency rate and drawn as stubs, in both the Progress sparkline
   and the Today week strip.
-- **v6 holds a day at 60% of what was due**, not 100%.
+- **A day is held at 60% of what was due**, not 100%. `arcWeek` is
+  byte-identical in v6 and v7, so this survived the switch.
 - **`--sunk` equals `--bg` in the night palette.** Tiles painted with it look
   flat on purpose. Do not "fix" them.
 - **The i18n dictionaries are large and already hold keys like `quitSaved`,
   `trainingExercises`, `trainingLastTime`.** Adding a duplicate key fails the
   build with TS1117 — check before adding.
-- **Uppercase comes from CSS, not the dictionaries.** v6 sets labels in caps;
+- **Uppercase comes from CSS, not the dictionaries.** The prototype sets
+  labels in caps;
   the dictionaries hold sentence case.
+- **v7 has exactly one positive letter-spacing: `.08em`.** v6 had ten
+  different ones (.06em 206 times, .2em 62, .1em 41, and so on); v7 uses .08em
+  387 times and nothing else. Negative tracking, which is display type, is
+  unchanged. v7 also dropped two radii — 18px and 14px are gone from it
+  entirely, having become 16px and 12px. Both conventions are already applied
+  across the app's stylesheets; keep new work inside them.
+- **v7 de-carded the app, and this is the biggest remaining transfer.** Where
+  v6 wrapped a block in `padding:24px 22px; border-radius:18px;
+  background:rgba(var(--w),.035); border:var(--edge)`, v7 rules it instead:
+  `padding:26px 2px 28px; border-top:var(--edge)`, no fill. Across the
+  prototype the filled surface drops from 39 uses to 11 and the hairline rule
+  rises from 5 to 43. It is not a blanket substitution — the eleven that keep
+  a fill keep it deliberately, and paired half-width tiles stay carded — so do
+  it per screen with `tools/screen-diff.mjs`, not with a regex. Session
+  summary, Habit detail and Quit counter are done.
 - **Never invent design values.** Extract them from the prototype with a script
   and copy them. Every stylesheet added so far says where its numbers came from.
+- **Check which prototype the bundler is serving before you trust a
+  screenshot.** It builds v7 now. If a screen renders with cards its markup
+  does not have, you are looking at the wrong version.
+- **The design pack and the brief's palette section describe v6, not v7.** They
+  are not the reference. See the top of this file.
+- **The logo in `public/logo.svg` is a redraw, and the only one.** The mark
+  arrived as a chat image whose pixels this environment cannot reach, so its
+  outline was rebuilt by eye and checked down to 16px. Silhouette and
+  proportion are right; the curve is not the original. Drop the real vector
+  over that file and every use follows — `favicon.svg` carries its own copy of
+  the two paths, so update both, then re-run `node make-icons.mjs` in
+  `app/e2e`.
+- **v7's Welcome has no logo mark.** It sets WINTER/WORK as type, 76px/800 at
+  -.045em. The `WW` badge the app shows is its own invention and goes when
+  Welcome is rebuilt. The logo belongs on the browser and OS surfaces only.
 - **Assets are extracted, not redrawn.** `app/client/src/assets/icons.v6.json`
-  holds the prototype's 50 icon paths; `milestones.v6.json` holds its recovery
+  holds the prototype's 50 icon paths — verified byte-identical in v6 and v7,
+  so the v6 in its name is now only history; `milestones.v6.json` holds its recovery
   table with the CDC attribution and the not-medical disclaimer intact.
 
 ## Working rhythm that has been holding
 
-Extract the markup for one screen from v6 → transcribe its measurements into
+Extract the markup for one screen from v7 → transcribe its measurements into
 CSS with a comment saying so → wire it to real data → render it in Playwright →
 read the screenshot → fix what is wrong → run `npm test` in `app/server`
 (104 tests) → commit → push. Render picks it up.

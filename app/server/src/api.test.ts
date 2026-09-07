@@ -8,6 +8,7 @@ const tmpDb = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'ww-test-')), 'tes
 process.env.DB_PATH = tmpDb;
 
 const { createApp } = await import('./app.js');
+const { db } = await import('./db.js');
 const request = (await import('supertest')).default;
 
 const app = createApp();
@@ -480,6 +481,205 @@ describe('training', () => {
     const finished = await agent.post(`/api/training/sessions/${session.id}/finish`).send({});
     expect(finished.body.summary.setCount).toBe(1);
     expect(finished.body.summary.tonnage).toBe(250);
+  });
+
+  it('serves the same figures to the summary screen after the session is closed', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const session = today.body.session;
+    await agent.post(`/api/training/sessions/${session.id}/start`);
+    const first = session.exercises[0];
+    await agent
+      .post(`/api/training/sessions/${session.id}/sets`)
+      .send({ sessionExerciseId: first.sessionExerciseId, weight: 60, reps: 8, isWarmup: false });
+    const finished = await agent.post(`/api/training/sessions/${session.id}/finish`).send({});
+
+    const summary = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(summary.status).toBe(200);
+    expect(summary.body.summary.tonnage).toBe(finished.body.summary.tonnage);
+    expect(summary.body.summary.setCount).toBe(finished.body.summary.setCount);
+    expect(summary.body.summary.prs).toHaveLength(finished.body.summary.prs.length);
+    expect(summary.body.summary.durationSec).toBe(finished.body.session.durationSec);
+  });
+
+  it('saves the feeling and the note answered on the summary screen', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const session = today.body.session;
+    await agent.post(`/api/training/sessions/${session.id}/start`);
+    await agent.post(`/api/training/sessions/${session.id}/finish`).send({});
+
+    const saved = await agent
+      .patch(`/api/training/sessions/${session.id}/reflection`)
+      .send({ feeling: 4, notes: '  felt strong  ' });
+    expect(saved.status).toBe(200);
+    expect(saved.body.session.feeling).toBe(4);
+    expect(saved.body.session.notes).toBe('felt strong');
+
+    const reopened = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(reopened.body.session.feeling).toBe(4);
+    expect(reopened.body.session.notes).toBe('felt strong');
+  });
+
+  it('measures the change against the last session of the same name', async () => {
+    const { agent, email } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+    const session = today.body.session;
+    const first = session.exercises[0];
+
+    await agent.post(`/api/training/sessions/${session.id}/start`);
+    await agent
+      .post(`/api/training/sessions/${session.id}/sets`)
+      .send({ sessionExerciseId: first.sessionExerciseId, weight: 50, reps: 10, isWarmup: false });
+    await agent.post(`/api/training/sessions/${session.id}/finish`).send({});
+
+    // Nothing preceded it, so there is no percentage to state.
+    const before = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(before.body.summary.changePct).toBeNull();
+    expect(before.body.summary.previousTonnage).toBeNull();
+
+    // Plant an earlier run of the same session at 400kg against this one's
+    // 500, which is the 25% the summary should report.
+    const userId = (db.prepare('SELECT id FROM users WHERE email = ?').get(email) as any).id;
+    const prior = db
+      .prepare(
+        `INSERT INTO workout_sessions (user_id, date, name, status, duration_sec)
+         VALUES (?, '2020-01-06', ?, 'completed', 1800)`
+      )
+      .run(userId, session.name);
+    const priorEx = db
+      .prepare('INSERT INTO session_exercises (session_id, exercise_id, order_idx) VALUES (?, ?, 0)')
+      .run(prior.lastInsertRowid, first.exerciseId);
+    db.prepare(
+      `INSERT INTO set_entries (session_exercise_id, set_index, weight, reps, is_warmup)
+       VALUES (?, 0, 40, 10, 0)`
+    ).run(priorEx.lastInsertRowid);
+
+    const after = await agent.get(`/api/training/sessions/${session.id}/summary`);
+    expect(after.body.summary.previousTonnage).toBe(400);
+    expect(after.body.summary.changePct).toBe(25);
+  });
+
+  it('names the next planned day after this session', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const res = await agent.get(`/api/training/sessions/${today.body.session.id}/summary`);
+    expect(res.status).toBe(200);
+    const next = res.body.summary.next;
+    // The seeded plan covers several weekdays, so there is always a next one,
+    // and it is never the day this session is on.
+    expect(next).not.toBeNull();
+    expect(next.weekday).toBeGreaterThanOrEqual(0);
+    expect(next.weekday).toBeLessThanOrEqual(6);
+    expect(typeof next.name).toBe('string');
+  });
+
+  it('logs a set straight from an exercise, creating the day session if needed', async () => {
+    const { agent } = await newUser();
+    const list = await agent.get('/api/exercises');
+    const exercise = list.body.exercises[0];
+
+    const logged = await agent
+      .post(`/api/training/exercises/${exercise.id}/sets`)
+      .send({ weight: 40, reps: 8 });
+    expect(logged.status).toBe(201);
+    expect(logged.body.setId).toBeTruthy();
+
+    // It lands in today's session, not somewhere of its own.
+    const today = await agent.get('/api/training/today');
+    const session = await agent.get(`/api/training/sessions/${logged.body.sessionId}`);
+    expect(session.status).toBe(200);
+    const slot = session.body.session.exercises.find((e: any) => e.exerciseId === exercise.id);
+    expect(slot).toBeTruthy();
+    expect(slot.sets.some((st: any) => st.weight === 40 && st.reps === 8)).toBe(true);
+    if (!today.body.restDay) expect(today.body.session.id).toBe(logged.body.sessionId);
+
+    // A second set for the same exercise reuses the slot rather than adding one.
+    await agent.post(`/api/training/exercises/${exercise.id}/sets`).send({ weight: 45, reps: 6 });
+    const again = await agent.get(`/api/training/sessions/${logged.body.sessionId}`);
+    const slots = again.body.session.exercises.filter((e: any) => e.exerciseId === exercise.id);
+    expect(slots).toHaveLength(1);
+    expect(slots[0].sets).toHaveLength(2);
+
+    // And it can be undone through the existing route.
+    const undo = await agent.delete(`/api/training/sets/${logged.body.setId}`);
+    expect(undo.status).toBe(200);
+  });
+
+  it('shows a just-logged set in the exercise history straight away', async () => {
+    const { agent } = await newUser();
+    const exercise = (await agent.get('/api/exercises')).body.exercises[0];
+
+    const before = await agent.get(`/api/exercises/${exercise.id}`);
+    expect(before.body.history).toHaveLength(0);
+
+    await agent.post(`/api/training/exercises/${exercise.id}/sets`).send({ weight: 42.5, reps: 8 });
+
+    // The session is still open; the set has to show anyway.
+    const after = await agent.get(`/api/exercises/${exercise.id}`);
+    expect(after.body.history).toHaveLength(1);
+    expect(after.body.history[0]).toMatchObject({ weight: 42.5, reps: 8 });
+  });
+
+  it('will not log a set against an exercise that does not exist', async () => {
+    const { agent } = await newUser();
+    const res = await agent.post('/api/training/exercises/nope/sets').send({ weight: 10, reps: 5 });
+    expect(res.status).toBe(404);
+  });
+
+  it('rejects a feeling outside the five v6 offers', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const session = today.body.session;
+    const res = await agent
+      .patch(`/api/training/sessions/${session.id}/reflection`)
+      .send({ feeling: 9 });
+    expect(res.status).toBe(400);
+  });
+
+  it('will not serve another user\'s session summary', async () => {
+    const { agent } = await newUser();
+    const today = await agent.get('/api/training/today');
+    if (today.body.restDay) return;
+
+    const other = await newUser();
+    const res = await other.agent.get(`/api/training/sessions/${today.body.session.id}/summary`);
+    expect(res.status).toBe(404);
+  });
+});
+
+describe('progress report', () => {
+  it('states each dimension as the recent half against the earlier one', async () => {
+    const { agent } = await newUser();
+    const res = await agent.get('/api/progress/overview');
+    expect(res.status).toBe(200);
+
+    const r = res.body.report;
+    expect(r.halfDays).toBe(Math.floor(res.body.windowDays / 2));
+    for (const key of ['discipline', 'focus', 'training']) {
+      expect(typeof r[key].before).toBe('number');
+      expect(typeof r[key].now).toBe('number');
+    }
+  });
+
+  it('counts a logged set toward the recent half of the training row', async () => {
+    const { agent } = await newUser();
+    const before = (await agent.get('/api/progress/overview')).body.report.training.now;
+
+    const exercise = (await agent.get('/api/exercises')).body.exercises[0];
+    await agent.post(`/api/training/exercises/${exercise.id}/sets`).send({ weight: 50, reps: 10 });
+
+    const after = (await agent.get('/api/progress/overview')).body.report.training.now;
+    expect(after).toBe(before + 500);
   });
 });
 

@@ -111,7 +111,56 @@ router.get('/overview', (req, res) => {
       .get(userId) as { d: number }
   ).d;
 
+  /*
+   * v7's personal report: three dimensions, each stated as before against now.
+   *
+   * v7 compares a different span per row — 15 days against 15 for discipline,
+   * a week against a week for focus, four weeks against four for training.
+   * Two of those reach outside the 30 days the screen says it is reporting on,
+   * so all three use the same split here: the last 15 days against the 15
+   * before them. One window, and it is the window the heading claims.
+   */
+  const half = Math.floor(WINDOW / 2);
+  const recent = current.slice(WINDOW - half);
+  const earlier = current.slice(0, WINDOW - half);
+  const midpoint = addDays(today, -(half - 1));
+
+  /** Mean completed focus session length, in minutes, over a date range. */
+  const focusMean = (fromDate: string, toDate: string | null) => {
+    const row = db
+      .prepare(
+        `SELECT COALESCE(AVG(actual_sec), 0) AS avg FROM focus_sessions
+          WHERE user_id = ? AND finished_at IS NOT NULL
+            AND date(started_at) >= ? ${toDate ? 'AND date(started_at) < ?' : ''}`
+      )
+      .get(...(toDate ? [userId, fromDate, toDate] : [userId, fromDate])) as { avg: number };
+    return Math.round(row.avg / 60);
+  };
+
+  /** Working tonnage over a date range. */
+  const tonnage = (fromDate: string, toDate: string | null) => {
+    const row = db
+      .prepare(
+        `SELECT COALESCE(SUM(se.weight * se.reps), 0) AS total FROM set_entries se
+           JOIN session_exercises sx ON sx.id = se.session_exercise_id
+           JOIN workout_sessions ws ON ws.id = sx.session_id
+          WHERE ws.user_id = ? AND ws.status != 'skipped' AND se.is_warmup = 0
+            AND ws.date >= ? ${toDate ? 'AND ws.date < ?' : ''}`
+      )
+      .get(...(toDate ? [userId, fromDate, toDate] : [userId, fromDate])) as { total: number };
+    return Math.round(row.total);
+  };
+
+  const windowStart = addDays(today, -(WINDOW - 1));
+  const report = {
+    halfDays: half,
+    discipline: { before: rateOf(earlier), now: rateOf(recent) },
+    focus: { before: focusMean(windowStart, midpoint), now: focusMean(midpoint, null) },
+    training: { before: tonnage(windowStart, midpoint), now: tonnage(midpoint, null) },
+  };
+
   res.json({
+    report,
     windowDays: WINDOW,
     rate,
     prevRate,

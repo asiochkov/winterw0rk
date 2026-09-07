@@ -46,7 +46,7 @@
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .today-habit-list {
@@ -186,7 +186,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .t-hero-avatar {
@@ -206,7 +206,10 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  /* The phase words were already caps in the dictionary; the world name was
+     too until the nav needed it in sentence case. Caps belong here. */
+  text-transform: uppercase;
   color: var(--ac);
   margin-bottom: 18px;
 }
@@ -226,7 +229,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 1.5;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   padding-bottom: 12px;
 }
@@ -253,6 +256,24 @@
   text-wrap: pretty;
 }
 
+/*
+ * v7 grows the hero above the phone: 400px rather than 372, padding
+ * 60/40/34 rather than 68/26/30, and the day numeral from 72px to 84. The app
+ * had the phone values hardcoded at every width, which left the wide hero
+ * with its content clustered top and bottom and a dead band between them.
+ */
+@media (min-width: 760px) {
+  .t-hero {
+    height: 400px;
+  }
+  .t-hero-inner {
+    padding: 60px 40px 34px;
+  }
+  .t-hero-num {
+    font-size: 84px;
+  }
+}
+
 /* Tiles ride 18px up into the hero. */
 .t-tiles {
   position: relative;
@@ -264,6 +285,14 @@
   gap: 10px;
   padding: 0 22px;
 }
+/* v7 widens the side padding from 22px to 40px above the phone. */
+@media (min-width: 760px) {
+  .t-tiles,
+  .t-below {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
 
 .t-next {
   display: flex;
@@ -271,7 +300,7 @@
   gap: 20px;
   flex-wrap: wrap;
   padding: 20px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sf-ac);
   border: 1px solid rgba(var(--acr), 0.28);
 }
@@ -283,7 +312,9 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  /* Caps live in CSS here, not in the dictionaries. */
+  text-transform: uppercase;
   color: var(--ac);
   margin-bottom: 9px;
 }
@@ -320,10 +351,10 @@
   align-items: center;
   gap: 18px;
   flex-wrap: wrap;
-  padding: 22px 24px;
-  border-radius: 18px;
-  background: var(--sf1);
-  box-shadow: var(--lift);
+  /* v7 ruled this rather than carding it: no fill, no radius, no lift. */
+  padding: 20px 4px;
+  border-top: var(--edge);
+  border-bottom: var(--edge);
 }
 .t-streak-head {
   display: flex;
@@ -339,7 +370,9 @@
   height: 44px;
   flex: none;
   border-radius: var(--r-lg);
-  background: linear-gradient(168deg, rgba(var(--amr), 0.42) 0%, rgba(var(--amr), 0.14) 100%);
+  /* v7 made this a solid amber pod with the flame knocked out of it, rather
+     than a tinted gradient with an amber flame on top. */
+  background: var(--am);
   box-shadow: var(--lift);
 }
 .t-streak-nums {
@@ -347,13 +380,14 @@
   flex-direction: column;
   gap: 6px;
 }
+/* The whole streak block reads amber in v7, not just its badge. */
 .t-streak-label,
 .t-streak-unit {
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
-  color: var(--mut);
+  letter-spacing: 0.08em;
+  color: var(--am);
 }
 .t-streak-value {
   display: flex;
@@ -365,7 +399,7 @@
   font-size: 30px;
   line-height: 1;
   letter-spacing: -0.035em;
-  color: var(--tx);
+  color: var(--am);
 }
 
 .t-week {
@@ -413,7 +447,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .t-week-label.is-today {
@@ -428,36 +462,48 @@
 
 /* Habits card on Today — v6's measurements. */
 .t-habits {
-  padding: 24px 20px 20px;
-  border-radius: 18px;
-  background: var(--sf1);
-  box-shadow: var(--lift);
+  padding: 2px 0 0;
 }
 .t-habits-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 0 4px 18px;
+  margin: 0 2px 14px;
 }
 .t-habits-label {
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   /* v6 sets these labels in caps; the dictionaries hold sentence case. */
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
 }
+/*
+ * This opens the habits screen, but it was 26x11 with no padding and read as
+ * a caption rather than an action — the smallest target in the app. The
+ * figure keeps its size; the button gets a tappable box around it and enough
+ * of an edge to look pressable.
+ */
 .t-habits-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  margin-right: -12px;
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--ac);
   background: none;
   border: none;
-  padding: 0;
+  border-radius: var(--r-sm);
   cursor: pointer;
+  transition: background var(--m-fast) var(--e-io);
+}
+.t-habits-count:hover {
+  background: var(--sf-ac);
 }
 .t-habits-list {
   display: flex;
@@ -470,7 +516,7 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: 1px solid rgba(var(--w), 0.08);
 }
@@ -486,7 +532,7 @@
   width: 38px;
   height: 38px;
   flex: none;
-  border-radius: 14px;
+  border-radius: 12px;
 }
 
 .t-habit-body {
@@ -508,7 +554,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 
@@ -516,7 +562,7 @@
   width: 46px;
   height: 46px;
   flex: none;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(var(--w), 0.18);
   background: transparent;
   color: var(--on-ac);
@@ -538,7 +584,7 @@
 .t-habit-minus {
   width: 44px;
   height: 46px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: var(--edge2);
   background: var(--sf1);
   color: var(--tx);
@@ -548,7 +594,7 @@
 .t-habit-plus {
   width: 56px;
   height: 46px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(var(--w), 0.18);
   background: transparent;
   color: var(--tx);
@@ -574,18 +620,41 @@
 
 /* v6 reorders these by time of day and world, so they lay out as a flex column. */
 .t-blocks {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
   gap: 10px;
 }
 .t-block {
   min-width: 0;
 }
 
+/*
+ * v7 lays these out in two columns from the desktop breakpoint and only then:
+ * tileCols is repeat(2,1fr) on desktop and 1fr everywhere else. Habits, clean
+ * runs and the day overview take a column each; the mind pair spans both,
+ * because two half tiles inside a half column would be unreadable.
+ *
+ * Without this the desktop content column was a phone layout stretched wide,
+ * which is most of why the laptop build read as broken.
+ */
+@media (min-width: 1180px) {
+  .t-tiles,
+  .t-blocks {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .t-block-wide {
+    grid-column: span 2;
+  }
+}
+
 /* Clean runs — v6's quit strip on Today. */
 .t-runs,
 .t-overview {
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sf1);
   border: var(--edge);
 }
@@ -597,7 +666,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .t-runs-label {
@@ -615,7 +684,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--sf2);
   border: var(--edge);
   cursor: pointer;
@@ -710,7 +779,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .t-area-value {
@@ -750,19 +819,33 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+/*
+ * Mood and Focus. v7 fills these with --sunk and gives them no border, which
+ * works in its day palette where --sunk (#EFF0F5) sits above --bg (#FAFAFA).
+ * In the night palette the two are the same colour, so two buttons vanished
+ * into the page between two bordered cards and read as unfinished markup.
+ *
+ * A deliberate deviation, and the smallest one that fixes it: the fill stays
+ * v7's, so the tiles keep their recessive weight and the day theme is
+ * untouched, and a hairline gives them an edge to be seen by.
+ */
 .t-mind-tile {
   text-align: left;
   padding: 22px 20px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sunk);
-  border: none;
+  border: var(--edge);
   cursor: pointer;
+  transition: background var(--m-fast) var(--e-io), border-color var(--m-fast) var(--e-io);
+}
+.t-mind-tile:hover {
+  background: var(--sf1);
 }
 .t-mind-label {
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -794,7 +877,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1.4;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 .t-mind-foot.is-accent {

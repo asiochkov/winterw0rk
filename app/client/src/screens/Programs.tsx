@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { ErrorState, LoadingRows } from '../components/states';
+import { useMutation } from '../hooks/useAsyncData';
 import { Button, ProgressBar, Section } from '../components/ui';
 import './programs.css';
 
@@ -57,10 +59,20 @@ export function ProgramDetail() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [program, setProgram] = useState<Program | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const mutation = useMutation();
 
   async function load() {
-    const r = await api.get<{ program: Program }>(`/programs/${id}`);
-    setProgram(r.program);
+    setLoadError(null);
+    try {
+      const r = await api.get<{ program: Program }>(`/programs/${id}`);
+      setProgram(r.program);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Could not load this program.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -69,16 +81,34 @@ export function ProgramDetail() {
   }, [id]);
 
   async function start() {
-    await api.post(`/programs/${id}/start`);
-    load();
+    if (await mutation.run(() => api.post(`/programs/${id}/start`))) load();
   }
 
   async function advance() {
-    await api.post(`/programs/${id}/advance`);
-    load();
+    if (await mutation.run(() => api.post(`/programs/${id}/advance`))) load();
   }
 
-  if (!program) return <Screen nav={false}>{null}</Screen>;
+  if (loading) {
+    return (
+      <Screen nav={false}>
+        <LoadingRows rows={4} />
+      </Screen>
+    );
+  }
+  if (!program) {
+    return (
+      <Screen nav={false}>
+        <ErrorState
+          message={loadError ?? t('genericError')}
+          onRetry={() => {
+            setLoading(true);
+            load();
+          }}
+          retryLabel={t('tryAgain')}
+        />
+      </Screen>
+    );
+  }
 
   return (
     <Screen kicker={program.kind} title={program.name} nav={false}>

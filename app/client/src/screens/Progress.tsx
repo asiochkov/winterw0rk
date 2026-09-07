@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import type { Habit } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { ContextRail } from '../components/ContextRail';
 import { V6Icon, type IconName } from '../components/V6Icon';
 import { ErrorState, LoadingRows } from '../components/states';
 import './progress.css';
@@ -15,7 +16,20 @@ interface Day {
   pct: number;
 }
 
+interface ReportPair {
+  before: number;
+  now: number;
+}
+
+interface Report {
+  halfDays: number;
+  discipline: ReportPair;
+  focus: ReportPair;
+  training: ReportPair;
+}
+
 interface Overview {
+  report: Report;
   windowDays: number;
   rate: number;
   prevRate: number;
@@ -88,8 +102,91 @@ export default function Progress() {
   const weekdays = lang === 'ru' ? ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const week = data.days.slice(-7);
 
+  /*
+   * v7's reading panel. Its own version quotes a bench 1RM, a body weight and
+   * a tonnage that are hardcoded demo figures; these come from the same
+   * overview endpoint the screen already reads, so nothing here is invented.
+   */
+  const rail = (
+    <ContextRail
+      kicker={t('progressRecord')}
+      title={t('ctxReadingTitle')}
+      body={t('ctxReadingBody')}
+      metrics={[
+        {
+          label: t('ctxWindowRate'),
+          value: `${data.rate}%`,
+          delta: `${data.delta >= 0 ? '+' : ''}${data.delta}`,
+          direction: data.delta >= 0 ? 'up' : 'down',
+          meaning: t('ctxWindowMeaning', { n: data.windowDays, prev: data.prevRate }),
+        },
+        {
+          label: t('ctxSessions'),
+          value: String(data.sessions),
+          meaning: t('ctxSessionsMeaning'),
+        },
+        {
+          label: t('ctxFocusMinutes'),
+          value: String(data.focusMinutes),
+          meaning: t('ctxFocusMeaning'),
+        },
+      ]}
+      nextLabel={t('ctxNext')}
+      actions={[
+        { label: t('navHabits'), onClick: () => navigate('/habits') },
+        { label: t('navBody'), onClick: () => navigate('/body') },
+      ]}
+    />
+  );
+
+  /*
+   * v7's personal report. Each row states what it was against what it is, and
+   * says in words what the two numbers are measuring, so a percentage never
+   * stands on its own.
+   */
+  /*
+   * A change against nothing is not a percentage. Going from 0kg to 2852kg is
+   * not "+100%", and 0 minutes against 0 minutes is not "+0%" — both are
+   * hollow numbers that read as findings. The first says it is new, the
+   * second says there is nothing to compare.
+   */
+  const change = (a: number, b: number, suffix: string) => {
+    if (a === 0 && b === 0) return { text: t('reportNothingYet'), up: true, muted: true };
+    if (a === 0) return { text: t('reportFirst'), up: true, muted: false };
+    const n = Math.round(((b - a) / a) * 100);
+    return { text: `${n >= 0 ? '+' : ''}${n}${suffix}`, up: n >= 0, muted: false };
+  };
+  const points = (a: number, b: number) => {
+    if (a === 0 && b === 0) return { text: t('reportNothingYet'), up: true, muted: true };
+    const n = b - a;
+    return { text: `${n >= 0 ? '+' : ''}${n}${t('reportPoints')}`, up: n >= 0, muted: false };
+  };
+  const reportRows = [
+    {
+      dim: t('reportDiscipline'),
+      before: `${data.report.discipline.before}%`,
+      now: `${data.report.discipline.now}%`,
+      ...points(data.report.discipline.before, data.report.discipline.now),
+      read: t('reportDisciplineRead', { n: data.report.halfDays }),
+    },
+    {
+      dim: t('reportFocus'),
+      before: t('reportMinutes', { n: data.report.focus.before }),
+      now: t('reportMinutes', { n: data.report.focus.now }),
+      ...change(data.report.focus.before, data.report.focus.now, '%'),
+      read: t('reportFocusRead', { n: data.report.halfDays }),
+    },
+    {
+      dim: t('reportTraining'),
+      before: t('reportKg', { n: data.report.training.before }),
+      now: t('reportKg', { n: data.report.training.now }),
+      ...change(data.report.training.before, data.report.training.now, '%'),
+      read: t('reportTrainingRead', { n: data.report.halfDays }),
+    },
+  ];
+
   return (
-    <Screen nav bleed>
+    <Screen nav bleed rail={rail}>
       <div className="pr-head">
         <div className="pr-chip">
           <span className="pr-chip-dot" aria-hidden="true" />
@@ -211,6 +308,37 @@ export default function Progress() {
           </div>
         </div>
       )}
+
+      {/* v7's personal report closes the screen: what the charts above mean,
+          stated as before against now. Its rule is accent rather than neutral,
+          which is how v7 marks it as a conclusion and not another section. */}
+      <div className="pr-report">
+        <div className="pr-report-head">
+          <h2 className="pr-report-title">{t('reportTitle')}</h2>
+          <span className="pr-report-period">{t('reportPeriod', { n: data.windowDays })}</span>
+        </div>
+        <p className="pr-report-intro">{t('reportIntro', { n: data.report.halfDays })}</p>
+        <div className="pr-report-rows">
+          {reportRows.map((r) => (
+            <div className="pr-report-row" key={r.dim}>
+              <span className="pr-report-dim">{r.dim}</span>
+              <span className="pr-report-nums">
+                <span className="pr-report-before">{r.before}</span>
+                <span className="pr-report-arrow" aria-hidden="true">
+                  →
+                </span>
+                <span className="pr-report-now">{r.now}</span>
+              </span>
+              <span
+                className={`pr-report-delta ${r.muted ? 'is-muted' : r.up ? 'is-up' : 'is-down'}`}
+              >
+                {r.text}
+              </span>
+              <span className="pr-report-read">{r.read}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </Screen>
   );
 }

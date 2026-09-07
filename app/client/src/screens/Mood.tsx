@@ -3,6 +3,7 @@ import { api } from '../api/client';
 import type { MoodEntry } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { useMutation } from '../hooks/useAsyncData';
 import { Field, Input, Section } from '../components/ui';
 import './mood.css';
 
@@ -27,6 +28,7 @@ function monthGrid(year: number, month: number) {
 }
 
 export default function Mood() {
+  const mutation = useMutation();
   const { t } = useLanguage();
   const DOW = [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')];
   const [today, setToday] = useState<MoodEntry | null>(null);
@@ -50,9 +52,20 @@ export default function Mood() {
 
   async function save(k: number) {
     setPending(k);
-    const { entry } = await api.post<{ entry: MoodEntry }>('/mood', { mood: k, tag: tag || undefined, note: note || undefined });
-    setToday(entry);
-    setPending(null);
+    // pending was cleared only on the success path, so a failed save left the
+    // chip stuck mid-press with no way back.
+    try {
+      await mutation.run(async () => {
+        const { entry } = await api.post<{ entry: MoodEntry }>('/mood', {
+          mood: k,
+          tag: tag || undefined,
+          note: note || undefined,
+        });
+        setToday(entry);
+      });
+    } finally {
+      setPending(null);
+    }
     load();
   }
 

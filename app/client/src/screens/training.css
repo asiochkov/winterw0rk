@@ -22,7 +22,7 @@
   color: var(--mut);
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
   margin: 0;
 }
 .tr-prev {
@@ -35,7 +35,7 @@
   font-size: 12px;
   font-weight: 700;
   color: var(--mut);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0 0 4px;
 }
@@ -75,7 +75,7 @@
 .sess-field-label {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   text-transform: uppercase;
 }
@@ -143,26 +143,227 @@
   margin-top: var(--s6);
 }
 
-.sum-hero {
-  text-align: center;
-  padding: var(--s8) 0;
+/* ── Session summary, transcribed from v7's "Session summary" screen ────
+   v7 rebuilt this screen away from v6's stacked cards: the figures now sit in
+   a grid ruled top and bottom, and the rows below it are separated by single
+   edges rather than being tiles. Only the records card keeps a filled
+   surface. Values are copied from the inline styles of the
+   <sc-if value="{{ isSSummary }}"> block. */
+.sum {
+  padding: 80px 22px 60px;
 }
-.sum-hero-n {
-  font-size: 44px;
+.sum-head {
+  position: relative;
+  padding: 0 8px;
+}
+.sum-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  margin-bottom: 18px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--acr), 0.1);
+  box-shadow: inset 0 1px 0 rgba(var(--w), 0.08);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  /* v7 sets this label in caps; the dictionaries hold sentence case. */
+  text-transform: uppercase;
+  color: var(--ac);
+}
+.sum-chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ac);
+}
+.sum-title {
+  margin: 0 0 24px;
   font-weight: 800;
+  font-size: 40px;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--tx);
 }
-.sum-metrics {
-  display: flex;
-  justify-content: center;
-  gap: var(--s8);
-  margin-top: var(--s4);
-}
-.pr-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
+
+.sum-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 18px;
+  border-top: var(--edge);
   border-bottom: var(--edge);
+}
+.sum-stat {
+  padding: 22px 2px;
+}
+.sum-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.sum-stat-v {
+  margin-top: 16px;
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tonnage against the last run of this same session. */
+.sum-change {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 24px 2px;
+  border-bottom: var(--edge);
+}
+.sum-change-v {
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.sum-change-v.is-up {
+  color: var(--ok);
+}
+.sum-change-v.is-down {
+  color: var(--dg);
+}
+.sum-change-read {
+  flex: 1;
+  min-width: 220px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(var(--t), 0.62);
+  text-wrap: pretty;
+}
+
+/* The one filled surface left on the screen, and v7 only draws it when
+   something was actually beaten. */
+.sum-prs {
+  margin-top: 8px;
+  padding: 24px 22px;
+  border-radius: var(--r-lg);
+  background: rgba(var(--acr), 0.1);
+  border: 1px solid rgba(var(--acr), 0.26);
+}
+.sum-prs .sum-label {
+  color: var(--ac);
+  margin-bottom: 16px;
+}
+.sum-pr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sum-pr {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+.sum-pr-ex {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--tx);
+}
+.sum-pr-val {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ac);
+  white-space: nowrap;
+}
+
+.sum-feel {
+  padding: 24px 2px;
+  border-bottom: var(--edge);
+}
+.sum-feel .sum-label {
+  color: rgba(var(--t), 0.5);
+  margin-bottom: 16px;
+}
+.sum-feel-row {
+  display: flex;
+  gap: 6px;
+}
+/* v7's chip(): off is a faint tile, on is the text colour inverted. */
+.sum-feel-btn {
+  flex: 1;
+  height: 52px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(var(--w), 0.09);
+  background: rgba(var(--w), 0.03);
+  color: rgba(var(--t), 0.55);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+.sum-feel-btn.is-on {
+  border-color: var(--tx);
+  background: var(--tx);
+  color: var(--bg);
+}
+.sum-note {
+  width: 100%;
+  height: 56px;
+  margin-top: 10px;
+  padding: 0 16px;
+  border-radius: var(--r-lg);
+  border: var(--edge2);
+  background: var(--sf1);
+  color: var(--tx);
   font-size: 14px;
+}
+
+.sum-next {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 24px 2px;
+}
+.sum-next .sum-label {
+  color: var(--ac);
+}
+.sum-next-v {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  color: var(--tx);
+}
+.sum-next-day {
+  text-transform: uppercase;
+}
+
+.sum-save {
+  width: 100%;
+  height: 62px;
+  border-radius: var(--r-lg);
+  border: none;
+  background: var(--tx);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.sum-save:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
 /* ── Training, transcribed from v6 ────────────────────────────────────── */
@@ -175,7 +376,7 @@
 
 .tr-card {
   padding: 30px 26px 26px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--acr), 0.07);
   border: 1px solid rgba(var(--acr), 0.18);
 }
@@ -190,7 +391,7 @@
   font-weight: 600;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -198,7 +399,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -251,13 +452,13 @@
   height: 62px;
   margin-top: 22px;
   border: none;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--tx);
   color: var(--bg);
   font-weight: 700;
   font-size: 13px;
   line-height: 1;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
   transition: transform var(--m-fast) ease;
@@ -266,23 +467,22 @@
   transform: translateY(-1px);
 }
 
+/* v7 ruled this section rather than carding it. */
 .tr-exercises {
-  padding: 22px 18px;
-  border-radius: 18px;
-  background: rgba(var(--w), 0.035);
-  border: var(--edge);
+  padding: 24px 2px 4px;
+  border-top: var(--edge);
 }
 .tr-exercises-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin: 0 4px 16px;
+  margin: 0 0 16px;
 }
 .tr-exercises-label {
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
 }
@@ -290,7 +490,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -304,7 +504,7 @@
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sf1);
   border: var(--edge);
 }
@@ -332,15 +532,20 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
 .tr-row-swap {
+  /* v7 sets this label in caps, like every other control label. */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   flex: none;
-  height: 40px;
+  /* v7 paints this 40px; 44 is what a finger needs and there is nothing
+     around it that the extra four pixels disturb. */
+  height: 44px;
   padding: 0 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: var(--edge2);
   background: var(--sf1);
   color: rgba(var(--t), 0.7);
@@ -351,7 +556,7 @@
 
 .tr-rest {
   padding: 30px 26px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -415,7 +620,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
   font-variant-numeric: tabular-nums;
 }
@@ -443,7 +648,7 @@
   font-weight: 700;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -451,7 +656,7 @@
 .ss-rest {
   margin: 0 22px 8px;
   padding: 20px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--acr), 0.1);
   border: 1px solid rgba(var(--acr), 0.26);
   display: flex;
@@ -463,7 +668,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -489,7 +694,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   cursor: pointer;
 }
 
@@ -501,7 +706,7 @@
 }
 .ss-card {
   padding: 24px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(var(--w), 0.035);
   border: var(--edge);
 }
@@ -515,7 +720,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -523,7 +728,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -539,7 +744,7 @@
   font-weight: 500;
   font-size: 11px;
   line-height: 1.6;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--mut);
 }
 
@@ -547,7 +752,7 @@
 .ss-focus {
   margin-top: 22px;
   padding: 24px 22px;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--sf-ac);
   border: 1px solid rgba(var(--acr), 0.28);
 }
@@ -555,7 +760,7 @@
   font-weight: 600;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ac);
 }
@@ -579,7 +784,7 @@
   font-weight: 500;
   font-size: 10px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -620,13 +825,13 @@
   height: 62px;
   margin-top: 22px;
   border: none;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--ac);
   color: var(--on-ac);
   font-weight: 700;
   font-size: 13px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -646,14 +851,14 @@
   width: 100%;
   height: 46px;
   margin-top: 12px;
-  border-radius: 14px;
+  border-radius: 12px;
   border: var(--edge2);
   background: transparent;
   color: rgba(var(--t), 0.55);
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -668,7 +873,7 @@
   align-items: center;
   gap: 10px;
   padding: 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--sf1);
   border: var(--edge);
 }
@@ -713,7 +918,7 @@
   color: var(--tx);
   font-weight: 600;
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   cursor: pointer;
 }
 .ss-nav-btn:disabled {
@@ -728,4 +933,69 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ss-progress-fill { transition: none; }
+}
+
+/* ── Exercise set logger, transcribed from v7's Exercise screen ─────────
+   v7 wraps it in the accent surface it uses for a primary affordance, with
+   48px inputs and a square 48px add button. */
+.ex-log {
+  margin-top: 16px;
+  padding: 24px 22px;
+  border-radius: var(--r-lg);
+  background: var(--sf-ac);
+  border: 1px solid rgba(var(--acr), 0.28);
+}
+.ex-log-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.ex-log-label {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.ex-log-hint {
+  font-size: 12px;
+  line-height: 1;
+  color: var(--mut);
+  text-align: right;
+}
+.ex-log-row {
+  display: flex;
+  gap: 8px;
+}
+.ex-log-input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: var(--r-md);
+  border: var(--edge2);
+  background: var(--sunk);
+  color: var(--tx);
+  font-size: 15px;
+}
+.ex-log-add {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--r-md);
+  background: var(--ac);
+  color: var(--onac);
+  cursor: pointer;
+}
+.ex-log-add:disabled {
+  background: var(--sf3);
+  color: var(--mut);
+  cursor: not-allowed;
 }

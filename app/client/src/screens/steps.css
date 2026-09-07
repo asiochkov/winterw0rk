@@ -9,7 +9,7 @@
 .steps-goal-line {
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mut);
   margin: 6px 0 var(--s4);
