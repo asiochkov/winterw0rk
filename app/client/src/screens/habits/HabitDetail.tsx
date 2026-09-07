@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBack } from '../../hooks/useBack';
+import { categoryLabel, HABIT_CATEGORIES } from '../../lib/habitCategories';
 import { api } from '../../api/client';
 import type { Habit, HabitHistoryEntry } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
-import { Button } from '../../components/ui';
+import { Button, Field, Input } from '../../components/ui';
+import { useMutation } from '../../hooks/useAsyncData';
 import { ErrorState, LoadingRows } from '../../components/states';
 import '../habits.css';
 
@@ -20,6 +22,11 @@ export default function HabitDetail() {
   const [habit, setHabit] = useState<Habit | null>(null);
   const [history, setHistory] = useState<HabitHistoryEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [draftName, setDraftName] = useState('');
+  const [draftCategory, setDraftCategory] = useState('');
+  const [draftSchedule, setDraftSchedule] = useState<number[]>([]);
+  const edit = useMutation();
 
   const load = useCallback(async () => {
     setError(null);
@@ -35,6 +42,35 @@ export default function HabitDetail() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const DAYS = [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')];
+
+  function openEditor(h: Habit) {
+    setDraftName(h.name);
+    setDraftCategory(h.category);
+    setDraftSchedule(h.schedule);
+    setEditing(true);
+  }
+
+  function toggleDraftDay(i: number) {
+    setDraftSchedule((days) => (days.includes(i) ? days.filter((d) => d !== i) : [...days, i].sort()));
+  }
+
+  async function saveEdit() {
+    const ok = await edit.run(
+      () =>
+        api.patch(`/habits/${id}`, {
+          name: draftName.trim(),
+          category: draftCategory,
+          schedule: draftSchedule,
+        }),
+      { success: t('habitSaved') }
+    );
+    if (ok) {
+      setEditing(false);
+      load();
+    }
+  }
 
   async function archive() {
     await api.patch(`/habits/${id}/archive`, { archived: !habit?.archived });
@@ -86,7 +122,7 @@ export default function HabitDetail() {
           </button>
           <div>
             <div className="hd-kicker">
-              {habit.category} · {freq}
+              {categoryLabel(habit.category, t)} · {freq}
             </div>
             <h1 className="hd-title">{habit.name}</h1>
           </div>
@@ -152,9 +188,62 @@ export default function HabitDetail() {
             at the foot of the screen. */}
         <div className="hd-settings-label">{t('habitSettings')}</div>
         <div className="hd-settings">
-          <Button full variant="danger" onClick={archive}>
-            {habit.archived ? t('habitRestore') : t('habitArchive')}
-          </Button>
+          {/* Until now the only thing that could be done to a habit was to
+              archive it, so a schedule set wrong at onboarding cost the whole
+              streak to correct. Editing keeps the marks. */}
+          {editing ? (
+            <div className="form-stack">
+              <Field label={t('nameFieldLabel')}>
+                <Input value={draftName} onChange={(e) => setDraftName(e.target.value)} />
+              </Field>
+              <Field label={t('categoryLabel')}>
+                <select
+                  className="ww-select"
+                  value={draftCategory}
+                  onChange={(e) => setDraftCategory(e.target.value)}
+                >
+                  {HABIT_CATEGORIES.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {t(c.labelKey)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label={t('daysLabel')}>
+                <div className="day-row">
+                  {DAYS.map((d, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className={`day-btn ${draftSchedule.includes(i) ? 'day-btn-on' : ''}`}
+                      onClick={() => toggleDraftDay(i)}
+                    >
+                      {d[0]}
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Button
+                full
+                disabled={!draftName.trim() || draftSchedule.length === 0 || edit.busy}
+                onClick={saveEdit}
+              >
+                {edit.busy ? t('savingBtn') : t('save')}
+              </Button>
+              <Button full variant="ghost" onClick={() => setEditing(false)}>
+                {t('cancel')}
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button full variant="secondary" onClick={() => openEditor(habit)}>
+                {t('habitEdit')}
+              </Button>
+              <Button full variant="danger" onClick={archive}>
+                {habit.archived ? t('habitRestore') : t('habitArchive')}
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </Screen>

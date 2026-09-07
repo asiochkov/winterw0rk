@@ -6,6 +6,7 @@ import type { Habit, HabitType } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
 import { Button, Field, Input } from '../../components/ui';
+import { DEFAULT_CATEGORY, HABIT_CATEGORIES } from '../../lib/habitCategories';
 import '../habits.css';
 
 export default function AddHabit() {
@@ -14,7 +15,7 @@ export default function AddHabit() {
   const { t } = useLanguage();
   const DAYS = [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')];
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('GENERAL');
+  const [category, setCategory] = useState<string>(DEFAULT_CATEGORY);
   const [type, setType] = useState<HabitType>('bool');
   const [schedule, setSchedule] = useState<number[]>([0, 1, 2, 3, 4, 5, 6]);
   const [target, setTarget] = useState('');
@@ -55,7 +56,17 @@ export default function AddHabit() {
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Cold Shower" />
         </Field>
         <Field label={t('categoryLabel')}>
-          <Input value={category} onChange={(e) => setCategory(e.target.value.toUpperCase())} placeholder="BODY" />
+          {/* Free text before: whatever was typed became the category, and
+              anything the row component did not recognise drew as a grey
+              fallback. The list is closed now, and it is the same list the
+              server validates against. */}
+          <select className="ww-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+            {HABIT_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {t(c.labelKey)}
+              </option>
+            ))}
+          </select>
         </Field>
         <Field label={t('typeLabel')}>
           <div className="type-row">

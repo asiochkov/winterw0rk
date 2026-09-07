@@ -1,6 +1,7 @@
 import type { Habit } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
-import { V6Icon, type IconName } from '../components/V6Icon';
+import { V6Icon } from '../components/V6Icon';
+import { categoryStyle } from '../lib/habitCategories';
 
 /**
  * The habits card on v6's Today. Not the full list — the prototype shows at
@@ -8,19 +9,6 @@ import { V6Icon, type IconName } from '../components/V6Icon';
  * screen, so the card stays the same height whatever the account holds.
  */
 export const TODAY_HABIT_LIMIT = 6;
-
-/**
- * Category colour is a signal, not decoration: it groups the list at a glance.
- * The pairs are v6's, and every colour is a token — there is no literal
- * palette here, so both themes keep working.
- */
-const CATEGORY: Record<string, { rgb: string; icon: IconName }> = {
-  TRAINING: { rgb: '--amr', icon: 'train' },
-  MIND: { rgb: '--acr', icon: 'focus' },
-  BODY: { rgb: '--okr', icon: 'body' },
-  FOCUS: { rgb: '--mutr', icon: 'ring' },
-};
-const FALLBACK = { rgb: '--mutr', icon: 'dot' as IconName };
 
 /** v6 abbreviates a step of 1000 or more, so +1000 reads as +1k. */
 function stepLabel(step: number): string {
@@ -63,7 +51,7 @@ export function TodayHabits({
 
       <div className="t-habits-list">
         {shown.map((h) => {
-          const cat = CATEGORY[h.category] ?? FALLBACK;
+          const cat = categoryStyle(h.category);
           const unit = unitLabel(h.unit);
           const isBool = h.type === 'bool';
           const sub = isBool

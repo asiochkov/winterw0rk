@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { api } from '../api/client';
 import type { User } from '../api/types';
 import { Button } from '../components/ui';
+import { categoryLabel } from '../lib/habitCategories';
 import './onboarding.css';
 
 const GOALS = [
@@ -30,9 +31,42 @@ const PICKABLE = [
   { n: 'Cold Shower', c: 'BODY', labelKey: 'habitColdShower' },
   { n: 'Deep Work', c: 'FOCUS', labelKey: 'habitDeepWork' },
   { n: 'Journal', c: 'MIND', labelKey: 'habitJournal' },
-  { n: 'No Junk Food', c: 'BODY', labelKey: 'habitNoJunkFood' },
+  { n: 'No Junk Food', c: 'NUTRITION', labelKey: 'habitNoJunkFood' },
   { n: 'Lights Out 22:30', c: 'SLEEP', labelKey: 'habitLightsOut' },
+  { n: 'Walk', c: 'BODY', labelKey: 'habitWalk' },
+  { n: 'Stretch', c: 'BODY', labelKey: 'habitStretch' },
+  { n: 'No Phone First Hour', c: 'FOCUS', labelKey: 'habitNoPhoneFirstHour' },
+  { n: 'Water', c: 'NUTRITION', labelKey: 'habitWater' },
+  { n: 'Meditate', c: 'MIND', labelKey: 'habitMeditate' },
 ] as const;
+
+/**
+ * Step 2 asks what the user is here for and, until now, nothing in the flow
+ * ever read the answer — the same seven habits were offered whichever goal was
+ * chosen. The goal now decides what is suggested first; everything stays
+ * reachable through "show all", so the choice narrows the screen without
+ * hiding anything.
+ */
+const GOAL_SUGGESTS: Record<string, readonly string[]> = {
+  discipline: ['Workout', 'Deep Work', 'Lights Out 22:30', 'Journal', 'No Phone First Hour'],
+  body: ['Workout', 'Walk', 'No Junk Food', 'Water', 'Stretch', 'Cold Shower'],
+  focus: ['Deep Work', 'No Phone First Hour', 'Reading', 'Meditate', 'Lights Out 22:30'],
+  reset: ['Lights Out 22:30', 'Walk', 'Journal', 'Meditate', 'Water'],
+};
+
+/**
+ * Every habit was created seven days a week regardless of what the user had in
+ * mind, and there was no screen anywhere to correct it — so someone who meant
+ * "three times a week" broke a streak four days out of seven from day one.
+ * Index 0 is Monday, matching the day picker on the habit form.
+ */
+const FREQUENCIES = [
+  { k: 'daily', labelKey: 'freqDaily', days: [0, 1, 2, 3, 4, 5, 6] },
+  { k: 'weekdays', labelKey: 'freqWeekdays', days: [0, 1, 2, 3, 4] },
+  { k: 'thrice', labelKey: 'freqThrice', days: [0, 2, 4] },
+] as const;
+
+type Frequency = (typeof FREQUENCIES)[number]['k'];
 
 type Step = 'intro' | 'goal' | 'areas' | 'habits' | 'commit';
 
@@ -51,6 +85,7 @@ interface Draft {
   goal: string;
   areas: string[];
   habits: string[];
+  frequency?: Record<string, Frequency>;
 }
 
 function readDraft(userId: number | undefined): Draft | null {
@@ -67,31 +102,41 @@ function readDraft(userId: number | undefined): Draft | null {
   }
 }
 
+/**
+ * The guard is its own component so the flow below only ever mounts with a
+ * known account. Reading the saved draft in a state initialiser is otherwise
+ * useless: on the first render the session is still loading, there is no user
+ * id to match the draft against, and the initialiser never runs a second time.
+ */
 export default function Onboarding() {
   const { user, loading, setUser } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/" replace />;
+  if (user.onboarded) return <Navigate to="/today" replace />;
+  return <OnboardingFlow user={user} setUser={setUser} />;
+}
+
+function OnboardingFlow({ user, setUser }: { user: User; setUser: (u: User) => void }) {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const draft = readDraft(user?.id);
+  const draft = readDraft(user.id);
   const [step, setStep] = useState<Step>(draft?.step ?? 'intro');
   const [goal, setGoal] = useState(draft?.goal ?? '');
   const [areas, setAreas] = useState<string[]>(draft?.areas ?? []);
   const [habits, setHabits] = useState<string[]>(draft?.habits ?? []);
+  const [frequency, setFrequency] = useState<Record<string, Frequency>>(draft?.frequency ?? {});
+  const [showAllHabits, setShowAllHabits] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const userId = user?.id;
+  const userId = user.id;
   useEffect(() => {
-    if (userId == null) return;
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ userId, step, goal, areas, habits }));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ userId, step, goal, areas, habits, frequency }));
     } catch {
       /* storage unavailable — the flow still works, it just won't survive a reload */
     }
-  }, [userId, step, goal, areas, habits]);
-
-  if (loading) return null;
-  if (!user) return <Navigate to="/" replace />;
-  if (user.onboarded) return <Navigate to="/today" replace />;
+  }, [userId, step, goal, areas, habits, frequency]);
 
   function toggle(list: string[], setList: (v: string[]) => void, value: string) {
     setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -106,7 +151,8 @@ export default function Onboarding() {
         areas,
         habits: habits.map((n) => {
           const p = PICKABLE.find((x) => x.n === n)!;
-          return { name: p.n, category: p.c, type: 'bool' as const, schedule: [0, 1, 2, 3, 4, 5, 6] };
+          const freq = FREQUENCIES.find((f) => f.k === (frequency[n] ?? 'daily'))!;
+          return { name: p.n, category: p.c, type: 'bool' as const, schedule: [...freq.days] };
         }),
       };
       const { user: updated } = await api.post<{ user: User }>('/auth/onboarding', payload);
@@ -123,6 +169,14 @@ export default function Onboarding() {
       setBusy(false);
     }
   }
+
+  const suggested = PICKABLE.filter((p) => (GOAL_SUGGESTS[goal] ?? []).includes(p.n));
+  // A picked habit stays on screen even if it is not suggested for this goal,
+  // so going back and changing the goal never silently drops a choice.
+  const visibleHabits =
+    showAllHabits || suggested.length === 0
+      ? PICKABLE
+      : PICKABLE.filter((p) => suggested.includes(p) || habits.includes(p.n));
 
   const stepIndex = STEPS.indexOf(step);
 
@@ -197,17 +251,45 @@ export default function Onboarding() {
           <h1 className="onb-title">{t('onbHabitsTitle')}</h1>
           <p className="onb-body">{t('onbHabitsBody')}</p>
           <div className="onb-list">
-            {PICKABLE.map((p) => (
-              <button
-                key={p.n}
-                className={`onb-option onb-option-row ${habits.includes(p.n) ? 'onb-option-on' : ''}`}
-                onClick={() => toggle(habits, setHabits, p.n)}
-              >
-                <span className="onb-option-label">{t(p.labelKey)}</span>
-                <span className="onb-option-hint">{p.c}</span>
-              </button>
-            ))}
+            {visibleHabits.map((p) => {
+              const picked = habits.includes(p.n);
+              return (
+                <div key={p.n} className={`onb-option onb-option-row ${picked ? 'onb-option-on' : ''}`}>
+                  <button
+                    type="button"
+                    className="onb-option-main"
+                    onClick={() => toggle(habits, setHabits, p.n)}
+                    aria-pressed={picked}
+                  >
+                    <span className="onb-option-label">{t(p.labelKey)}</span>
+                    <span className="onb-option-hint">{categoryLabel(p.c, t)}</span>
+                  </button>
+                  {/* The frequency only matters once the habit is actually
+                      chosen, so it appears with the choice rather than adding
+                      seven more controls to a list nobody has picked from. */}
+                  {picked && (
+                    <div className="onb-freq">
+                      {FREQUENCIES.map((f) => (
+                        <button
+                          key={f.k}
+                          type="button"
+                          className={`onb-freq-btn ${(frequency[p.n] ?? 'daily') === f.k ? 'is-on' : ''}`}
+                          onClick={() => setFrequency((m) => ({ ...m, [p.n]: f.k }))}
+                        >
+                          {t(f.labelKey)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
+          {!showAllHabits && suggested.length < PICKABLE.length && (
+            <button type="button" className="onb-more" onClick={() => setShowAllHabits(true)}>
+              {t('onbShowAllHabits')}
+            </button>
+          )}
           <Button full disabled={habits.length === 0} onClick={() => setStep('commit')}>
             {t('continueBtn')}
           </Button>
