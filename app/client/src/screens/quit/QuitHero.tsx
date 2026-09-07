@@ -1,6 +1,6 @@
 import type { RelapseEvent } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
-import { BackButton } from '../../components/BackButton';
+import { FullBleedHero, HeroChip } from '../../components/Hero';
 import MILESTONES from '../../assets/milestones.v6.json';
 
 /**
@@ -28,21 +28,14 @@ export function QuitHero({
   onBack?: () => void;
 }) {
   return (
-    <div className="q-hero">
-      <div className="q-hero-wash" />
-      {onBack && <BackButton onClick={onBack} variant="overlay" />}
-      <div className="q-hero-inner">
-        <div className="q-hero-chip">
-          <span className="q-hero-dot" aria-hidden="true" />
-          {kicker}
-        </div>
-        <div>
-          <div className="q-hero-days">{days}</div>
-          <div className="q-hero-clock">{clock}</div>
-          <div className="q-hero-since">{since}</div>
-        </div>
+    <FullBleedHero height={378} washX="78%" washY="6%" onBack={onBack}>
+      <HeroChip>{kicker}</HeroChip>
+      <div>
+        <div className="q-hero-days">{days}</div>
+        <div className="q-hero-clock">{clock}</div>
+        <div className="q-hero-since">{since}</div>
       </div>
-    </div>
+    </FullBleedHero>
   );
 }
 

@@ -374,26 +374,6 @@
 }
 
 /* ── Habit detail, transcribed from v6 ────────────────────────────────── */
-.hd-hero {
-  position: relative;
-  height: 300px;
-  overflow: hidden;
-}
-.hd-hero-wash {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(110% 80% at 80% 10%, var(--h1) 0%, rgba(var(--bgr), 0) 58%),
-    linear-gradient(180deg, rgba(var(--bgr), 0.2), var(--bg));
-}
-.hd-hero-inner {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 72px 30px 26px;
-}
 .hd-kicker {
   font-weight: 500;
   font-size: var(--fs-1);

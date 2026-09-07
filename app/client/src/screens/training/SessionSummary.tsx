@@ -5,6 +5,7 @@ import { api } from '../../api/client';
 import type { WorkoutSession } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
+import { HeroChip } from '../../components/Hero';
 import { ErrorState, LoadingRows } from '../../components/states';
 import '../training.css';
 
@@ -113,10 +114,7 @@ export default function SessionSummary() {
     <Screen nav={false} bleed back="self">
       <div className="sum">
         <div className="sum-head">
-          <div className="sum-chip">
-            <span className="sum-chip-dot" aria-hidden="true" />
-            {t('summaryLogged')}
-          </div>
+          <HeroChip>{t('summaryLogged')}</HeroChip>
           <h1 className="sum-title">{session.name}</h1>
         </div>
 

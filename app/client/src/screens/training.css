@@ -156,29 +156,6 @@
   position: relative;
   padding: 0 8px;
 }
-.sum-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px 8px 10px;
-  margin-bottom: 18px;
-  border-radius: var(--r-pill);
-  background: rgba(var(--acr), 0.1);
-  box-shadow: inset 0 1px 0 rgba(var(--w), 0.08);
-  font-weight: 500;
-  font-size: var(--fs-1);
-  line-height: var(--lh-flat);
-  letter-spacing: var(--ls-label);
-  /* v7 sets this label in caps; the dictionaries hold sentence case. */
-  text-transform: uppercase;
-  color: var(--ac);
-}
-.sum-chip-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ac);
-}
 .sum-title {
   margin: 0 0 24px;
   font-weight: 800;

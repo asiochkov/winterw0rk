@@ -6,7 +6,7 @@ import { api, ApiError } from '../../api/client';
 import type { Habit, HabitHistoryEntry } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
-import { BackButton } from '../../components/BackButton';
+import { FullBleedHero } from '../../components/Hero';
 import { Button, Field, Input } from '../../components/ui';
 import { useMutation } from '../../hooks/useAsyncData';
 import { ErrorState, LoadingRows } from '../../components/states';
@@ -115,18 +115,14 @@ export default function HabitDetail() {
 
   return (
     <Screen nav={false} bleed back="self">
-      <div className="hd-hero">
-        <div className="hd-hero-wash" />
-        <div className="hd-hero-inner">
-          <BackButton onClick={back} variant="overlay" />
-          <div>
-            <div className="hd-kicker">
-              {categoryLabel(habit.category, t)} · {freq}
-            </div>
-            <h1 className="hd-title">{habit.name}</h1>
+      <FullBleedHero height={300} washX="80%" washY="10%" onBack={back}>
+        <div>
+          <div className="hd-kicker">
+            {categoryLabel(habit.category, t)} · {freq}
           </div>
+          <h1 className="hd-title">{habit.name}</h1>
         </div>
-      </div>
+      </FullBleedHero>
 
       <div className="hd-body">
         <div className="hd-stats">

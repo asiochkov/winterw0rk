@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { ContextRail } from '../components/ContextRail';
 import { V6Icon, type IconName } from '../components/V6Icon';
+import { HeroChip } from '../components/Hero';
 import { ErrorState, LoadingRows } from '../components/states';
 import './progress.css';
 
@@ -188,10 +189,7 @@ export default function Progress() {
   return (
     <Screen nav bleed rail={rail}>
       <div className="pr-head">
-        <div className="pr-chip">
-          <span className="pr-chip-dot" aria-hidden="true" />
-          {t('progressRecord')}
-        </div>
+        <HeroChip>{t('progressRecord')}</HeroChip>
         <h1 className="pr-title">{t('progressTitle')}</h1>
       </div>
 
@@ -212,15 +210,15 @@ export default function Progress() {
 
       {tab === 'overview' ? (
         <div className="pr-body">
-          <div className="pr-hero">
-            <div className="pr-hero-top">
-              <span className="pr-hero-label">{t('progressConsistency')}</span>
+          <div className="card-hero">
+            <div className="card-hero-top">
+              <span className="card-hero-label">{t('progressConsistency')}</span>
               <span className={`pr-delta ${up ? 'is-up' : 'is-down'}`}>
                 {up ? '+' : ''}
                 {data.delta}%
               </span>
             </div>
-            <div className="pr-hero-value">{data.rate}%</div>
+            <div className="card-hero-value">{data.rate}%</div>
             <div className="pr-spark">
               {data.days.map((d) => (
                 <div
@@ -233,7 +231,7 @@ export default function Progress() {
                 />
               ))}
             </div>
-            <p className="pr-hero-caption">
+            <p className="card-hero-caption">
               {t('progressCaption', { days: data.windowDays, prev: data.prevRate })}
             </p>
           </div>
