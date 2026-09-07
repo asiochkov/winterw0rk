@@ -143,6 +143,10 @@ prints what changed between v6 and v7 for one screen, at the granularity of a
 single CSS declaration. The navigation turned out to be three declarations;
 Session summary was a rebuild. Knowing which before starting saves the work.
 
+The nine v6-era screens are transferred. What is left is the fourteen that
+were never transcribed from any prototype, and the planner calendar from
+section 6 of `CLAUDE_TASK.md`.
+
 **Start from `docs/divergence.md`** — regenerate it with `node
 tools/divergence-report.mjs`. It lists all 25 v7 screens against what the app
 has: nine transcribed from v6 and needing redoing, fourteen never transcribed

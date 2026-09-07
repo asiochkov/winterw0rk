@@ -5,6 +5,7 @@ import type { ExerciseListItem, WorkoutSession } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
 import '../training.css';
+import '../legal.css';
 
 const REST_SECONDS = 90;
 
@@ -144,17 +145,24 @@ export default function ActiveSession() {
 
       {restLeft > 0 && (
         <div className="ss-rest">
-          <div>
-            <div className="ss-rest-label">{t('trainingRest')}</div>
-            <div className="ss-rest-time">{clock(restLeft)}</div>
+          <div className="ss-rest-top">
+            <div>
+              <div className="ss-rest-label">{t('trainingRest')}</div>
+              <div className="ss-rest-time">{clock(restLeft)}</div>
+            </div>
+            <div className="ss-rest-actions">
+              <button type="button" className="ss-rest-btn" onClick={() => setRestLeft((x) => x + 30)}>
+                {t('trainingPlus30')}
+              </button>
+              <button type="button" className="ss-rest-btn" onClick={() => setRestLeft(0)}>
+                {t('trainingSkip')}
+              </button>
+            </div>
           </div>
-          <div className="ss-rest-actions">
-            <button type="button" className="ss-rest-btn" onClick={() => setRestLeft((x) => x + 30)}>
-              {t('trainingPlus30')}
-            </button>
-            <button type="button" className="ss-rest-btn" onClick={() => setRestLeft(0)}>
-              {t('trainingSkip')}
-            </button>
+          {/* v7 names what the rest is for, so the screen answers "what now"
+              without the user leaving it. */}
+          <div className="ss-rest-next">
+            {t('trainingRestNext', { name: nextEx ? nextEx.name : ex.name })}
           </div>
         </div>
       )}
@@ -206,8 +214,13 @@ export default function ActiveSession() {
               {t('trainingCompleteSet')}
             </button>
 
+            {/* Drawn like the consent boxes rather than left as browser
+                chrome; the input stays for semantics and the keyboard. */}
             <label className="ss-warm">
               <input type="checkbox" checked={warmup} onChange={(e) => setWarmup(e.target.checked)} />
+              <span className="consent-box" aria-hidden="true">
+                ✓
+              </span>
               {t('trainingWarmup')}
             </label>
           </div>

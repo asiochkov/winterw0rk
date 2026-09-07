@@ -363,6 +363,7 @@ export const ru: typeof en = {
   trainingWarmup: 'Разминочный подход',
   trainingCompleteSet: 'Закрыть подход',
   trainingRest: 'ОТДЫХ',
+  trainingRestNext: 'Дальше: {name}',
   trainingSkip: 'Пропустить',
   trainingPlus30: '+30с',
   trainingSetLabel: 'Подход {n}',

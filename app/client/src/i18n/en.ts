@@ -361,6 +361,7 @@ export const en = {
   trainingWarmup: 'Warm-up set',
   trainingCompleteSet: 'Complete set',
   trainingRest: 'REST',
+  trainingRestNext: 'Next up: {name}',
   trainingSkip: 'Skip',
   trainingPlus30: '+30s',
   trainingSetLabel: 'Set {n}',

@@ -653,16 +653,32 @@
   cursor: pointer;
 }
 
+/*
+ * v7 made the rest banner the loudest thing on the screen, which is right:
+ * during a rest it is the only thing that matters. Bigger padding, a stronger
+ * tint, and a clock at 64px rather than 34.
+ */
 .ss-rest {
-  margin: 0 22px 8px;
-  padding: 20px 22px;
+  margin: 0 22px 10px;
+  padding: 26px 24px;
   border-radius: 16px;
-  background: rgba(var(--acr), 0.1);
-  border: 1px solid rgba(var(--acr), 0.26);
+  background: rgba(var(--acr), 0.12);
+  border: 1px solid rgba(var(--acr), 0.3);
+}
+.ss-rest-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+/* What comes back after the rest, so the screen answers it without a tap. */
+.ss-rest-next {
+  margin-top: 18px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--mut);
 }
 .ss-rest-label {
   font-weight: 500;
@@ -673,10 +689,10 @@
   color: var(--ac);
 }
 .ss-rest-time {
-  margin-top: 10px;
+  margin-top: 12px;
   font-weight: 800;
-  font-size: 34px;
-  line-height: 0.85;
+  font-size: 64px;
+  line-height: 0.82;
   color: var(--tx);
   font-variant-numeric: tabular-nums;
 }
@@ -685,14 +701,14 @@
   gap: 8px;
 }
 .ss-rest-btn {
-  height: 48px;
-  padding: 0 14px;
+  height: 56px;
+  padding: 0 20px;
   border-radius: var(--r-lg);
-  border: 1px solid rgba(var(--w), 0.14);
+  border: var(--edge2);
   background: var(--sf2);
   color: var(--tx);
-  font-weight: 500;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 14px;
   line-height: 1;
   letter-spacing: 0.08em;
   cursor: pointer;
@@ -704,11 +720,14 @@
   flex-direction: column;
   gap: 8px;
 }
+/* v7 took the working card off this screen: during a set there is nothing to
+   separate it from, so the surface was only noise. */
 .ss-card {
-  padding: 24px 22px;
-  border-radius: 16px;
-  background: rgba(var(--w), 0.035);
-  border: var(--edge);
+  padding: 0;
+}
+.ss-card > * {
+  padding-left: 2px;
+  padding-right: 2px;
 }
 .ss-card-top {
   display: flex;
@@ -733,11 +752,13 @@
   color: var(--mut);
 }
 .ss-ex-name {
+  margin-top: 14px;
   font-weight: 800;
-  font-size: 30px;
+  font-size: 34px;
   line-height: 0.98;
   letter-spacing: -0.03em;
   color: var(--tx);
+  text-wrap: pretty;
 }
 .ss-ex-last {
   margin-top: 12px;
@@ -839,7 +860,10 @@
   margin-top: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  /* The row is the target, not the 16px box the browser draws. */
+  min-height: 44px;
+  cursor: pointer;
   font-weight: 500;
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -998,4 +1022,21 @@
   background: var(--sf3);
   color: var(--mut);
   cursor: not-allowed;
+}
+
+/* The warm-up toggle borrows the drawn box from the consent rows. */
+.ss-warm input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.ss-warm input:checked + .consent-box {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: var(--onac);
+}
+.ss-warm input:focus-visible + .consent-box {
+  outline: 2px solid var(--ac);
+  outline-offset: 2px;
 }
