@@ -328,6 +328,14 @@ export const ru: typeof en = {
   quitNeverMind: 'Отмена',
   quitCurrentRun: 'Текущий отрезок · без перерыва с {date}',
   quitDaysSuffix: 'ТЕКУЩИЙ ОТРЕЗОК, ДНИ',
+  quitPresetSmoking: 'Курение',
+  quitPresetAlcohol: 'Алкоголь',
+  quitPresetVaping: 'Вейп',
+  quitPresetSugar: 'Сахар',
+  quitPresetFastFood: 'Фастфуд',
+  quitPresetSocialMedia: 'Соцсети',
+  quitPresetGambling: 'Азартные игры',
+  quitPresetPorn: 'Порно',
   quitSaved: 'сэкономлено',
 
   triggerStress: 'Стресс',
@@ -572,6 +580,8 @@ export const ru: typeof en = {
   // settings
   settingsTitle: 'Настройки',
   settingsAccount: 'Аккаунт',
+  settingsCurrency: 'Валюта',
+  settingsCurrencyNote: 'Используется везде, где счётчики отказа показывают сэкономленное.',
   settingsLanguage: 'Язык',
   settingsNotifications: 'Уведомления',
   settingsNotificationsBody: 'Настройки напоминаний сейчас недоступны.',

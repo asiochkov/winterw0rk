@@ -105,7 +105,13 @@ export function CleanStrip({
  */
 export function RecoveryMilestones({ kind, daysClean }: { kind: string; daysClean: number }) {
   const { t, lang } = useLanguage();
-  const set = (MILESTONES as Record<string, (typeof MILESTONES)['behaviour']>)[kind] ?? MILESTONES.behaviour;
+  // The data file keys these lowercase ('smoking'), while the counter stores
+  // the preset's own casing ('Smoking'), so the smoking set could never be
+  // matched and every counter fell through to the generic one. The statements
+  // themselves are untouched.
+  const set =
+    (MILESTONES as Record<string, (typeof MILESTONES)['behaviour']>)[kind.toLowerCase()] ??
+    MILESTONES.behaviour;
 
   return (
     <div className="q-section">

@@ -5,9 +5,8 @@ import { api, ApiError } from '../../api/client';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
 import { Button, Field, Input } from '../../components/ui';
+import { QUIT_PRESETS } from '../../lib/quitKinds';
 import '../quit.css';
-
-const PRESETS = ['Smoking', 'Alcohol', 'Vaping', 'Sugar', 'Fast Food', 'Social Media', 'Gambling', 'Porn'];
 
 export default function AddQuit() {
   const navigate = useNavigate();
@@ -40,12 +39,17 @@ export default function AddQuit() {
     <Screen title={t('quitAddCounterTitle')} nav={false} back={back}>
       <div className="form-stack">
         <Field label={t('quitWhatQuitting')}>
-          <Input value={kind} onChange={(e) => setKind(e.target.value)} placeholder="Smoking" />
+          <Input value={kind} onChange={(e) => setKind(e.target.value)} placeholder={t('quitPresetSmoking')} />
         </Field>
         <div className="quit-chip-list">
-          {PRESETS.map((p) => (
-            <button key={p} type="button" className={`quit-chip ${kind === p ? 'quit-chip-on' : ''}`} onClick={() => setKind(p)}>
-              {p}
+          {QUIT_PRESETS.map((p) => (
+            <button
+              key={p.value}
+              type="button"
+              className={`quit-chip ${kind === p.value ? 'quit-chip-on' : ''}`}
+              onClick={() => setKind(p.value)}
+            >
+              {t(p.key)}
             </button>
           ))}
         </div>

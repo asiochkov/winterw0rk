@@ -1,5 +1,8 @@
 import type { QuitCounter } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { formatMoney } from '../lib/format';
+import { quitKindLabel } from '../lib/quitKinds';
 
 /**
  * The two remaining blocks on v6's Today: the clean-run rows and the day
@@ -18,6 +21,7 @@ export function CleanRuns({
   onOpen: (c: QuitCounter) => void;
 }) {
   const { t, lang } = useLanguage();
+  const { user } = useAuth();
 
   /** Russian needs the day noun agreed with the number. */
   const dayWord = (n: number) => {
@@ -38,14 +42,14 @@ export function CleanRuns({
           // repeats the run in words rather than printing an empty currency.
           const saved =
             c.moneySaved > 0
-              ? t('todaySavedAmount', { amount: `€${Math.round(c.moneySaved)}` })
+              ? t('todaySavedAmount', { amount: formatMoney(c.moneySaved, lang, user?.currency ?? 'USD') })
               : t('todayDaysClean', { days: c.runDays, word: dayWord(c.runDays) });
 
           return (
             <button key={c.id} type="button" className="t-run" onClick={() => onOpen(c)}>
               <span className="t-run-days">{c.runDays}</span>
               <span className="t-run-body">
-                <span className="t-run-kicker">{c.kind.toUpperCase()}</span>
+                <span className="t-run-kicker">{quitKindLabel(c.kind, t).toUpperCase()}</span>
                 <span className="t-run-saved">{saved}</span>
               </span>
             </button>

@@ -293,6 +293,11 @@ addColumnIfMissing('users', 'terms_version', 'TEXT');
 addColumnIfMissing('users', 'privacy_version', 'TEXT');
 addColumnIfMissing('users', 'consented_at', 'TEXT');
 
+// The quit counters add up money saved, and three screens each printed it with
+// a different hardcoded symbol. The currency the user actually counts in is a
+// property of the user, not of whichever screen is drawing the figure.
+addColumnIfMissing('users', 'currency', "TEXT NOT NULL DEFAULT 'USD'");
+
 // Billing scaffolding. Everything is free today; these columns let paid plans be
 // switched on later without a migration that touches existing rows.
 addColumnIfMissing('users', 'plan', "TEXT NOT NULL DEFAULT 'free'");

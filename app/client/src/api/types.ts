@@ -6,6 +6,8 @@ export interface User {
   areas: string[];
   arcStartDate: string | null;
   arcLengthDays: number;
+  /** ISO 4217 code the quit counters are shown in. Set in Settings. */
+  currency: string;
   onboarded: boolean;
   plan: 'free' | 'plus';
   planStatus: string;

@@ -326,6 +326,14 @@ export const en = {
   quitNeverMind: 'Never mind',
   quitCurrentRun: 'Current run · not stopped since {date}',
   quitDaysSuffix: 'CURRENT RUN, DAYS',
+  quitPresetSmoking: 'Smoking',
+  quitPresetAlcohol: 'Alcohol',
+  quitPresetVaping: 'Vaping',
+  quitPresetSugar: 'Sugar',
+  quitPresetFastFood: 'Fast food',
+  quitPresetSocialMedia: 'Social media',
+  quitPresetGambling: 'Gambling',
+  quitPresetPorn: 'Porn',
   quitSaved: 'saved',
 
   triggerStress: 'Stress',
@@ -570,6 +578,8 @@ export const en = {
   // settings
   settingsTitle: 'Settings',
   settingsAccount: 'Account',
+  settingsCurrency: 'Currency',
+  settingsCurrencyNote: 'Used wherever the quit counters show money saved.',
   settingsLanguage: 'Language',
   settingsNotifications: 'Notifications',
   settingsNotificationsBody: 'Reminder settings are unavailable right now.',

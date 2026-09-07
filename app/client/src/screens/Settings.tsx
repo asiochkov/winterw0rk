@@ -7,6 +7,7 @@ import { useServerConfig } from '../hooks/useServerConfig';
 import { useBack } from '../hooks/useBack';
 import { Screen } from '../components/Shell';
 import { Button, Section } from '../components/ui';
+import { CURRENCIES } from '../lib/currencies';
 import './legal.css';
 
 interface Billing {
@@ -31,7 +32,7 @@ function browserTimezone(): string | undefined {
 }
 
 export default function Settings() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, setUser } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const { reminderEmailsEnabled } = useServerConfig();
   const navigate = useNavigate();
@@ -89,6 +90,11 @@ export default function Settings() {
     }
   }
 
+  async function changeCurrency(currency: string) {
+    const { currency: saved } = await api.patch<{ currency: string }>('/account/currency', { currency });
+    if (user) setUser({ ...user, currency: saved });
+  }
+
   return (
     <Screen title={t('settingsTitle')} nav={false} back={back}>
       <Section title={t('settingsAccount')}>
@@ -112,6 +118,22 @@ export default function Settings() {
             Русский
           </button>
         </div>
+      </Section>
+
+      <Section title={t('settingsCurrency')}>
+        <p style={{ fontSize: 13, color: 'var(--mut)', margin: '0 0 10px' }}>{t('settingsCurrencyNote')}</p>
+        <select
+          className="ww-select"
+          value={user?.currency ?? 'USD'}
+          onChange={(e) => changeCurrency(e.target.value)}
+          aria-label={t('settingsCurrency')}
+        >
+          {CURRENCIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
       </Section>
 
       <Section title={t('legalYourData')}>

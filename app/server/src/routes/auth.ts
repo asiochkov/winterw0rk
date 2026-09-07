@@ -34,6 +34,7 @@ export function toPublicUser(row: any) {
     areas: JSON.parse(row.areas || '[]'),
     arcStartDate: row.arc_start_date,
     arcLengthDays: row.arc_length_days,
+    currency: row.currency ?? 'USD',
     onboarded: !!row.onboarded,
     plan: row.plan ?? 'free',
     planStatus: row.plan_status ?? 'active',
