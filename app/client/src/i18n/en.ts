@@ -390,6 +390,9 @@ export const en = {
   libraryReset: 'Reset filters',
 
   // exercise detail
+  exerciseLogSet: 'Log a set',
+  exerciseSetLogged: 'Set logged.',
+  exerciseLastBest: 'Best so far {kg}kg',
   exerciseErrors: 'Common errors',
   exerciseHistory: 'History',
   exerciseHistoryBest: 'History · best {kg}kg',

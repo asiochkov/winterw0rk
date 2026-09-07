@@ -392,6 +392,9 @@ export const ru: typeof en = {
   libraryReset: 'Сбросить фильтры',
 
   // exercise detail
+  exerciseLogSet: 'Записать подход',
+  exerciseSetLogged: 'Подход записан.',
+  exerciseLastBest: 'Лучшее — {kg} кг',
   exerciseErrors: 'Частые ошибки',
   exerciseHistory: 'История',
   exerciseHistoryBest: 'История · рекорд {kg}кг',

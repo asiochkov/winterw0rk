@@ -217,6 +217,13 @@ router.post('/sessions/:id/start', (req, res) => {
   res.json({ session: serializeSession(updated) });
 });
 
+/** A set logged from the exercise screen carries no session of its own. */
+const quickSetSchema = z.object({
+  weight: z.number().min(0).max(1000).nullable().optional(),
+  reps: z.number().int().min(0).max(1000).nullable().optional(),
+  isWarmup: z.boolean().default(false),
+});
+
 const setSchema = z.object({
   sessionExerciseId: z.number(),
   weight: z.number().min(0).nullable().optional(),
@@ -247,6 +254,68 @@ router.post('/sessions/:id/sets', (req, res) => {
 
   const updated = db.prepare('SELECT * FROM workout_sessions WHERE id = ?').get(session.id);
   res.status(201).json({ session: serializeSession(updated), setId: info.lastInsertRowid });
+});
+
+/**
+ * Logs a set straight from the exercise screen, which v7 offers there and the
+ * app had no way to do.
+ *
+ * It records against today's session rather than inventing a second place for
+ * sets to live, creating the session and the exercise's slot in it when they
+ * do not exist yet. A set logged this way is therefore part of the day's
+ * record like any other, and DELETE /sets/:id undoes it.
+ */
+router.post('/exercises/:exerciseId/sets', (req, res) => {
+  const userId = userIdOf(req);
+  const exerciseId = String(req.params.exerciseId);
+  if (!exerciseRow(exerciseId)) return res.status(404).json({ error: 'unknown_exercise' });
+
+  const parsed = quickSetSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'invalid_input' });
+  const { weight, reps, isWarmup } = parsed.data;
+
+  const today = todayStr();
+  const result = db.transaction(() => {
+    let session = db
+      .prepare("SELECT * FROM workout_sessions WHERE user_id = ? AND date = ? AND status != 'skipped'")
+      .get(userId, today) as any;
+    if (!session) {
+      // A day with no plan still gets a session, so a set logged off-plan is
+      // not thrown away.
+      const plan = db
+        .prepare('SELECT * FROM workout_plan_days WHERE user_id = ? AND weekday = ?')
+        .get(userId, weekdayOf(today)) as any;
+      const info = db
+        .prepare("INSERT INTO workout_sessions (user_id, date, name, status) VALUES (?, ?, ?, 'active')")
+        .run(userId, today, plan?.name || exerciseRow(exerciseId).name);
+      session = db.prepare('SELECT * FROM workout_sessions WHERE id = ?').get(info.lastInsertRowid);
+    }
+
+    let sx = db
+      .prepare('SELECT * FROM session_exercises WHERE session_id = ? AND exercise_id = ?')
+      .get(session.id, exerciseId) as any;
+    if (!sx) {
+      const nextOrder =
+        ((db.prepare('SELECT MAX(order_idx) as m FROM session_exercises WHERE session_id = ?').get(session.id) as any).m ?? -1) + 1;
+      const info = db
+        .prepare('INSERT INTO session_exercises (session_id, exercise_id, order_idx) VALUES (?, ?, ?)')
+        .run(session.id, exerciseId, nextOrder);
+      sx = db.prepare('SELECT * FROM session_exercises WHERE id = ?').get(info.lastInsertRowid);
+    }
+
+    const nextIndex =
+      ((db.prepare('SELECT MAX(set_index) as m FROM set_entries WHERE session_exercise_id = ?').get(sx.id) as any).m ?? -1) + 1;
+    const setInfo = db
+      .prepare(
+        `INSERT INTO set_entries (session_exercise_id, set_index, weight, reps, is_warmup, completed_at)
+         VALUES (?, ?, ?, ?, ?, datetime('now'))`
+      )
+      .run(sx.id, nextIndex, weight ?? null, reps ?? null, isWarmup ? 1 : 0);
+
+    return { sessionId: session.id, setId: setInfo.lastInsertRowid };
+  })();
+
+  res.status(201).json(result);
 });
 
 router.patch('/sets/:id', (req, res) => {

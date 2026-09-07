@@ -934,3 +934,68 @@
 @media (prefers-reduced-motion: reduce) {
   .ss-progress-fill { transition: none; }
 }
+
+/* ── Exercise set logger, transcribed from v7's Exercise screen ─────────
+   v7 wraps it in the accent surface it uses for a primary affordance, with
+   48px inputs and a square 48px add button. */
+.ex-log {
+  margin-top: 16px;
+  padding: 24px 22px;
+  border-radius: var(--r-lg);
+  background: var(--sf-ac);
+  border: 1px solid rgba(var(--acr), 0.28);
+}
+.ex-log-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.ex-log-label {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.ex-log-hint {
+  font-size: 12px;
+  line-height: 1;
+  color: var(--mut);
+  text-align: right;
+}
+.ex-log-row {
+  display: flex;
+  gap: 8px;
+}
+.ex-log-input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: var(--r-md);
+  border: var(--edge2);
+  background: var(--sunk);
+  color: var(--tx);
+  font-size: 15px;
+}
+.ex-log-add {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--r-md);
+  background: var(--ac);
+  color: var(--onac);
+  cursor: pointer;
+}
+.ex-log-add:disabled {
+  background: var(--sf3);
+  color: var(--mut);
+  cursor: not-allowed;
+}

@@ -581,6 +581,59 @@ describe('training', () => {
     expect(typeof next.name).toBe('string');
   });
 
+  it('logs a set straight from an exercise, creating the day session if needed', async () => {
+    const { agent } = await newUser();
+    const list = await agent.get('/api/exercises');
+    const exercise = list.body.exercises[0];
+
+    const logged = await agent
+      .post(`/api/training/exercises/${exercise.id}/sets`)
+      .send({ weight: 40, reps: 8 });
+    expect(logged.status).toBe(201);
+    expect(logged.body.setId).toBeTruthy();
+
+    // It lands in today's session, not somewhere of its own.
+    const today = await agent.get('/api/training/today');
+    const session = await agent.get(`/api/training/sessions/${logged.body.sessionId}`);
+    expect(session.status).toBe(200);
+    const slot = session.body.session.exercises.find((e: any) => e.exerciseId === exercise.id);
+    expect(slot).toBeTruthy();
+    expect(slot.sets.some((st: any) => st.weight === 40 && st.reps === 8)).toBe(true);
+    if (!today.body.restDay) expect(today.body.session.id).toBe(logged.body.sessionId);
+
+    // A second set for the same exercise reuses the slot rather than adding one.
+    await agent.post(`/api/training/exercises/${exercise.id}/sets`).send({ weight: 45, reps: 6 });
+    const again = await agent.get(`/api/training/sessions/${logged.body.sessionId}`);
+    const slots = again.body.session.exercises.filter((e: any) => e.exerciseId === exercise.id);
+    expect(slots).toHaveLength(1);
+    expect(slots[0].sets).toHaveLength(2);
+
+    // And it can be undone through the existing route.
+    const undo = await agent.delete(`/api/training/sets/${logged.body.setId}`);
+    expect(undo.status).toBe(200);
+  });
+
+  it('shows a just-logged set in the exercise history straight away', async () => {
+    const { agent } = await newUser();
+    const exercise = (await agent.get('/api/exercises')).body.exercises[0];
+
+    const before = await agent.get(`/api/exercises/${exercise.id}`);
+    expect(before.body.history).toHaveLength(0);
+
+    await agent.post(`/api/training/exercises/${exercise.id}/sets`).send({ weight: 42.5, reps: 8 });
+
+    // The session is still open; the set has to show anyway.
+    const after = await agent.get(`/api/exercises/${exercise.id}`);
+    expect(after.body.history).toHaveLength(1);
+    expect(after.body.history[0]).toMatchObject({ weight: 42.5, reps: 8 });
+  });
+
+  it('will not log a set against an exercise that does not exist', async () => {
+    const { agent } = await newUser();
+    const res = await agent.post('/api/training/exercises/nope/sets').send({ weight: 10, reps: 5 });
+    expect(res.status).toBe(404);
+  });
+
   it('rejects a feeling outside the five v6 offers', async () => {
     const { agent } = await newUser();
     const today = await agent.get('/api/training/today');

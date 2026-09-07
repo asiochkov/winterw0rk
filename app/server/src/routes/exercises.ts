@@ -49,13 +49,19 @@ router.get('/:id', (req, res) => {
   const row = db.prepare('SELECT * FROM exercises WHERE id = ?').get(req.params.id) as any;
   if (!row) return res.status(404).json({ error: 'not_found' });
 
+  /*
+   * Any session that has not been skipped, not only finished ones. A set is a
+   * fact once it is logged: filtering on 'completed' meant a set recorded from
+   * this screen, or during a session still in progress, was invisible here
+   * until the session was closed — so logging one appeared to do nothing.
+   */
   const history = db
     .prepare(
       `SELECT ws.date, se.weight, se.reps FROM set_entries se
        JOIN session_exercises sx ON sx.id = se.session_exercise_id
        JOIN workout_sessions ws ON ws.id = sx.session_id
-       WHERE ws.user_id = ? AND sx.exercise_id = ? AND ws.status = 'completed' AND se.is_warmup = 0
-       ORDER BY ws.date DESC LIMIT 20`
+       WHERE ws.user_id = ? AND sx.exercise_id = ? AND ws.status != 'skipped' AND se.is_warmup = 0
+       ORDER BY ws.date DESC, se.id DESC LIMIT 20`
     )
     .all(userId, row.id);
 
