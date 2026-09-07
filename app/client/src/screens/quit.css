@@ -18,6 +18,9 @@
   line-height: 1;
 }
 .quit-card-kind {
+  /* Half of this line was already caps and the kind was not, so it read
+     "smoking · CURRENT RUN". */
+  text-transform: uppercase;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;

@@ -3,6 +3,8 @@ import { api } from '../api/client';
 import type { PlannerTask, TaskPriority, TaskRecurrence } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { ErrorState, LoadingRows } from '../components/states';
+import { useMutation } from '../hooks/useAsyncData';
 import { Button, Input, Pill } from '../components/ui';
 import './planner.css';
 
@@ -28,9 +30,20 @@ export default function Planner() {
   const [menuFor, setMenuFor] = useState<number | null>(null);
   const [subInput, setSubInput] = useState<Record<number, string>>({});
 
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const mutation = useMutation();
+
   async function load() {
-    const r = await api.get<{ tasks: PlannerTask[] }>('/planner');
-    setTasks(r.tasks);
+    setLoadError(null);
+    try {
+      const r = await api.get<{ tasks: PlannerTask[] }>('/planner');
+      setTasks(r.tasks);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Could not load your planner.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -39,38 +52,40 @@ export default function Planner() {
 
   async function addTask() {
     if (!title.trim()) return;
-    await api.post('/planner', {
-      title,
-      backlog: addTo === 'backlog',
-      weekday: addTo === 'backlog' ? null : addTo,
-    });
+    const ok = await mutation.run(() =>
+      api.post('/planner', {
+        title,
+        backlog: addTo === 'backlog',
+        weekday: addTo === 'backlog' ? null : addTo,
+      })
+    );
+    // The box is only emptied once the task exists; clearing first threw away
+    // what the user had typed whenever the request failed.
+    if (!ok) return;
     setTitle('');
     load();
   }
 
   async function toggleDone(tsk: PlannerTask) {
-    await api.patch(`/planner/${tsk.id}`, { done: !tsk.done });
-    load();
+    if (await mutation.run(() => api.patch(`/planner/${tsk.id}`, { done: !tsk.done }))) load();
   }
 
   async function setPriority(tsk: PlannerTask, priority: TaskPriority) {
-    await api.patch(`/planner/${tsk.id}`, { priority });
-    load();
+    if (await mutation.run(() => api.patch(`/planner/${tsk.id}`, { priority }))) load();
   }
 
   async function setRecurrence(tsk: PlannerTask, recurrence: TaskRecurrence) {
-    await api.patch(`/planner/${tsk.id}`, { recurrence });
-    load();
+    if (await mutation.run(() => api.patch(`/planner/${tsk.id}`, { recurrence }))) load();
   }
 
   async function moveTo(tsk: PlannerTask, weekday: number | null) {
-    await api.patch(`/planner/${tsk.id}`, { weekday, backlog: weekday === null });
+    if (!(await mutation.run(() => api.patch(`/planner/${tsk.id}`, { weekday, backlog: weekday === null })))) return;
     load();
     setMenuFor(null);
   }
 
   async function remove(tsk: PlannerTask) {
-    await api.delete(`/planner/${tsk.id}`);
+    if (!(await mutation.run(() => api.delete(`/planner/${tsk.id}`)))) return;
     load();
     setMenuFor(null);
   }
@@ -78,14 +93,35 @@ export default function Planner() {
   async function addSubtask(tsk: PlannerTask) {
     const v = subInput[tsk.id];
     if (!v?.trim()) return;
-    await api.post(`/planner/${tsk.id}/subtasks`, { title: v });
+    if (!(await mutation.run(() => api.post(`/planner/${tsk.id}/subtasks`, { title: v })))) return;
     setSubInput((s) => ({ ...s, [tsk.id]: '' }));
     load();
   }
 
   async function toggleSubtask(id: number, done: boolean) {
-    await api.patch(`/planner/subtasks/${id}`, { done });
-    load();
+    if (await mutation.run(() => api.patch(`/planner/subtasks/${id}`, { done }))) load();
+  }
+
+  if (loading) {
+    return (
+      <Screen title={t('plannerTitle')} nav>
+        <LoadingRows rows={4} />
+      </Screen>
+    );
+  }
+  if (loadError) {
+    return (
+      <Screen title={t('plannerTitle')} nav>
+        <ErrorState
+          message={loadError}
+          onRetry={() => {
+            setLoading(true);
+            load();
+          }}
+          retryLabel={t('tryAgain')}
+        />
+      </Screen>
+    );
   }
 
   const backlog = tasks.filter((tsk) => tsk.backlog);

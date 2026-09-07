@@ -50,13 +50,26 @@ a failed save stopped the clock and stranded the session.
 app never had), `useMutation` flashes failures and blocks double submits, and
 Focus keeps the session open on a failed finish so stopping again retries.
 
-### P0-2 · Nineteen screens have no loading or error state
+### P0-2 · Nineteen screens have no loading or error state — **fixed**
 27 screens fetch; 8 have a loading state, 7 have an error state. On the rest a
 slow network shows an empty screen indistinguishable from "you have no data",
 and a failure shows the same. `useAsyncData` already existed and solved this —
 it was used by 3 screens out of 38.
 
-**Plan:** adopt the existing hooks rather than write new ones.
+**Fixed** by adopting the existing hooks. No file is left with a bare
+`await api.*` and no guard. Three of the failures were worse than silence:
+
+- `Nutrition.addFood`, `Body.save`, `Planner.addTask` and
+  `Planner.addSubtask` cleared their inputs *before* the request resolved, so
+  a failure threw away what the user had typed.
+- `QuitDetail.finishCraving` showed the "you got through it" state before the
+  post returned, congratulating the user on an episode that was never saved.
+- `Mood.save` cleared its pending flag only on success, so a failed save left
+  the chip stuck mid-press.
+- `Steps.startCounting` read `entry.steps` from a load that could reject, and
+  its periodic sync produced an unhandled rejection every few seconds. The
+  background sync now fails quietly and reports once when the user stops —
+  the total is cumulative, so nothing is lost.
 
 ### P0-3 · The desktop layout reserves a column nothing fills
 `.app-rail` is 300px wide at ≥1180px and **no screen passes `rail`**. On a
@@ -101,9 +114,16 @@ The first screen a new user meets:
   **password** field, because `error` is passed to that `Field`;
 - no password reveal, so a typo can only be found by failing.
 
-### P1-3 · Today's lower blocks are unstyled
-Mood and Focus sit as bare labels on the background while everything around
-them is carded. They read as unfinished markup rather than as content.
+### P1-3 · Today's lower blocks are invisible — **fixed**
+Mood and Focus are buttons filled with `--sunk` and given no border, straight
+from v7. That works in v7's day palette, where `--sunk` (#EFF0F5) sits above
+`--bg` (#FAFAFA). In the night palette the two are the same colour, so two
+buttons disappeared into the page between two bordered cards.
+
+This is the case this audit reserved for itself: v7's own design causing a
+real problem. **Deviation, deliberate and minimal** — the fill stays v7's, so
+the tiles keep their recessive weight and the day theme is untouched, and a
+hairline `--edge` gives them something to be seen by.
 
 ---
 
@@ -129,9 +149,9 @@ them is carded. They read as unfinished markup rather than as content.
 ## Order of work
 
 1. P0-1 feedback on failure — **done**
-2. P0-2 loading and error states across the fetching screens
-3. P0-3 the desktop context rail
-4. P1-1 touch targets
-5. P1-2 sign-up
-6. P1-3 Today's lower blocks
-7. P2, then P3
+2. P0-2 loading and error states — **done**
+3. P0-3 the desktop context rail — **done for Today**, other screens pending
+4. P1-1 touch targets — **done**
+5. P1-2 sign-up — **done**
+6. P1-3 Today's lower blocks — **done**
+7. P2, then P3 — pending

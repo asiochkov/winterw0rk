@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { api } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { ErrorState, LoadingRows } from '../components/states';
+import { useAsyncData, useMutation } from '../hooks/useAsyncData';
 import { Button, Field, Input, Section } from '../components/ui';
 
 interface BodyEntry {
@@ -21,39 +23,58 @@ interface Summary {
 
 export default function Body() {
   const { t } = useLanguage();
-  const [summary, setSummary] = useState<Summary | null>(null);
-  const [history, setHistory] = useState<BodyEntry[]>([]);
   const [weight, setWeight] = useState('');
   const [chest, setChest] = useState('');
   const [waist, setWaist] = useState('');
   const [hips, setHips] = useState('');
 
-  async function load() {
+  const state = useAsyncData(async () => {
     const [s, h] = await Promise.all([
       api.get<Summary>('/body/summary'),
       api.get<{ entries: BodyEntry[] }>('/body/history'),
     ]);
-    setSummary(s);
-    setHistory(h.entries);
-  }
-
-  useEffect(() => {
-    load();
+    return { summary: s, history: h.entries };
   }, []);
+  const mutation = useMutation();
+  const load = state.reload;
 
   async function save() {
-    await api.post('/body', {
-      weight: weight ? Number(weight) : undefined,
-      chest: chest ? Number(chest) : undefined,
-      waist: waist ? Number(waist) : undefined,
-      hips: hips ? Number(hips) : undefined,
-    });
+    const ok = await mutation.run(
+      () =>
+        api.post('/body', {
+          weight: weight ? Number(weight) : undefined,
+          chest: chest ? Number(chest) : undefined,
+          waist: waist ? Number(waist) : undefined,
+          hips: hips ? Number(hips) : undefined,
+        }),
+      { success: t('bodySaved') }
+    );
+    // Measurements are only cleared once they are recorded; clearing first
+    // lost them whenever the request failed.
+    if (!ok) return;
     setWeight('');
     setChest('');
     setWaist('');
     setHips('');
     load();
   }
+
+  if (state.loading) {
+    return (
+      <Screen title={t('bodyTitle')} kicker={t('bodyKicker')} nav={false}>
+        <LoadingRows rows={4} />
+      </Screen>
+    );
+  }
+  if (state.error || !state.data) {
+    return (
+      <Screen title={t('bodyTitle')} kicker={t('bodyKicker')} nav={false}>
+        <ErrorState message={state.error ?? t('genericError')} onRetry={load} retryLabel={t('tryAgain')} />
+      </Screen>
+    );
+  }
+  const summary = state.data.summary;
+  const history = state.data.history;
 
   return (
     <Screen title={t('bodyTitle')} kicker={t('bodyKicker')} nav={false}>

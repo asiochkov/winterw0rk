@@ -431,6 +431,7 @@ export const en = {
   programLengthDays: '{n} days',
 
   // body
+  bodySaved: 'Measurements saved.',
   bodyTitle: 'Body',
   bodyKicker: 'Trend, not the daily number',
   bodyLatest: 'Latest (kg)',
@@ -547,6 +548,8 @@ export const en = {
   settingsDeleteConfirmBtn: 'Yes, delete everything',
 
   // steps
+  stepsSyncFailed: 'Some steps could not be synced. They will be sent with the next sync.',
+  stepsGoalSaved: 'Goal saved.',
   stepsTitle: 'Steps',
   stepsKicker: 'Counted on your device',
   stepsOfGoal: 'of {goal} today',

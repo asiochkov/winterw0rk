@@ -433,6 +433,7 @@ export const ru: typeof en = {
   programLengthDays: '{n} дней',
 
   // body
+  bodySaved: 'Замеры сохранены.',
   bodyTitle: 'Тело',
   bodyKicker: 'Тренд, а не цифра дня',
   bodyLatest: 'Последний вес (кг)',
@@ -549,6 +550,8 @@ export const ru: typeof en = {
   settingsDeleteConfirmBtn: 'Да, удалить всё',
 
   // steps
+  stepsSyncFailed: 'Часть шагов не синхронизировалась. Они уйдут со следующей синхронизацией.',
+  stepsGoalSaved: 'Цель сохранена.',
   stepsTitle: 'Шаги',
   stepsKicker: 'Считаются на твоём устройстве',
   stepsOfGoal: 'из {goal} за сегодня',

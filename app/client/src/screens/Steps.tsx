@@ -3,6 +3,8 @@ import { api } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { usePedometer } from '../hooks/usePedometer';
 import { Screen } from '../components/Shell';
+import { ErrorState, LoadingRows } from '../components/states';
+import { useMutation } from '../hooks/useAsyncData';
 import { Banner, Button, Field, Input, ProgressBar, Section } from '../components/ui';
 import './steps.css';
 
@@ -23,29 +25,54 @@ export default function Steps() {
   const [dailyAverage, setDailyAverage] = useState(0);
   const [manualValue, setManualValue] = useState('');
   const [goalDraft, setGoalDraft] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const mutation = useMutation();
 
   // Steps already banked on the server when this counting session began.
   const baselineRef = useRef(0);
   const pedometer = usePedometer();
 
   const load = useCallback(async () => {
-    const [t1, h] = await Promise.all([
-      api.get<{ entry: StepEntry }>('/steps/today'),
-      api.get<{ entries: StepEntry[]; dailyAverage: number }>('/steps/history'),
-    ]);
-    setToday(t1.entry);
-    setHistory(h.entries);
-    setDailyAverage(h.dailyAverage);
-    return t1.entry;
+    setLoadError(null);
+    try {
+      const [t1, h] = await Promise.all([
+        api.get<{ entry: StepEntry }>('/steps/today'),
+        api.get<{ entries: StepEntry[]; dailyAverage: number }>('/steps/history'),
+      ]);
+      setToday(t1.entry);
+      setHistory(h.entries);
+      setDailyAverage(h.dailyAverage);
+      return t1.entry;
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Could not load your steps.');
+      return null;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
     load();
   }, [load]);
 
+  /*
+   * The background sync runs every few seconds while counting. A failure here
+   * is not worth a toast each time — it would bury the screen — so it is
+   * recorded and reported once, when the user stops. Nothing is lost either
+   * way: the total is cumulative, so the next successful sync carries it.
+   */
+  const syncFailed = useRef(false);
   const syncSteps = useCallback(async (total: number) => {
-    const { entry } = await api.post<{ entry: StepEntry }>('/steps/sync', { steps: total, source: 'sensor' });
-    setToday(entry);
+    try {
+      const { entry } = await api.post<{ entry: StepEntry }>('/steps/sync', { steps: total, source: 'sensor' });
+      setToday(entry);
+      syncFailed.current = false;
+      return true;
+    } catch {
+      syncFailed.current = true;
+      return false;
+    }
   }, []);
 
   // Push the running total periodically rather than on every footfall.
@@ -58,7 +85,10 @@ export default function Steps() {
   }, [pedometer.status, pedometer.sessionSteps, syncSteps]);
 
   async function startCounting() {
+    // Counting must not begin against an unknown baseline: without today's
+    // banked total the next sync would overwrite it.
     const entry = await load();
+    if (!entry) return;
     baselineRef.current = entry.steps;
     pedometer.resetSession();
     pedometer.start();
@@ -66,15 +96,19 @@ export default function Steps() {
 
   async function stopCounting() {
     pedometer.stop();
-    await syncSteps(baselineRef.current + pedometer.sessionSteps);
+    const ok = await syncSteps(baselineRef.current + pedometer.sessionSteps);
+    if (!ok || syncFailed.current) setLoadError(t('stepsSyncFailed'));
     load();
   }
 
   async function saveManual() {
     const value = Number(manualValue);
     if (!Number.isFinite(value) || value < 0) return;
-    const { entry } = await api.post<{ entry: StepEntry }>('/steps/sync', { steps: value, source: 'manual' });
-    setToday(entry);
+    const ok = await mutation.run(async () => {
+      const { entry } = await api.post<{ entry: StepEntry }>('/steps/sync', { steps: value, source: 'manual' });
+      setToday(entry);
+    });
+    if (!ok) return;
     setManualValue('');
     load();
   }
@@ -82,12 +116,37 @@ export default function Steps() {
   async function saveGoal() {
     const goal = Number(goalDraft);
     if (!Number.isFinite(goal) || goal < 500) return;
-    const { entry } = await api.patch<{ entry: StepEntry }>('/steps/goal', { goal });
-    setToday(entry);
-    setGoalDraft('');
+    const ok = await mutation.run(
+      async () => {
+        const { entry } = await api.patch<{ entry: StepEntry }>('/steps/goal', { goal });
+        setToday(entry);
+      },
+      { success: t('stepsGoalSaved') }
+    );
+    if (ok) setGoalDraft('');
   }
 
-  if (!today) return <Screen title={t('stepsTitle')} nav={false}>{null}</Screen>;
+  if (loading) {
+    return (
+      <Screen title={t('stepsTitle')} nav={false}>
+        <LoadingRows rows={3} />
+      </Screen>
+    );
+  }
+  if (!today) {
+    return (
+      <Screen title={t('stepsTitle')} nav={false}>
+        <ErrorState
+          message={loadError ?? t('genericError')}
+          onRetry={() => {
+            setLoading(true);
+            load();
+          }}
+          retryLabel={t('tryAgain')}
+        />
+      </Screen>
+    );
+  }
 
   const liveTotal = pedometer.status === 'counting' ? baselineRef.current + pedometer.sessionSteps : today.steps;
   const pct = today.goal ? (liveTotal / today.goal) * 100 : 0;

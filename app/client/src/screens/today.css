@@ -287,6 +287,8 @@
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0.08em;
+  /* Caps live in CSS here, not in the dictionaries. */
+  text-transform: uppercase;
   color: var(--ac);
   margin-bottom: 9px;
 }
@@ -753,13 +755,27 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+/*
+ * Mood and Focus. v7 fills these with --sunk and gives them no border, which
+ * works in its day palette where --sunk (#EFF0F5) sits above --bg (#FAFAFA).
+ * In the night palette the two are the same colour, so two buttons vanished
+ * into the page between two bordered cards and read as unfinished markup.
+ *
+ * A deliberate deviation, and the smallest one that fixes it: the fill stays
+ * v7's, so the tiles keep their recessive weight and the day theme is
+ * untouched, and a hairline gives them an edge to be seen by.
+ */
 .t-mind-tile {
   text-align: left;
   padding: 22px 20px;
   border-radius: 16px;
   background: var(--sunk);
-  border: none;
+  border: var(--edge);
   cursor: pointer;
+  transition: background var(--m-fast) var(--e-io), border-color var(--m-fast) var(--e-io);
+}
+.t-mind-tile:hover {
+  background: var(--sf1);
 }
 .t-mind-label {
   font-weight: 500;
