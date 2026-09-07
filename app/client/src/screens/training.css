@@ -539,7 +539,9 @@
 }
 .tr-row-swap {
   flex: none;
-  height: 40px;
+  /* v7 paints this 40px; 44 is what a finger needs and there is nothing
+     around it that the extra four pixels disturb. */
+  height: 44px;
   padding: 0 14px;
   border-radius: 12px;
   border: var(--edge2);

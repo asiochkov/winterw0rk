@@ -461,7 +461,18 @@
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
 }
+/*
+ * This opens the habits screen, but it was 26x11 with no padding and read as
+ * a caption rather than an action — the smallest target in the app. The
+ * figure keeps its size; the button gets a tappable box around it and enough
+ * of an edge to look pressable.
+ */
 .t-habits-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  margin-right: -12px;
   font-weight: 500;
   font-size: 11px;
   line-height: 1;
@@ -469,8 +480,12 @@
   color: var(--ac);
   background: none;
   border: none;
-  padding: 0;
+  border-radius: var(--r-sm);
   cursor: pointer;
+  transition: background var(--m-fast) var(--e-io);
+}
+.t-habits-count:hover {
+  background: var(--sf-ac);
 }
 .t-habits-list {
   display: flex;

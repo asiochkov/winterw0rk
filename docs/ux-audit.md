@@ -94,7 +94,7 @@ report yet.
 
 ## P1 — serious friction
 
-### P1-1 · Touch targets below 44px on the phone
+### P1-1 · Touch targets below 44px — **fixed, and the tool was wrong too**
 Measured at 390px:
 
 | target | size | where |
@@ -108,8 +108,19 @@ Measured at 390px:
 | segmented tabs (Week / Backlog, Overview / Habits) | 175×41 | Planner, Progress |
 | "Open" | 59×40 | Training |
 
-v7 specifies the 34px and 40px heights, so the visual stays; the **hit area**
-is extended to 44px instead. Text links get real padding.
+v7 specifies the 34px and 40px sizes, so the paint stays and the **hit area**
+is extended past it. Text links, chips and segmented tabs take the height
+directly, since they have no paint worth preserving.
+
+The sweep itself had to be corrected before this could be trusted: it measured
+`getBoundingClientRect()`, which is the painted box, so it kept reporting
+controls whose pseudo-element already made them tappable. It now probes
+outward from each edge with `elementFromPoint` to find what a finger can
+actually reach. That correction is what surfaced the two genuine misses left:
+the round nav buttons were short **horizontally** as well as vertically, and
+the rail's world buttons were 42px.
+
+Both widths now sweep clean.
 
 ### P1-2 · Sign-up is unfinished
 The first screen a new user meets:
@@ -138,8 +149,11 @@ hairline `--edge` gives them something to be seen by.
 
 ## P2 — noticeable
 
-- **P2-1** No route-level pending state: navigating renders the new screen's
-  empty shell before its data lands, so every transition flashes. *Open.*
+- **P2-1** **Fixed.** The app had no screen transition at all, while v7 gives
+  every screen `wwScreen .5s` on entry, so a navigation snapped straight to a
+  half-built screen. Each route mounts its own `Screen`, so the animation runs
+  once per navigation without any keying. Verified at 0.5s normally and
+  0.01ms under reduced motion.
 - **P2-2** No form was focused on mount; sign-in needed a tap before typing.
   **Fixed** on sign-in, sign-up, forgot and reset.
 - **P2-3** **Fixed**, and the finding was partly wrong: `AddHabit` and
@@ -148,8 +162,8 @@ hairline `--edge` gives them something to be seen by.
   that genuinely had nothing were `ExerciseLibrary` and `Profile`, both using
   bare `.then()` with no rejection handler — a failed request showed an empty
   library reading as "there are no exercises", and a profile of zeros.
-- **P2-4** The habits counter "4 / 9" is a link but is not styled as one.
-  *Open.*
+- **P2-4** **Fixed.** The habits counter was 26×11 with no padding — the
+  smallest target in the app — and read as a caption rather than an action.
 
 ## P3 — polish
 

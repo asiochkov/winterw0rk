@@ -183,9 +183,13 @@ function SidebarNav() {
   return (
     <nav className="side-nav">
       {/* v7 sets the rail's logo as type, shortened to WW on tablet. */}
-      <div className="side-nav-logo">
-        <span className="side-nav-wide">WINTERWORK</span>
-        <span className="side-nav-narrow">WW</span>
+      <div className="side-nav-logo" aria-label="Winterwork">
+        <span className="side-nav-wide" aria-hidden="true">
+          WINTERWORK
+        </span>
+        <span className="side-nav-narrow" aria-hidden="true">
+          WW
+        </span>
       </div>
 
       <div className="side-nav-worlds">
@@ -197,11 +201,20 @@ function SidebarNav() {
               key={w}
               type="button"
               className={`side-nav-world ${on ? 'is-on' : ''}`}
+              // Both spellings are in the DOM and CSS hides one, so the
+              // accessible name has to be stated or it reads as
+              // "Discipline Dis".
+              aria-label={label}
+              aria-pressed={on}
               onClick={() => setWorld(w)}
             >
               {/* Tablet shows three letters, as v7 does with slice(0, 3). */}
-              <span className="side-nav-wide">{label}</span>
-              <span className="side-nav-narrow">{label.slice(0, 3)}</span>
+              <span className="side-nav-wide" aria-hidden="true">
+                {label}
+              </span>
+              <span className="side-nav-narrow" aria-hidden="true">
+                {label.slice(0, 3)}
+              </span>
             </button>
           );
         })}

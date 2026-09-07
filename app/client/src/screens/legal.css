@@ -157,6 +157,11 @@ body.has-cookie-notice .onb-shell {
   font-size: 12.5px;
 }
 .legal-links a {
+  /* These were 14px tall with no padding — legible, but not tappable. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
   color: var(--mut);
 }
 .legal-links a:hover {

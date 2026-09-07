@@ -23,6 +23,26 @@
   min-width: 0;
   padding: var(--s6) var(--s4) var(--s8);
   min-height: 100vh;
+  /*
+   * v7 gives every screen this on entry and the app had no screen transition
+   * at all, so a navigation snapped straight to a half-built screen and read
+   * as a flash. Each route mounts its own Screen, so the animation runs once
+   * per navigation without any keying.
+   *
+   * The global reduced-motion rule in index.css neutralises it.
+   */
+  animation: wwScreen 0.5s var(--e-settle) both;
+}
+
+@keyframes wwScreen {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 /* The floating bar is ~124px tall with the world row; v6 reserves 150px. */
 .app-main-tabbed {
@@ -105,18 +125,28 @@
   background: var(--sunk);
 }
 
-/* v7 draws this pill 34px tall and the round buttons at 40. Both are under
-   the 44px a tap needs, so the hit area is extended past the paint with a
-   pseudo-element rather than by resizing anything. */
-.ww-world-tab::after,
-.ww-nav-round::after {
+/* v7 draws this pill 34px tall and the round buttons 40 square. Both are
+   under the 44px a tap needs, so the hit area is extended past the paint with
+   a pseudo-element rather than by resizing anything. 46 rather than 44 so the
+   target clears the minimum rather than sitting exactly on it. */
+.ww-world-tab::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
   top: 50%;
-  height: 44px;
+  height: 46px;
   transform: translateY(-50%);
+}
+/* The round buttons are short in both directions, not just vertically. */
+.ww-nav-round::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  transform: translate(-50%, -50%);
 }
 .ww-world-tab {
   position: relative;
@@ -285,7 +315,8 @@
   }
   .side-nav-world {
     text-transform: uppercase;
-    height: 42px;
+    /* v7 paints these 42px; 44 is what a pointer and a finger both need. */
+    height: 44px;
     border-radius: var(--r-md);
     border: none;
     background: transparent;

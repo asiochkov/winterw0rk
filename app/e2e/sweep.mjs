@@ -62,8 +62,27 @@ for (const { w, h, name } of WIDTHS) {
         if (r.width === 0 && r.height === 0) continue;
         const label = (el.getAttribute('aria-label') || el.textContent || el.tagName).trim().slice(0, 28);
         if ((r.height < 44 || r.width < 44) && !seen.has(label)) {
-          seen.add(label);
-          out.small.push(`${label} ${Math.round(r.width)}x${Math.round(r.height)}`);
+          // The painted box is not the target. Several controls keep v7's
+          // 34px or 40px paint and extend the hit area with a pseudo-element,
+          // so probe outward from each edge to find what a finger can
+          // actually reach before calling anything too small.
+          const cx = Math.round(r.left + r.width / 2);
+          const cy = Math.round(r.top + r.height / 2);
+          const owns = (x, y) => {
+            const hit = document.elementFromPoint(x, y);
+            return hit === el || el.contains(hit);
+          };
+          const grow = (dx, dy, from) => {
+            let n = 0;
+            while (n < 24 && owns(dx ? from + dx * (n + 1) : cx, dy ? from + dy * (n + 1) : cy)) n++;
+            return n;
+          };
+          const h = r.height + grow(0, -1, Math.round(r.top)) + grow(0, 1, Math.round(r.bottom));
+          const w = r.width + grow(-1, 0, Math.round(r.left)) + grow(1, 0, Math.round(r.right));
+          if (h < 44 || w < 44) {
+            seen.add(label);
+            out.small.push(`${label} ${Math.round(w)}x${Math.round(h)}`);
+          }
         }
         if (r.right > vw + 1 || r.left < -1) out.offscreen.push(label);
       }
