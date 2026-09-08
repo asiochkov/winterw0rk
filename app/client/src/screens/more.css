@@ -1,0 +1,46 @@
+/*
+ * More was twelve text rows with no icons, while five other screens had a
+ * full icon set — the same split the two worlds made, one layer down. Every
+ * top-level destination carries an icon now, which is the "everywhere" half of
+ * "everywhere or nowhere".
+ */
+.more-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-family: inherit;
+  color: var(--tx);
+  cursor: pointer;
+}
+.more-row + .more-row {
+  border-top: var(--edge);
+}
+.more-row-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  background: var(--sf1);
+}
+.more-row-name {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-4);
+}
+.more-row-chevron {
+  flex: none;
+  color: var(--mut);
+  font-size: var(--fs-5);
+}
+.more-row:hover .more-row-chevron {
+  color: var(--tx);
+}

@@ -3,7 +3,6 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ToastProvider } from './context/ToastContext';
-import { WorldProvider } from './context/WorldContext';
 import { RequireAuth } from './components/Guards';
 import Welcome from './screens/Welcome';
 import SignIn from './screens/SignIn';
@@ -52,7 +51,6 @@ export default function App() {
     <BrowserRouter>
       <LanguageProvider>
         <ToastProvider>
-        <WorldProvider>
         <AuthProvider>
           <ErrorBoundary>
             <Routes>
@@ -107,7 +105,6 @@ export default function App() {
             <CookieNotice />
           </ErrorBoundary>
         </AuthProvider>
-        </WorldProvider>
         </ToastProvider>
       </LanguageProvider>
     </BrowserRouter>

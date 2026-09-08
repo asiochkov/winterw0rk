@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { useWorld } from '../context/WorldContext';
 import { V6Icon } from '../components/V6Icon';
 
 /**
@@ -65,14 +64,14 @@ export function TodayHero({
   summary: string;
 }) {
   const { t } = useLanguage();
-  const { isFit } = useWorld();
   const navigate = useNavigate();
   const phase = phaseOf();
 
-  const phaseLabel =
-    t(phase === 'morning' ? 'phaseMorning' : phase === 'evening' ? 'phaseEvening' : 'phaseAfternoon') +
-    ' · ' +
-    t(isFit ? 'worldFitness' : 'worldDiscipline');
+  // This said "morning · discipline" — the second half named which of the two
+  // worlds you were standing in, and there is only one now.
+  const phaseLabel = t(
+    phase === 'morning' ? 'phaseMorning' : phase === 'evening' ? 'phaseEvening' : 'phaseAfternoon'
+  );
 
   return (
     <div className="t-hero">

@@ -112,32 +112,14 @@
 .ww-nav-top {
   display: flex;
   align-items: center;
+  /* The world switch used to fill this row and push these two to the right.
+     With it gone they keep that position rather than drifting left into the
+     space it left behind. */
+  justify-content: flex-end;
   gap: 8px;
 }
 
-/* World switch: discipline / fitness */
-.ww-world {
-  position: relative;
-  flex: 1;
-  display: flex;
-  padding: 3px;
-  border-radius: var(--r-pill);
-  background: var(--sunk);
-}
 
-/* v7 draws this pill 34px tall and the round buttons 40 square. Both are
-   under the 44px a tap needs, so the hit area is extended past the paint with
-   a pseudo-element rather than by resizing anything. 46 rather than 44 so the
-   target clears the minimum rather than sitting exactly on it. */
-.ww-world-tab::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 46px;
-  transform: translateY(-50%);
-}
 /* The round buttons are short in both directions, not just vertically. */
 .ww-nav-round::after {
   content: '';
@@ -148,48 +130,7 @@
   height: 46px;
   transform: translate(-50%, -50%);
 }
-.ww-world-tab {
-  position: relative;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  height: 34px;
-  border-radius: var(--r-pill);
-  border: none;
-  background: transparent;
-  color: rgba(var(--t), 0.5);
-  font-weight: 600;
-  font-size: var(--fs-1);
-  line-height: var(--lh-flat);
-  /* v7 widened this from v6's .06em. */
-  letter-spacing: var(--ls-label);
-  /* The caps live here, not in the dictionaries. */
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background var(--m-sig) var(--e-io), color var(--m-cplx) ease;
-}
-.ww-world-tab.is-on {
-  background: var(--tx);
-  color: var(--bg);
-}
 
-.ww-world-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(var(--t), 0.22);
-  transition: background var(--m-cplx) ease, box-shadow var(--m-cplx) ease;
-}
-.ww-world-dot.is-disc {
-  background: var(--ac);
-  box-shadow: 0 0 16px rgba(var(--acr), 0.55);
-}
-.ww-world-dot.is-fit {
-  background: var(--am);
-  box-shadow: 0 0 16px rgba(var(--amr), 0.55);
-}
 
 .ww-nav-round {
   position: relative;
@@ -249,7 +190,6 @@
 @media (prefers-reduced-motion: reduce) {
   .ww-nav-pill,
   .ww-nav-tab svg,
-  .ww-world-tab,
   .ww-nav-fab {
     transition: none;
   }
@@ -302,35 +242,6 @@
   }
   .side-nav-narrow {
     display: inline;
-  }
-
-  .side-nav-worlds {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 4px;
-    border-radius: var(--r-lg);
-    background: var(--sf1);
-    border: var(--edge);
-  }
-  .side-nav-world {
-    text-transform: uppercase;
-    /* v7 paints these 42px; 44 is what a pointer and a finger both need. */
-    height: 44px;
-    border-radius: var(--r-md);
-    border: none;
-    background: transparent;
-    color: rgba(var(--t), 0.5);
-    font-weight: 600;
-    font-size: var(--fs-1);
-    line-height: var(--lh-flat);
-    letter-spacing: var(--ls-label);
-    cursor: pointer;
-    transition: background var(--m-sig) var(--e-io);
-  }
-  .side-nav-world.is-on {
-    background: var(--tx);
-    color: var(--bg);
   }
 
   .side-nav-sections {

@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useWorld, type World } from '../context/WorldContext';
 import { V6Icon, type IconName } from './V6Icon';
 import { BackButton } from './BackButton';
 import './Shell.css';
@@ -58,32 +57,34 @@ export function Screen({ title, kicker, children, nav = true, rail, bleed = fals
 }
 
 /**
- * The two navigation sets v6 defines. Which one is showing depends on the
- * world, not the route — switching worlds swaps all five tabs at once.
+ * One set of tabs.
+ *
+ * There were two, swapped by a "world" switch: discipline showed Today,
+ * Planner, Habits, Focus, Progress; fitness showed Today, Training, Body,
+ * Nutrition, Progress. Only two tabs were common to both, which made this two
+ * applications sharing a login — and it contradicted the product's own claim
+ * that discipline and fitness are parts of one system, because you could not
+ * see one while standing in the other.
+ *
+ * Habits and quitting already share a screen behind a segmented control, and
+ * that screen is the Actions tab. Everything the fitness set carried that is
+ * not training — body, nutrition, steps, street — is reached from More, where
+ * planner and programs already were.
  */
-const NAV_SETS: Record<World, { to: string; key: string; icon: IconName; label: string }[]> = {
-  disc: [
-    { to: '/today', key: 'today', icon: 'today', label: 'navToday' },
-    { to: '/planner', key: 'planner', icon: 'plan', label: 'navPlanner' },
-    { to: '/habits', key: 'habits', icon: 'habits', label: 'navHabits' },
-    { to: '/focus', key: 'focus', icon: 'focus', label: 'navFocus' },
-    { to: '/progress', key: 'progress', icon: 'progress', label: 'navProgress' },
-  ],
-  fit: [
-    { to: '/today', key: 'today', icon: 'today', label: 'navToday' },
-    { to: '/training', key: 'train', icon: 'train', label: 'navTrain' },
-    { to: '/body', key: 'body', icon: 'body', label: 'navBody' },
-    { to: '/nutrition', key: 'food', icon: 'food', label: 'navFood' },
-    { to: '/progress', key: 'progress', icon: 'progress', label: 'navProgress' },
-  ],
-};
-
-/** v6 shows the quick-action button on these screens only. */
+/** The quick-action button only appears where there is an obvious next thing
+ *  to create: a habit from Today, an exercise from Training. */
 const FAB_ROUTES = ['/today', '/training'];
 
+const NAV_TABS: { to: string; key: string; icon: IconName; label: string }[] = [
+  { to: '/today', key: 'today', icon: 'today', label: 'navToday' },
+  { to: '/habits', key: 'actions', icon: 'habits', label: 'navActions' },
+  { to: '/training', key: 'train', icon: 'train', label: 'navTrain' },
+  { to: '/focus', key: 'focus', icon: 'focus', label: 'navFocus' },
+  { to: '/progress', key: 'progress', icon: 'progress', label: 'navProgress' },
+];
+
 function useTabs() {
-  const { world } = useWorld();
-  return NAV_SETS[world];
+  return NAV_TABS;
 }
 
 /**
@@ -93,7 +94,6 @@ function useTabs() {
  */
 function BottomNav() {
   const { t } = useLanguage();
-  const { world, setWorld } = useWorld();
   const tabs = useTabs();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -106,23 +106,6 @@ function BottomNav() {
     <div className="ww-nav-wrap">
       <div className="ww-nav">
         <div className="ww-nav-top">
-          <div className="ww-world">
-            {(['disc', 'fit'] as World[]).map((w) => {
-              const on = world === w;
-              return (
-                <button
-                  key={w}
-                  type="button"
-                  className={`ww-world-tab ${on ? 'is-on' : ''}`}
-                  onClick={() => setWorld(w)}
-                >
-                  <span className={`ww-world-dot ${on ? (w === 'fit' ? 'is-fit' : 'is-disc') : ''}`} />
-                  {t(w === 'fit' ? 'worldFitness' : 'worldDiscipline')}
-                </button>
-              );
-            })}
-          </div>
-
           <button
             type="button"
             className="ww-nav-round"
@@ -185,7 +168,6 @@ function BottomNav() {
  */
 function SidebarNav() {
   const { t } = useLanguage();
-  const { world, setWorld } = useWorld();
   const tabs = useTabs();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -201,34 +183,6 @@ function SidebarNav() {
         <span className="side-nav-narrow" aria-hidden="true">
           WW
         </span>
-      </div>
-
-      <div className="side-nav-worlds">
-        {(['disc', 'fit'] as World[]).map((w) => {
-          const on = world === w;
-          const label = t(w === 'fit' ? 'worldFitness' : 'worldDiscipline');
-          return (
-            <button
-              key={w}
-              type="button"
-              className={`side-nav-world ${on ? 'is-on' : ''}`}
-              // Both spellings are in the DOM and CSS hides one, so the
-              // accessible name has to be stated or it reads as
-              // "Discipline Dis".
-              aria-label={label}
-              aria-pressed={on}
-              onClick={() => setWorld(w)}
-            >
-              {/* Tablet shows three letters, as v7 does with slice(0, 3). */}
-              <span className="side-nav-wide" aria-hidden="true">
-                {label}
-              </span>
-              <span className="side-nav-narrow" aria-hidden="true">
-                {label.slice(0, 3)}
-              </span>
-            </button>
-          );
-        })}
       </div>
 
       <div className="side-nav-sections side-nav-wide">{t('navSections')}</div>

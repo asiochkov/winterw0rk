@@ -7,7 +7,7 @@ import { dayOfArc } from '../lib/arc';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { useBack } from '../hooks/useBack';
-import { Section } from '../components/ui';
+import { Button, Section } from '../components/ui';
 
 const GOAL_LABEL_KEYS: Record<string, 'goalDiscipline' | 'goalBody' | 'goalFocus' | 'goalReset'> = {
   discipline: 'goalDiscipline',
@@ -43,15 +43,6 @@ export default function Profile() {
   const daysLeft = Math.max(0, (user?.arcLengthDays ?? 90) - day);
   const goalLabel = user?.goal ? t(GOAL_LABEL_KEYS[user.goal] ?? 'profileNoGoal') : t('profileNoGoal');
 
-  const NAV_ITEMS: { labelKey: 'programsTitle' | 'bodyTitle' | 'nutritionTitle' | 'streetTitle' | 'plannerTitle' | 'settingsTitle'; to: string }[] = [
-    { labelKey: 'programsTitle', to: '/programs' },
-    { labelKey: 'bodyTitle', to: '/body' },
-    { labelKey: 'nutritionTitle', to: '/nutrition' },
-    { labelKey: 'streetTitle', to: '/street' },
-    { labelKey: 'plannerTitle', to: '/planner' },
-    { labelKey: 'settingsTitle', to: '/settings' },
-  ];
-
   return (
     <Screen title={t('profileTitle')} nav={false} back={back}>
       {loadFailed && <p className="inline-error" role="alert">{t('profileLoadFailed')}</p>}
@@ -80,14 +71,14 @@ export default function Profile() {
         <p style={{ fontSize: 13, color: 'var(--mut)', marginTop: 12 }}>{t('profileGoalLine', { goal: goalLabel, days: daysLeft })}</p>
       </Section>
 
-      <Section title={t('profileNavigate')}>
-        <div className="tr-list">
-          {NAV_ITEMS.map((item) => (
-            <button key={item.to} className="tr-row" style={{ width: '100%', background: 'none', border: 'none', textAlign: 'left' }} onClick={() => navigate(item.to)}>
-              <p className="tr-name">{t(item.labelKey)}</p>
-            </button>
-          ))}
-        </div>
+      {/* This carried its own menu of six links — Programs, Body, Nutrition,
+          Street, Planner, Settings — which More also listed, so the same
+          destinations were reachable through two unrelated menus that could
+          drift apart. More is the one place now. */}
+      <Section>
+        <Button full variant="secondary" onClick={() => navigate('/more')}>
+          {t('moreTitle')}
+        </Button>
       </Section>
     </Screen>
   );

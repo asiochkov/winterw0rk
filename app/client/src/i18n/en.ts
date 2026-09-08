@@ -8,10 +8,7 @@ export const en = {
   navFocus: 'Focus',
   navProgress: 'Progress',
   navBody: 'Body',
-  navFood: 'Food',
   navQuickAction: 'Quick action',
-  worldDiscipline: 'Discipline',
-  worldFitness: 'Fitness',
   phaseMorning: 'Morning',
   phaseAfternoon: 'Afternoon',
   phaseEvening: 'Evening',
@@ -698,5 +695,7 @@ export const en = {
   moreBody: 'Body',
   moreDiscipline: 'Discipline',
   moreTraining: 'Training',
+  morePlan: 'Plan',
+  navActions: 'Actions',
   moreAccount: 'Account',
 };

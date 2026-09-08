@@ -10,7 +10,6 @@ import { ContextRail } from '../components/ContextRail';
 import { NextStepCard, StreakCard, TodayHero, weekFrom } from './TodayHero';
 import { TodayHabits } from './TodayHabits';
 import { CleanRuns, DayOverview, MindTiles, SummaryStrip, type OverviewArea } from './TodayBlocks';
-import { useWorld } from '../context/WorldContext';
 import { Button, Section } from '../components/ui';
 import { ErrorState, LoadingRows } from '../components/states';
 import { useMutation } from '../hooks/useAsyncData';
@@ -25,7 +24,6 @@ const MOOD_KEYS = ['moodTerrible', 'moodBad', 'moodNeutral', 'moodGood', 'moodEx
 export default function Today() {
   const { user } = useAuth();
   const { t, lang } = useLanguage();
-  const { isFit } = useWorld();
   const navigate = useNavigate();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [counters, setCounters] = useState<QuitCounter[]>([]);
@@ -278,7 +276,7 @@ export default function Today() {
       title: t('todayNextDoneTitle'),
       why: t('todayNextDoneWhy'),
       cta: t('todayNextOpen'),
-      go: () => navigate(isFit ? '/training' : '/habits'),
+      go: () => navigate('/habits'),
     };
   })();
 

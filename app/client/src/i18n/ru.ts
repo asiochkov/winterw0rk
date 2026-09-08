@@ -10,10 +10,7 @@ export const ru: typeof en = {
   navFocus: 'Фокус',
   navProgress: 'Прогресс',
   navBody: 'Тело',
-  navFood: 'Питание',
   navQuickAction: 'Быстрое действие',
-  worldDiscipline: 'Дисциплина',
-  worldFitness: 'Фитнес',
   phaseMorning: 'Утро',
   phaseAfternoon: 'День',
   phaseEvening: 'Вечер',
@@ -700,5 +697,7 @@ export const ru: typeof en = {
   moreBody: 'Тело',
   moreDiscipline: 'Дисциплина',
   moreTraining: 'Тренировки',
+  morePlan: 'План',
+  navActions: 'Действия',
   moreAccount: 'Аккаунт',
 };
