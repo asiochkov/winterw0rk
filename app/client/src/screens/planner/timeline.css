@@ -1,0 +1,262 @@
+/*
+ * The planner timeline. The week used to be seven vertical lists with no time
+ * of day in them at all; this is the same tasks against an hour grid, at two
+ * zoom levels that share every measurement through HOUR_PX.
+ */
+.tl-day,
+.tl-week {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.tl-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 62vh;
+  -webkit-overflow-scrolling: touch;
+}
+.tl-grid {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.tl-axis {
+  position: relative;
+  flex: none;
+  width: 52px;
+}
+.tl-axis-hour {
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+.tl-axis-label {
+  display: block;
+  transform: translateY(-50%);
+  font-size: var(--fs-1);
+  font-variant-numeric: tabular-nums;
+  color: var(--mut);
+}
+
+.tl-lane,
+.tl-week-col {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.tl-hourline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(var(--w), 0.06);
+}
+
+.tl-card {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(var(--acr), 0.28);
+  /* Translucent so the hour lines stay readable behind a full day. */
+  background: rgba(var(--acr), 0.14);
+  overflow: hidden;
+}
+.tl-card.prio-high {
+  border-color: rgba(var(--amr), 0.4);
+  background: rgba(var(--amr), 0.14);
+}
+.tl-card.prio-low {
+  border-color: rgba(var(--w), 0.12);
+  background: rgba(var(--w), 0.05);
+}
+.tl-card.is-done {
+  opacity: 0.55;
+}
+.tl-card.is-done .tl-card-title {
+  text-decoration: line-through;
+}
+.tl-card-check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 6px;
+  border: 1px solid rgba(var(--w), 0.22);
+  background: none;
+  color: var(--tx);
+  font-size: var(--fs-2);
+  line-height: 1;
+  cursor: pointer;
+}
+.tl-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.tl-card-title {
+  font-size: var(--fs-3);
+  font-weight: 600;
+  color: var(--tx);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tl-card-time {
+  font-size: var(--fs-1);
+  font-variant-numeric: tabular-nums;
+  color: var(--mut);
+}
+/* In the week grid a column is too narrow to read position precisely, so the
+   card keeps its time and drops everything else. */
+.tl-card.is-compact {
+  left: 2px;
+  right: 2px;
+  padding: 5px 6px;
+}
+.tl-card.is-compact .tl-card-title {
+  font-size: var(--fs-1);
+}
+.tl-card.is-compact .tl-card-time {
+  display: none;
+}
+
+.tl-now {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--dg);
+  z-index: 3;
+}
+.tl-now-dot {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dg);
+}
+
+.tl-week-head {
+  display: flex;
+  gap: 2px;
+  margin-bottom: var(--s2);
+}
+.tl-week-axis-gap {
+  flex: none;
+  width: 52px;
+}
+.tl-week-day {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--mut);
+  font-family: inherit;
+  cursor: pointer;
+}
+.tl-week-day.is-today {
+  color: var(--ac);
+}
+.tl-week-day:hover {
+  background: var(--sf1);
+  color: var(--tx);
+}
+.tl-week-day-label {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+}
+.tl-week-day-date {
+  font-size: var(--fs-2);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--tx);
+}
+.tl-week-day.is-today .tl-week-day-date {
+  color: var(--ac);
+}
+.tl-week-day-load {
+  display: flex;
+  gap: 3px;
+  height: 4px;
+}
+.tl-week-day-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+}
+.tl-week-cols {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+}
+.tl-week-col + .tl-week-col {
+  border-left: 1px solid rgba(var(--w), 0.06);
+}
+
+.tl-loose {
+  margin-bottom: var(--s4);
+}
+.tl-loose-label {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 8px;
+}
+.tl-loose-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.tl-loose-row.is-done .tl-loose-title {
+  text-decoration: line-through;
+  color: var(--mut);
+}
+.tl-loose-title {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  font-family: inherit;
+  font-size: var(--fs-4);
+  color: var(--tx);
+  cursor: pointer;
+}
+
+.tl-empty {
+  margin: var(--s4) 0 0;
+  font-size: var(--fs-3);
+  color: var(--mut);
+}

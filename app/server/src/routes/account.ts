@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAuth, userIdOf } from '../middleware.js';
+import { toPublicUser } from './auth.js';
 import { isKnownTimeZone } from '../util.js';
 import { ensureUnsubscribeToken } from '../reminders.js';
 
@@ -89,6 +90,34 @@ router.patch('/notifications', (req, res) => {
 });
 
 /**
+ * Starting the next arc. The old one is not deleted — habits, entries and
+ * counters all carry on; only the day counter is re-anchored to today, which
+ * is what makes the finish line mean anything.
+ */
+router.post('/arc/restart', (req, res) => {
+  const userId = userIdOf(req);
+  const today = new Date().toISOString().slice(0, 10);
+  db.prepare('UPDATE users SET arc_start_date = ? WHERE id = ?').run(today, userId);
+  const row = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+  res.json({ user: toPublicUser(row) });
+});
+
+/**
+ * The currency the user counts quit-counter savings in. Restricted to a known
+ * set so the client can format with Intl and never has to guess a symbol.
+ */
+export const CURRENCIES = ['USD', 'EUR', 'GBP', 'RUB', 'KZT', 'UAH', 'PLN', 'TRY'] as const;
+
+const currencySchema = z.object({ currency: z.enum(CURRENCIES) });
+
+router.patch('/currency', (req, res) => {
+  const parsed = currencySchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'invalid_input' });
+  db.prepare('UPDATE users SET currency = ? WHERE id = ?').run(parsed.data.currency, userIdOf(req));
+  res.json({ currency: parsed.data.currency });
+});
+
+/**
  * Right to data portability: everything stored against the account, in one
  * machine-readable file. Tables are listed explicitly rather than discovered,
  * so a table added later can't silently be omitted from an export without
@@ -102,7 +131,7 @@ router.get('/export', (req, res) => {
   const user = db
     .prepare(
       `SELECT id, email, name, goal, areas, arc_start_date, arc_length_days, onboarded,
-              terms_version, privacy_version, consented_at, plan, plan_status, created_at
+              terms_version, privacy_version, consented_at, plan, plan_status, currency, created_at
        FROM users WHERE id = ?`
     )
     .get(userId) as any;

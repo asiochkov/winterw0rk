@@ -1,3 +1,4 @@
+import { HeroChip } from './Hero';
 import './ScreenHead.css';
 
 /**
@@ -8,10 +9,7 @@ import './ScreenHead.css';
 export function ScreenHead({ chip, title }: { chip: string; title: string }) {
   return (
     <div className="sh">
-      <div className="sh-chip">
-        <span className="sh-chip-dot" aria-hidden="true" />
-        {chip}
-      </div>
+      <HeroChip>{chip}</HeroChip>
       <h1 className="sh-title">{title}</h1>
     </div>
   );

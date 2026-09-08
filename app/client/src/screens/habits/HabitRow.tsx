@@ -1,20 +1,13 @@
 import type { Habit } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
-import { V6Icon, type IconName } from '../../components/V6Icon';
+import { V6Icon } from '../../components/V6Icon';
+import { categoryStyle } from '../../lib/habitCategories';
 
 /**
  * A habit as v6 draws it on the Habits screen — fuller than the Today card:
  * a 38px pod, a 16px name, two meta lines, a 48px control, a readout and bar
  * for anything counted, and the week as seven 26px cells.
  */
-
-const CATEGORY: Record<string, { rgb: string; icon: IconName }> = {
-  TRAINING: { rgb: '--amr', icon: 'train' },
-  MIND: { rgb: '--acr', icon: 'focus' },
-  BODY: { rgb: '--okr', icon: 'body' },
-  FOCUS: { rgb: '--mutr', icon: 'ring' },
-};
-const FALLBACK = { rgb: '--mutr', icon: 'dot' as IconName };
 
 function stepLabel(step: number): string {
   return '+' + (step >= 1000 ? `${step / 1000}k` : step);
@@ -32,7 +25,7 @@ export function HabitRow({
   onStep: (delta: number) => void;
 }) {
   const { t, lang } = useLanguage();
-  const cat = CATEGORY[habit.category] ?? FALLBACK;
+  const cat = categoryStyle(habit.category);
   const isBool = habit.type === 'bool';
 
   const unit =
@@ -68,8 +61,15 @@ export function HabitRow({
               <span>{schedText}</span>
             </div>
             <div className="hb-meta-line">
+              {/* A run that has been broken says what the record was rather
+                  than reporting a bare nothing: the best number is never
+                  deleted, only the current one resets. */}
               <span className={habit.streak > 0 ? 'hb-streak is-on' : 'hb-streak'}>
-                {habit.streak > 0 ? t('habitStreakDays', { n: habit.streak }) : t('habitNoStreak')}
+                {habit.streak > 0
+                  ? t('habitStreakDays', { n: habit.streak })
+                  : habit.best > 0
+                    ? t('habitBestWas', { n: habit.best })
+                    : t('habitNoStreak')}
               </span>
               <span className="hb-rate">{habit.rate}%</span>
             </div>
@@ -123,7 +123,7 @@ export function HabitRow({
         {habit.week.map((d) => (
           <div
             key={d.date}
-            className={`hb-cell ${!d.scheduled ? 'is-off' : d.done ? 'is-done' : 'is-miss'}`}
+            className={`hb-cell ${!d.scheduled ? 'is-off' : d.done ? 'is-done' : d.forgiven ? 'is-grace' : 'is-miss'}`}
             title={d.date}
           >
             {labelFor(d.date)}

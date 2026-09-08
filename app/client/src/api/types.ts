@@ -6,6 +6,8 @@ export interface User {
   areas: string[];
   arcStartDate: string | null;
   arcLengthDays: number;
+  /** ISO 4217 code the quit counters are shown in. Set in Settings. */
+  currency: string;
   onboarded: boolean;
   plan: 'free' | 'plus';
   planStatus: string;
@@ -22,6 +24,9 @@ export interface HabitWeekDay {
   date: string;
   scheduled: boolean;
   done: boolean;
+  /** A missed day the streak was allowed to survive — one per week. Neither
+   *  done nor a break, and drawn as neither. */
+  forgiven: boolean;
   value: number;
 }
 
@@ -41,6 +46,7 @@ export interface Habit {
   streak: number;
   best: number;
   rate: number;
+  forgiven: string[];
   week: HabitWeekDay[];
 }
 
@@ -152,6 +158,11 @@ export interface PlannerTask {
   recurrence: TaskRecurrence;
   backlog: boolean;
   done: boolean;
+  /** Minutes from midnight, or null for a task with no time — most of them.
+   *  A timed task is drawn on the timeline; an untimed one is listed beside
+   *  it rather than given an invented slot. */
+  startMin: number | null;
+  endMin: number | null;
   subtasks: Subtask[];
 }
 

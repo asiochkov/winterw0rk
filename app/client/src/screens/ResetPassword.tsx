@@ -32,7 +32,7 @@ export default function ResetPassword() {
   return (
     <div className="auth-shell">
       <div className="auth-form-wrap">
-        <h1 className="auth-headline" style={{ fontSize: 26 }}>
+        <h1 className="auth-headline auth-headline-form">
           {t('resetPasswordTitle')}
         </h1>
         <p className="auth-sub">{t('resetPasswordSub')}</p>

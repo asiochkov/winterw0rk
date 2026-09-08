@@ -1,5 +1,8 @@
 import type { QuitCounter } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
+import { formatMoney } from '../lib/format';
+import { quitKindLabel } from '../lib/quitKinds';
 
 /**
  * The two remaining blocks on v6's Today: the clean-run rows and the day
@@ -10,6 +13,48 @@ import { useLanguage } from '../context/LanguageContext';
 /** v6 shows at most three counters here and sends the rest to the Quit screen. */
 export const CLEAN_RUN_LIMIT = 3;
 
+/**
+ * Zone 2: everything that is not the one thing to do now.
+ *
+ * Today showed seven blocks at once, all in the same card, at the same size,
+ * with no answer to "what do I do first" — the blocks competed rather than
+ * ranked. The detail is still one tap away; it just no longer argues with the
+ * next step for the top of the screen.
+ */
+export function SummaryStrip({
+  items,
+  expanded,
+  onToggle,
+}: {
+  items: { label: string; value: string }[];
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  const { t } = useLanguage();
+  return (
+    <button
+      type="button"
+      className={`t-summary ${expanded ? 'is-open' : ''}`}
+      onClick={onToggle}
+      aria-expanded={expanded}
+      aria-label={expanded ? t('todayCollapse') : t('todayExpand')}
+    >
+      <span className="t-summary-items">
+        {items.map((it, i) => (
+          <span className="t-summary-item" key={it.label}>
+            {i > 0 && <span className="t-summary-sep" aria-hidden="true">·</span>}
+            <span className="t-summary-label">{it.label}</span>
+            <span className="t-summary-value">{it.value}</span>
+          </span>
+        ))}
+      </span>
+      <span className="t-summary-chevron" aria-hidden="true">
+        {expanded ? '⌃' : '⌄'}
+      </span>
+    </button>
+  );
+}
+
 export function CleanRuns({
   counters,
   onOpen,
@@ -18,6 +63,7 @@ export function CleanRuns({
   onOpen: (c: QuitCounter) => void;
 }) {
   const { t, lang } = useLanguage();
+  const { user } = useAuth();
 
   /** Russian needs the day noun agreed with the number. */
   const dayWord = (n: number) => {
@@ -38,14 +84,14 @@ export function CleanRuns({
           // repeats the run in words rather than printing an empty currency.
           const saved =
             c.moneySaved > 0
-              ? t('todaySavedAmount', { amount: `€${Math.round(c.moneySaved)}` })
+              ? t('todaySavedAmount', { amount: formatMoney(c.moneySaved, lang, user?.currency ?? 'USD') })
               : t('todayDaysClean', { days: c.runDays, word: dayWord(c.runDays) });
 
           return (
             <button key={c.id} type="button" className="t-run" onClick={() => onOpen(c)}>
               <span className="t-run-days">{c.runDays}</span>
               <span className="t-run-body">
-                <span className="t-run-kicker">{c.kind.toUpperCase()}</span>
+                <span className="t-run-kicker">{quitKindLabel(c.kind, t).toUpperCase()}</span>
                 <span className="t-run-saved">{saved}</span>
               </span>
             </button>

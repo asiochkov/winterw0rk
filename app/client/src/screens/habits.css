@@ -24,9 +24,9 @@
   margin: 0 0 2px;
 }
 .habit-card-cat {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   margin: 0;
 }
@@ -39,12 +39,12 @@
   font-size: 20px;
   font-weight: 800;
   color: var(--am);
-  line-height: 1;
+  line-height: var(--lh-flat);
 }
 .habit-card-streak-l {
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .habit-week-strip {
@@ -106,7 +106,7 @@
   border: var(--edge);
   background: var(--sf1);
   color: var(--mut);
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
 }
 .day-btn-on {
@@ -129,9 +129,9 @@
   font-weight: 800;
 }
 .detail-stat-l {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   text-transform: uppercase;
 }
@@ -201,7 +201,7 @@
 .hb-name {
   font-weight: 600;
   font-size: 16px;
-  line-height: 1.2;
+  line-height: var(--lh-snug);
   color: var(--tx);
 }
 .hb-row.is-done .hb-name {
@@ -214,9 +214,9 @@
   flex-direction: column;
   gap: 7px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .hb-meta-line {
@@ -278,8 +278,8 @@
   background: transparent;
   color: var(--tx);
   font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   cursor: pointer;
 }
 .hb-plus.is-on {
@@ -292,8 +292,8 @@
   margin-top: 16px;
   font-weight: 800;
   font-size: 20px;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-h4);
   color: var(--tx);
 }
 .hb-readout.is-met {
@@ -315,9 +315,9 @@
 .hb-prog {
   margin-top: 9px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 
@@ -335,8 +335,8 @@
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
   background: rgba(var(--w), 0.04);
   border: 1px solid transparent;
   color: rgba(var(--t), 0.3);
@@ -350,6 +350,13 @@
   border-color: rgba(var(--w), 0.08);
   color: var(--mut);
 }
+/* Forgiven: a day that was missed but that the streak survived. Amber, not
+   green — it must not read as "done" — and not the flat grey of a miss. */
+.hb-cell.is-grace {
+  background: rgba(var(--amr), 0.12);
+  border-color: rgba(var(--amr), 0.3);
+  color: var(--am);
+}
 
 /* Add-habit affordance: v6 uses a 66px dashed button. */
 .hb-add {
@@ -362,8 +369,8 @@
   background: transparent;
   color: var(--mut);
   font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -374,42 +381,11 @@
 }
 
 /* ── Habit detail, transcribed from v6 ────────────────────────────────── */
-.hd-hero {
-  position: relative;
-  height: 300px;
-  overflow: hidden;
-}
-.hd-hero-wash {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(110% 80% at 80% 10%, var(--h1) 0%, rgba(var(--bgr), 0) 58%),
-    linear-gradient(180deg, rgba(var(--bgr), 0.2), var(--bg));
-}
-.hd-hero-inner {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 72px 30px 26px;
-}
-.hd-back {
-  width: 42px;
-  /* 42px is v7's paint; 44 is what a finger needs. */
-  height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(var(--w), 0.14);
-  background: var(--sf2);
-  color: var(--tx);
-  font-size: 16px;
-  cursor: pointer;
-}
 .hd-kicker {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--ac);
   margin-bottom: 14px;
@@ -417,9 +393,9 @@
 .hd-title {
   margin: 0;
   font-weight: 800;
-  font-size: 44px;
+  font-size: var(--fs-8);
   line-height: 0.95;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--ls-h2);
   color: var(--tx);
 }
 
@@ -444,9 +420,9 @@
 }
 .hd-stat-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -457,8 +433,8 @@
   margin-top: 16px;
   font-weight: 800;
   font-size: 32px;
-  line-height: 0.85;
-  letter-spacing: -0.03em;
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
 }
 
@@ -473,9 +449,9 @@
 }
 .hd-section-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -486,6 +462,12 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
 }
+.hd-stat-note {
+  margin-top: 6px;
+  font-size: var(--fs-2);
+  line-height: var(--lh-body);
+  color: var(--mut);
+}
 .hd-cell {
   aspect-ratio: 1;
   border-radius: 10px;
@@ -494,6 +476,10 @@
 }
 .hd-cell.is-miss {
   border-color: rgba(var(--w), 0.08);
+}
+.hd-cell.is-grace {
+  background: rgba(var(--amr), 0.14);
+  border-color: rgba(var(--amr), 0.3);
 }
 .hd-cell.is-done {
   background: linear-gradient(168deg, rgba(var(--okr), 0.92) 0%, rgba(var(--okr), 0.6) 100%);
@@ -504,9 +490,9 @@
 .hd-settings-label {
   margin-top: 36px;
   font-weight: 600;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: rgba(var(--t), 0.45);
 }

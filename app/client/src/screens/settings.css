@@ -1,0 +1,45 @@
+/*
+ * Settings had eleven inline font sizes and colours — more than any other
+ * screen, and three more than the audit that flagged this pattern found. They
+ * are classes now, on the type scale, so the screen reads as part of the same
+ * product as the ones that were built later.
+ */
+.set-value {
+  font-size: var(--fs-4);
+  color: var(--mut);
+  margin: 0;
+}
+.set-plan-name {
+  font-size: var(--fs-4);
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.set-note {
+  font-size: var(--fs-3);
+  color: var(--mut);
+  margin: 0 0 8px;
+}
+.set-note-quiet {
+  font-size: 12.5px;
+  color: var(--mut-dim);
+  margin: 0;
+}
+.set-hint {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin-top: 10px;
+}
+.set-hint-tight {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin-top: 8px;
+}
+.set-hint-flush {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin: 0;
+}
+.set-body {
+  font-size: 13.5px;
+  color: var(--mut);
+}

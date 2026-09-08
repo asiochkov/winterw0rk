@@ -395,6 +395,46 @@ describe('habits', () => {
     expect((await intruder.agent.get(`/api/habits/${id}`)).status).toBe(404);
     expect((await intruder.agent.post(`/api/habits/${id}/complete`).send({ value: 1 })).status).toBe(404);
     expect((await intruder.agent.delete(`/api/habits/${id}`)).status).toBe(404);
+    expect((await intruder.agent.patch(`/api/habits/${id}`).send({ name: 'Theirs' })).status).toBe(404);
+  });
+
+  it('rejects a category outside the known set', async () => {
+    const { agent } = await newUser();
+    const res = await agent
+      .post('/api/habits')
+      .send({ name: 'Odd', type: 'bool', category: 'WHATEVER', schedule: [0, 1, 2, 3, 4, 5, 6] });
+    expect(res.status).toBe(400);
+  });
+
+  it('edits name, category and schedule without losing the streak', async () => {
+    const { agent } = await newUser();
+    const created = await agent
+      .post('/api/habits')
+      .send({ name: 'Reading', type: 'bool', category: 'GENERAL', schedule: [0, 1, 2, 3, 4, 5, 6] });
+    const id = created.body.habit.id;
+    await agent.post(`/api/habits/${id}/complete`).send({ value: 1 });
+
+    const edited = await agent
+      .patch(`/api/habits/${id}`)
+      .send({ name: 'Evening reading', category: 'MIND', schedule: [3, 1, 1, 5] });
+    expect(edited.status).toBe(200);
+    expect(edited.body.habit.name).toBe('Evening reading');
+    expect(edited.body.habit.category).toBe('MIND');
+    // Deduplicated and ordered, so two ways of saying the same week match.
+    expect(edited.body.habit.schedule).toEqual([1, 3, 5]);
+    // The mark is keyed by date, so editing the habit does not erase it.
+    // Asserted on the value rather than doneToday, which depends on whether
+    // today happens to fall inside the new schedule.
+    expect(edited.body.habit.todayValue).toBe(1);
+  });
+
+  it('rejects an edit to a category outside the known set', async () => {
+    const { agent } = await newUser();
+    const created = await agent
+      .post('/api/habits')
+      .send({ name: 'Fixed', type: 'bool', schedule: [0, 1, 2, 3, 4, 5, 6] });
+    const res = await agent.patch(`/api/habits/${created.body.habit.id}`).send({ category: 'NONSENSE' });
+    expect(res.status).toBe(400);
   });
 });
 

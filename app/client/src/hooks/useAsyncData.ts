@@ -1,5 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useToast } from '../context/ToastContext';
+import { useLanguage } from '../context/LanguageContext';
+import { ApiError } from '../api/client';
+
+/**
+ * Only a message the server actually sent is worth showing. A failed fetch
+ * throws the browser's own Error — "Failed to fetch", "NetworkError when
+ * attempting to fetch resource" — which is English whatever the interface
+ * language is, and means nothing to the person reading it. Everything that is
+ * not an ApiError falls back to the translated line.
+ */
+function messageOf(err: unknown, fallback: string): string {
+  return err instanceof ApiError && err.message ? err.message : fallback;
+}
 
 export interface AsyncState<T> {
   data: T | null;
@@ -23,6 +36,10 @@ export function useAsyncData<T>(load: () => Promise<T>, deps: unknown[] = []): A
   // Ignore a resolved response from a request that a newer one has superseded.
   const requestIdRef = useRef(0);
   const mountedRef = useRef(true);
+  // Held in a ref so `run` stays stable while still reading the current language.
+  const { t } = useLanguage();
+  const tRef = useRef(t);
+  tRef.current = t;
 
   const run = useCallback(async () => {
     const requestId = ++requestIdRef.current;
@@ -34,7 +51,7 @@ export function useAsyncData<T>(load: () => Promise<T>, deps: unknown[] = []): A
       setData(result);
     } catch (err) {
       if (!mountedRef.current || requestId !== requestIdRef.current) return;
-      setError(err instanceof Error ? err.message : 'Could not load this. Try again.');
+      setError(messageOf(err, tRef.current('genericError')));
     } finally {
       if (mountedRef.current && requestId === requestIdRef.current) setLoading(false);
     }
@@ -67,6 +84,7 @@ export function useAsyncData<T>(load: () => Promise<T>, deps: unknown[] = []): A
  */
 export function useMutation() {
   const { flash } = useToast();
+  const { t } = useLanguage();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(false);
@@ -82,7 +100,7 @@ export function useMutation() {
         if (opts.success) flash(opts.success);
         return true;
       } catch (err) {
-        const message = err instanceof Error && err.message ? err.message : 'That did not save. Try again.';
+        const message = messageOf(err, t('saveFailed'));
         setError(message);
         if (!opts.silent) flash(message, 'error');
         return false;

@@ -7,10 +7,40 @@
   flex-direction: column;
 }
 
+.onb-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: var(--s8);
+}
+.onb-back,
+.onb-back-spacer {
+  flex: none;
+  min-width: 74px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.onb-back {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--mut);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+}
+.onb-back:hover {
+  color: var(--tx);
+}
 .onb-progress {
   display: flex;
+  flex: 1;
   gap: 6px;
-  margin-bottom: var(--s8);
 }
 .onb-dot {
   height: 3px;
@@ -30,9 +60,9 @@
 }
 
 .onb-kicker {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin: 0;
@@ -40,15 +70,15 @@
 .onb-title {
   font-size: 28px;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  letter-spacing: var(--ls-h4);
+  line-height: var(--lh-snug);
   margin: -12px 0 0;
 }
 .onb-body {
-  font-size: 15px;
+  font-size: var(--fs-4);
   color: var(--mut);
   margin: -12px 0 0;
-  line-height: 1.5;
+  line-height: var(--lh-body);
 }
 
 .onb-list {
@@ -69,27 +99,83 @@
   transition: border-color var(--m-fast) var(--e-io), background var(--m-fast) var(--e-io);
 }
 .onb-option-row {
-  flex-direction: row;
+  /* The row is a column now: a name-and-category header, and — once the habit
+     is picked — the frequency choice under it. */
+  padding: 0;
+  gap: 0;
+}
+.onb-option-main {
+  display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 52px;
+  padding: var(--s4);
+  background: none;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.onb-freq {
+  display: flex;
+  gap: 6px;
+  padding: 0 var(--s4) var(--s4);
+}
+.onb-freq-btn {
+  flex: 1;
+  min-height: 40px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  border: var(--edge);
+  background: var(--sf2);
+  color: var(--mut);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: color var(--m-fast) var(--e-io), border-color var(--m-fast) var(--e-io);
+}
+.onb-freq-btn.is-on {
+  border-color: var(--ac);
+  color: var(--tx);
+}
+.onb-more {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--mut);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+}
+.onb-more:hover {
+  color: var(--tx);
 }
 .onb-option-on {
   border-color: var(--ac);
   background: var(--sf-ac);
 }
 .onb-option-label {
-  font-size: 15px;
+  font-size: var(--fs-4);
   font-weight: 600;
 }
 .onb-option-hint {
   font-size: 12.5px;
   color: var(--mut);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
 }
-.onb-option-row .onb-option-hint {
+.onb-option-main .onb-option-hint {
   text-transform: uppercase;
   font-weight: 700;
-  font-size: 11px;
+  font-size: var(--fs-1);
 }
 
 .onb-chips {
@@ -129,14 +215,14 @@
   border-bottom: var(--edge);
 }
 .onb-summary-label {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
 .onb-summary-value {
-  font-size: 15px;
+  font-size: var(--fs-4);
   font-weight: 600;
 }
 .onb-error {

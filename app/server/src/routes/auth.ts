@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'node:crypto';
 import { z } from 'zod';
 import { db } from '../db.js';
+import { HABIT_CATEGORIES } from '../habitCategories.js';
 import { requireAuth, setSessionUser, userIdOf } from '../middleware.js';
 import { ensureDefaultPlan } from '../seedData.js';
 import { LEGAL_VERSIONS, MINIMUM_AGE } from '../legal.js';
@@ -34,6 +35,7 @@ export function toPublicUser(row: any) {
     areas: JSON.parse(row.areas || '[]'),
     arcStartDate: row.arc_start_date,
     arcLengthDays: row.arc_length_days,
+    currency: row.currency ?? 'USD',
     onboarded: !!row.onboarded,
     plan: row.plan ?? 'free',
     planStatus: row.plan_status ?? 'active',
@@ -204,7 +206,7 @@ const onboardingSchema = z.object({
     .array(
       z.object({
         name: z.string().min(1),
-        category: z.string().default('GENERAL'),
+        category: z.enum(HABIT_CATEGORIES).default('GENERAL'),
         type: z.enum(['bool', 'count', 'time']).default('bool'),
         target: z.number().optional(),
         unit: z.string().optional(),

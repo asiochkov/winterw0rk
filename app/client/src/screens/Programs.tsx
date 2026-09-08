@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { api } from '../api/client';
+import { useBack } from '../hooks/useBack';
+import { api, ApiError } from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { ErrorState, LoadingRows } from '../components/states';
-import { useMutation } from '../hooks/useAsyncData';
+import { useAsyncData, useMutation } from '../hooks/useAsyncData';
 import { Button, ProgressBar, Section } from '../components/ui';
 import './programs.css';
 
@@ -21,13 +22,23 @@ interface Program {
 export function ProgramsList() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [programs, setPrograms] = useState<Program[] | null>(null);
+  const state = useAsyncData(() => api.get<{ programs: Program[] }>('/programs'));
 
-  useEffect(() => {
-    api.get<{ programs: Program[] }>('/programs').then((r) => setPrograms(r.programs));
-  }, []);
-
-  if (!programs) return <Screen title={t('programsTitle')} nav>{null}</Screen>;
+  if (state.loading) {
+    return (
+      <Screen title={t('programsTitle')} nav>
+        <LoadingRows rows={3} />
+      </Screen>
+    );
+  }
+  if (state.error || !state.data) {
+    return (
+      <Screen title={t('programsTitle')} nav>
+        <ErrorState message={state.error ?? t('genericError')} onRetry={state.reload} retryLabel={t('tryAgain')} />
+      </Screen>
+    );
+  }
+  const programs = state.data.programs;
 
   return (
     <Screen title={t('programsTitle')} kicker={t('programsKicker')} nav>
@@ -56,7 +67,7 @@ export function ProgramsList() {
 
 export function ProgramDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const back = useBack('/programs');
   const { t } = useLanguage();
   const [program, setProgram] = useState<Program | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,7 +80,7 @@ export function ProgramDetail() {
       const r = await api.get<{ program: Program }>(`/programs/${id}`);
       setProgram(r.program);
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load this program.');
+      setLoadError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }
@@ -90,14 +101,14 @@ export function ProgramDetail() {
 
   if (loading) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <LoadingRows rows={4} />
       </Screen>
     );
   }
   if (!program) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <ErrorState
           message={loadError ?? t('genericError')}
           onRetry={() => {
@@ -111,10 +122,7 @@ export function ProgramDetail() {
   }
 
   return (
-    <Screen kicker={program.kind} title={program.name} nav={false}>
-      <button className="auth-back" onClick={() => navigate('/programs')} style={{ marginBottom: 16 }}>
-        ← {t('programsTitle')}
-      </button>
+    <Screen kicker={program.kind} title={program.name} nav={false} back={back}>
       <Section>
         <p style={{ fontSize: 14.5, color: 'var(--mut)', lineHeight: 1.6 }}>{program.description}</p>
       </Section>

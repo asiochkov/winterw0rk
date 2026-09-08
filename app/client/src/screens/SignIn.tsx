@@ -2,12 +2,13 @@ import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth, ApiError } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { BackButton } from '../components/BackButton';
 import { useServerConfig } from '../hooks/useServerConfig';
 import { Button, Field, Input } from '../components/ui';
 import './auth.css';
 
 export default function SignIn() {
-  const { user, loading, signIn } = useAuth();
+  const { user, loading, signIn, sessionExpired } = useAuth();
   const { t } = useLanguage();
   const { passwordResetEnabled } = useServerConfig();
   const navigate = useNavigate();
@@ -36,13 +37,16 @@ export default function SignIn() {
   return (
     <div className="auth-shell">
       <div className="auth-form-wrap">
-        <button className="auth-back" onClick={() => navigate('/')}>
-          ← {t('back')}
-        </button>
-        <h1 className="auth-headline" style={{ fontSize: 26, marginTop: 24 }}>
+        <BackButton onClick={() => navigate('/')} />
+        <h1 className="auth-headline auth-headline-form">
           {t('signInTitle')}
         </h1>
         <p className="auth-sub">{t('signInSub')}</p>
+        {sessionExpired && (
+          <p className="auth-notice" role="status">
+            {t('sessionExpired')}
+          </p>
+        )}
         <form className="auth-form" onSubmit={onSubmit}>
           <Field label={t('emailLabel')}>
             <Input

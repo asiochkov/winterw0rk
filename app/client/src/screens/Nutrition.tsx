@@ -61,14 +61,14 @@ export default function Nutrition() {
 
   if (state.loading) {
     return (
-      <Screen title={t('nutritionTitle')} nav={false}>
+      <Screen title={t('nutritionTitle')}>
         <LoadingRows rows={4} />
       </Screen>
     );
   }
   if (state.error || !state.data) {
     return (
-      <Screen title={t('nutritionTitle')} nav={false}>
+      <Screen title={t('nutritionTitle')}>
         <ErrorState message={state.error ?? t('genericError')} onRetry={load} retryLabel={t('tryAgain')} />
       </Screen>
     );
@@ -78,7 +78,7 @@ export default function Nutrition() {
   const pct = day.calorieTarget ? (day.consumed / day.calorieTarget) * 100 : 0;
 
   return (
-    <Screen title={t('nutritionTitle')} nav={false}>
+    <Screen title={t('nutritionTitle')}>
       <Section>
         <div className="nut-hero">
           <div>

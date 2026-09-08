@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { api } from '../../api/client';
+import { useBack } from '../../hooks/useBack';
+import { api, ApiError } from '../../api/client';
 import type { CravingEpisode, QuitCounter, RelapseEvent } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import { formatMoney } from '../../lib/format';
+import { quitKindLabel } from '../../lib/quitKinds';
 import { Screen } from '../../components/Shell';
 import { ErrorState, LoadingRows } from '../../components/states';
 import { useMutation } from '../../hooks/useAsyncData';
@@ -25,7 +29,9 @@ function formatClean(startDate: string) {
 
 export default function QuitDetail() {
   const { id } = useParams();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const { user } = useAuth();
+  const back = useBack('/quit');
   const [counter, setCounter] = useState<QuitCounter | null>(null);
   const [cravings, setCravings] = useState<CravingEpisode[]>([]);
   const [relapses, setRelapses] = useState<RelapseEvent[]>([]);
@@ -46,7 +52,7 @@ export default function QuitDetail() {
       setCravings(r.cravings);
       setRelapses(r.relapses);
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : 'Could not load this counter.');
+      setLoadError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }
@@ -83,14 +89,14 @@ export default function QuitDetail() {
 
   if (loading) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <LoadingRows rows={4} />
       </Screen>
     );
   }
   if (!counter || !clean) {
     return (
-      <Screen nav={false}>
+      <Screen nav={false} back={back}>
         <ErrorState
           message={loadError ?? t('genericError')}
           onRetry={() => {
@@ -108,12 +114,13 @@ export default function QuitDetail() {
   const goalPct = counter.goalAmount ? Math.min(100, Math.round((saved / counter.goalAmount) * 100)) : 0;
 
   return (
-    <Screen nav={false} bleed>
+    <Screen nav={false} bleed back="self">
       <QuitHero
-        kicker={counter.kind}
+        kicker={quitKindLabel(counter.kind, t)}
         days={clean.days}
         clock={clean.label}
         since={t('quitSince', { date: counter.startDate })}
+        onBack={back}
       />
 
       <div className="q-body">
@@ -124,7 +131,7 @@ export default function QuitDetail() {
         <div className="q-pair">
           <div className="q-card">
             <div className="q-stat-label">{t('quitSavedLabel')}</div>
-            <div className="q-stat-value">{counter.unitCost > 0 ? `€${saved}` : '—'}</div>
+            <div className="q-stat-value">{counter.unitCost > 0 ? formatMoney(saved, lang, user?.currency ?? 'USD') : '—'}</div>
             <div className={`q-stat-sub ${counter.goalLabel ? 'is-accent' : ''}`}>
               {counter.goalLabel ? t('quitGoalToward', { goal: counter.goalLabel }) : t('quitNoGoal')}
             </div>
@@ -137,7 +144,7 @@ export default function QuitDetail() {
           <div className="q-card">
             <div className="q-stat-label">{t('quitNotConsumed')}</div>
             <div className="q-stat-value">{notConsumed}</div>
-            <div className="q-stat-sub">{counter.kind}</div>
+            <div className="q-stat-sub">{quitKindLabel(counter.kind, t)}</div>
           </div>
         </div>
 

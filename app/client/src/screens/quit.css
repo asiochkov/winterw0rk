@@ -15,22 +15,22 @@
   font-weight: 800;
   color: var(--ok);
   margin: 0;
-  line-height: 1;
+  line-height: var(--lh-flat);
 }
 .quit-card-kind {
   /* Half of this line was already caps and the kind was not, so it read
      "smoking · CURRENT RUN". */
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   margin: 6px 0 var(--s3);
 }
 .quit-card-foot {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: var(--fs-3);
   color: var(--mut);
   font-weight: 600;
   border-top: var(--edge);
@@ -45,13 +45,13 @@
   font-size: 56px;
   font-weight: 800;
   color: var(--ok);
-  line-height: 1;
+  line-height: var(--lh-flat);
   font-variant-numeric: tabular-nums;
 }
 .quit-live-l {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin-top: var(--s2);
@@ -91,7 +91,7 @@
   border-radius: var(--r-pill);
   border: var(--edge);
   background: var(--sf1);
-  font-size: 13px;
+  font-size: var(--fs-3);
   font-weight: 600;
 }
 .quit-chip-on {
@@ -111,71 +111,28 @@
 }
 
 /* ── Quit counter, transcribed from v6 ────────────────────────────────── */
-.q-hero {
-  position: relative;
-  height: 378px;
-  overflow: hidden;
-}
-.q-hero-wash {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(110% 80% at 78% 6%, var(--h1) 0%, rgba(var(--bgr), 0) 58%),
-    linear-gradient(180deg, rgba(var(--bgr), 0.2), var(--bg));
-}
-.q-hero-inner {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 72px 30px 26px;
-}
-.q-hero-chip {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px 8px 10px;
-  margin-bottom: 18px;
-  border-radius: var(--r-pill);
-  background: rgba(var(--acr), 0.1);
-  box-shadow: inset 0 1px 0 rgba(var(--w), 0.08);
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ac);
-}
-.q-hero-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ac);
-}
 .q-hero-days {
   font-weight: 800;
   font-size: 78px;
   line-height: 0.8;
-  letter-spacing: -0.05em;
+  letter-spacing: var(--ls-h1);
   color: var(--tx);
 }
 .q-hero-clock {
   margin-top: 14px;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-4);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: rgba(var(--t), 0.55);
   font-variant-numeric: tabular-nums;
 }
 .q-hero-since {
   margin-top: 12px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
@@ -195,9 +152,9 @@
   background: var(--ac);
   color: var(--on-ac);
   font-weight: 700;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -236,41 +193,41 @@
 }
 .q-card-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: rgba(var(--t), 0.5);
 }
 .q-card-source {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .q-stat-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }
 .q-stat-value {
   margin-top: 16px;
   font-weight: 800;
-  font-size: 30px;
-  line-height: 0.85;
-  letter-spacing: -0.03em;
+  font-size: var(--fs-7);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-h3);
   color: var(--tx);
 }
 .q-stat-sub {
   margin-top: 10px;
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-1);
   line-height: 1.4;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .q-stat-sub.is-accent {
@@ -318,9 +275,9 @@
 }
 .q-strip-note {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 
@@ -339,9 +296,9 @@
   flex: none;
   width: 74px;
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--fs-1);
   line-height: 1.4;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }
 .q-ms.is-reached .q-ms-when {
@@ -349,8 +306,8 @@
 }
 .q-ms-body {
   flex: 1;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--fs-3);
+  line-height: var(--lh-body);
   color: var(--mut);
   text-wrap: pretty;
 }
@@ -359,8 +316,8 @@
 }
 .q-ms-note {
   margin: 20px 0 0;
-  font-size: 11px;
-  line-height: 1.6;
+  font-size: var(--fs-1);
+  line-height: var(--lh-loose);
   color: var(--mut);
   text-wrap: pretty;
 }
@@ -377,9 +334,9 @@
 .q-run-l {
   margin-top: 7px;
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
 }

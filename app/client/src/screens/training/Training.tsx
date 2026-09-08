@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../api/client';
+import { api, ApiError } from '../../api/client';
 import type { WorkoutSession } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
@@ -23,7 +23,7 @@ export default function Training() {
       setSession(r.session);
       setRestDay(r.restDay);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not load training.');
+      setError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
       setLoading(false);
     }

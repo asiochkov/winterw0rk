@@ -36,9 +36,40 @@ describe('computeStats — current streak', () => {
     expect(computeStats(BOOL, done(1, 2)).streak).toBe(2);
   });
 
-  it('breaks the streak on a missed day that is not today', () => {
-    // Today + 2 days ago done, yesterday missed.
-    expect(computeStats(BOOL, done(0, 2)).streak).toBe(1);
+  it('forgives the first missed day of a week rather than breaking the streak', () => {
+    // Today + 2 days ago done, yesterday missed. TODAY is a Monday, so
+    // yesterday is the Sunday that closes the previous week and is the first
+    // miss in it.
+    const stats = computeStats(BOOL, done(0, 2));
+    expect(stats.streak).toBe(2);
+    // Forgiven, not done: the day is reported so the interface can draw it as
+    // something other than a completed day.
+    expect(stats.forgiven).toEqual([daysBefore(1)]);
+  });
+
+  it('breaks the streak on the second missed day of the same week', () => {
+    // TODAY is Monday, so days 1-7 back are the whole previous week. Done on
+    // today and 3 days back; days 1 and 2 back are both missed, in that week.
+    const stats = computeStats(BOOL, done(0, 3));
+    expect(stats.streak).toBe(1);
+    expect(stats.forgiven).toEqual([daysBefore(1)]);
+  });
+
+  it('gives each week its own grace rather than one overall', () => {
+    // Two misses a week apart: 1 day back (previous week) and 8 days back
+    // (the week before that). Both are the first miss of their own week.
+    const entries = done(0, 2, 3, 4, 5, 6, 7, 9, 10);
+    const stats = computeStats(BOOL, entries);
+    expect(stats.forgiven).toEqual([daysBefore(1), daysBefore(8)]);
+    expect(stats.streak).toBe(9);
+  });
+
+  it('does not spend grace on today, which is merely unfinished', () => {
+    // Yesterday and the day before are done, today is still open. Today must
+    // not appear as forgiven — nothing has been missed yet.
+    const stats = computeStats(BOOL, done(1, 2));
+    expect(stats.forgiven).not.toContain(TODAY);
+    expect(stats.streak).toBe(2);
   });
 
   it('is zero with no entries at all', () => {

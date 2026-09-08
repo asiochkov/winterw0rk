@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../api/client';
+import { api, ApiError } from '../../api/client';
 import type { Habit, QuitCounter } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import { Screen } from '../../components/Shell';
@@ -37,7 +37,7 @@ export default function HabitsList() {
       setHabits(h.habits);
       setCounters(q.counters);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not load habits.');
+      setError(err instanceof ApiError ? err.message : t('genericError'));
     }
   }, []);
 

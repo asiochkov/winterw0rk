@@ -12,9 +12,9 @@
   font-weight: 800;
 }
 .nut-hero-l {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   color: var(--mut);
   text-transform: uppercase;
 }

@@ -4,9 +4,9 @@
 }
 .ctx-kicker {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin-bottom: 20px;
@@ -14,7 +14,7 @@
 .ctx-title {
   margin: 0 0 8px;
   font-weight: 800;
-  font-size: 22px;
+  font-size: var(--fs-6);
   line-height: 1.1;
   letter-spacing: -0.032em;
   color: var(--tx);
@@ -22,8 +22,8 @@
 }
 .ctx-body {
   margin: 0 0 26px;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: var(--fs-3);
+  line-height: var(--lh-loose);
   color: rgba(var(--t), 0.5);
   text-wrap: pretty;
 }
@@ -42,9 +42,9 @@
 }
 .ctx-metric-label {
   font-weight: 500;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin-bottom: 11px;
@@ -56,7 +56,7 @@
 }
 .ctx-metric-value {
   font-weight: 800;
-  font-size: 30px;
+  font-size: var(--fs-7);
   line-height: 0.88;
   letter-spacing: -0.045em;
   color: var(--tx);
@@ -64,9 +64,9 @@
 }
 .ctx-metric-delta {
   font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
 }
 .ctx-metric-delta.is-up {
   color: var(--ok);
@@ -76,8 +76,8 @@
 }
 .ctx-metric-meaning {
   margin-top: 10px;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--fs-2);
+  line-height: var(--lh-body);
   color: var(--mut);
   text-wrap: pretty;
 }
@@ -103,8 +103,8 @@
   background: var(--sf1);
   color: var(--tx);
   font-weight: 500;
-  font-size: 13px;
-  line-height: 1;
+  font-size: var(--fs-3);
+  line-height: var(--lh-flat);
   cursor: pointer;
   text-align: left;
   transition: background var(--m-fast) var(--e-io);
@@ -121,8 +121,8 @@
 .ctx-action-hint {
   flex: none;
   font-weight: 500;
-  font-size: 12px;
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-2);
+  line-height: var(--lh-flat);
+  letter-spacing: var(--ls-label);
   color: var(--mut);
 }

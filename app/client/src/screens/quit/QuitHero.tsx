@@ -1,5 +1,6 @@
 import type { RelapseEvent } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
+import { FullBleedHero, HeroChip } from '../../components/Hero';
 import MILESTONES from '../../assets/milestones.v6.json';
 
 /**
@@ -16,27 +17,25 @@ export function QuitHero({
   days,
   clock,
   since,
+  onBack,
 }: {
   kicker: string;
   days: number;
   clock: string;
   since: string;
+  /** The screen is full-bleed and hides the tab bar, so the hero carries the
+   *  way out, the same way the habit detail hero does. */
+  onBack?: () => void;
 }) {
   return (
-    <div className="q-hero">
-      <div className="q-hero-wash" />
-      <div className="q-hero-inner">
-        <div className="q-hero-chip">
-          <span className="q-hero-dot" aria-hidden="true" />
-          {kicker}
-        </div>
-        <div>
-          <div className="q-hero-days">{days}</div>
-          <div className="q-hero-clock">{clock}</div>
-          <div className="q-hero-since">{since}</div>
-        </div>
+    <FullBleedHero height={378} washX="78%" washY="6%" onBack={onBack}>
+      <HeroChip>{kicker}</HeroChip>
+      <div>
+        <div className="q-hero-days">{days}</div>
+        <div className="q-hero-clock">{clock}</div>
+        <div className="q-hero-since">{since}</div>
       </div>
-    </div>
+    </FullBleedHero>
   );
 }
 
@@ -95,7 +94,13 @@ export function CleanStrip({
  */
 export function RecoveryMilestones({ kind, daysClean }: { kind: string; daysClean: number }) {
   const { t, lang } = useLanguage();
-  const set = (MILESTONES as Record<string, (typeof MILESTONES)['behaviour']>)[kind] ?? MILESTONES.behaviour;
+  // The data file keys these lowercase ('smoking'), while the counter stores
+  // the preset's own casing ('Smoking'), so the smoking set could never be
+  // matched and every counter fell through to the generic one. The statements
+  // themselves are untouched.
+  const set =
+    (MILESTONES as Record<string, (typeof MILESTONES)['behaviour']>)[kind.toLowerCase()] ??
+    MILESTONES.behaviour;
 
   return (
     <div className="q-section">

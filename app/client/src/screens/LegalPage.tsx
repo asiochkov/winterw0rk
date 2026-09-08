@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useBack } from '../hooks/useBack';
 import { useLanguage } from '../context/LanguageContext';
 import { getLegalDocument } from '../legal/documents';
 import { Screen } from '../components/Shell';
@@ -6,14 +6,11 @@ import './legal.css';
 
 export function LegalPage({ kind }: { kind: 'terms' | 'privacy' }) {
   const { lang, t } = useLanguage();
-  const navigate = useNavigate();
+  const back = useBack('/');
   const doc = getLegalDocument(kind, lang);
 
   return (
-    <Screen title={doc.title} kicker={`${t('legalUpdated')} ${doc.updated}`} nav={false}>
-      <button className="auth-back" onClick={() => navigate(-1)} style={{ marginBottom: 20 }}>
-        ← {t('back')}
-      </button>
+    <Screen title={doc.title} kicker={`${t('legalUpdated')} ${doc.updated}`} nav={false} back={back}>
 
       <p className="legal-intro">{doc.intro}</p>
 

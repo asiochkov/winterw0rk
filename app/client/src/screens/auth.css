@@ -24,15 +24,15 @@
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 15px;
-  letter-spacing: -0.03em;
+  font-size: var(--fs-4);
+  letter-spacing: var(--ls-h3);
   margin-bottom: var(--s4);
 }
 
 .auth-kicker {
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
   margin: 0;
@@ -41,17 +41,30 @@
 .auth-headline {
   font-size: 32px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--ls-h4);
   line-height: 1.15;
   margin: 0;
 }
 
 .auth-sub {
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--fs-4);
+  line-height: var(--lh-body);
   color: var(--mut);
   margin: 0;
   max-width: 38ch;
+}
+
+/* Shown only when a session expired under the user, so it explains the
+   redirect rather than reading as an error they caused. */
+.auth-notice {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--w), 0.14);
+  background: var(--sf2);
+  color: var(--tx);
+  font-size: 13.5px;
+  line-height: var(--lh-body);
 }
 
 .auth-actions {
@@ -75,14 +88,6 @@
   text-align: center;
 }
 
-.auth-back {
-  background: none;
-  border: none;
-  color: var(--mut);
-  font-size: 14px;
-  padding: 0;
-  align-self: flex-start;
-}
 
 @media (min-width: 860px) {
   .auth-shell {
@@ -126,8 +131,8 @@
   background: transparent;
   color: var(--mut);
   font-weight: 600;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 }
 .auth-password-toggle:hover {

@@ -38,12 +38,12 @@
 .error-state-msg {
   margin: 0;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: var(--lh-body);
   color: var(--dg);
 }
 
 .inline-error {
-  font-size: 13px;
+  font-size: var(--fs-3);
   color: var(--dg);
   margin: var(--s2) 0 0;
 }

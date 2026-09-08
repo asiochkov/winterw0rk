@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useBack } from '../../hooks/useBack';
 import { api } from '../../api/client';
 import type { ExerciseListItem } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -11,6 +12,7 @@ import '../training.css';
 
 export default function ExerciseLibrary() {
   const navigate = useNavigate();
+  const back = useBack('/training');
   const { t } = useLanguage();
   const [q, setQ] = useState('');
   const [group, setGroup] = useState('');
@@ -30,10 +32,7 @@ export default function ExerciseLibrary() {
   const exercises = listState.data?.exercises ?? null;
 
   return (
-    <Screen title={t('libraryTitle')} nav={false}>
-      <button className="auth-back" onClick={() => navigate('/training')} style={{ marginBottom: 16 }}>
-        ← {t('trainingTitle')}
-      </button>
+    <Screen title={t('libraryTitle')} nav={false} back={back}>
       <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('librarySearch')} style={{ marginBottom: 12 }} />
       <div className="mood-chip-list" style={{ marginBottom: 16 }}>
         <button className={`quit-chip ${!group ? 'quit-chip-on' : ''}`} onClick={() => setGroup('')}>

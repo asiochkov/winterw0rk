@@ -20,6 +20,14 @@ export function daysBetween(a: string, b: string): number {
   return Math.round((db_ - da) / 86400000);
 }
 
+/**
+ * The Monday of the week a date falls in, used as a week's identity. Weeks
+ * start Monday here because the schedule arrays do (0 = Monday).
+ */
+export function weekStartOf(dateStr: string): string {
+  return addDays(dateStr, -weekdayOf(dateStr));
+}
+
 export function scheduledOn(schedule: number[], dateStr: string): boolean {
   return schedule.includes(weekdayOf(dateStr));
 }

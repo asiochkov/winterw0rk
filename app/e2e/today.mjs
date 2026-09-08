@@ -1,0 +1,27 @@
+import { chromium } from 'playwright';
+const BASE = 'https://127.0.0.1:8797';
+const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
+const ctx = await b.newContext({ ignoreHTTPSErrors: true, viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });
+const p = await ctx.newPage();
+p.on('pageerror', (e) => console.log('PAGEERROR', e.message));
+await p.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+await p.evaluate(() => fetch('/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ email: 'demo@winterwork.test', password: 'Passw0rd!demo' }) }));
+await p.goto(BASE + '/today', { waitUntil: 'domcontentloaded' });
+await p.waitForTimeout(1500);
+await p.click('text=Got it').catch(() => {});
+await p.waitForTimeout(400);
+console.log('blocks visible collapsed:', await p.locator('.t-block').count());
+console.log('summary line:', (await p.locator('.t-summary-items').innerText()).replace(/\n/g, ' '));
+const h = await p.evaluate(() => document.body.scrollHeight);
+console.log('page height collapsed:', h);
+await p.screenshot({ path: '/tmp/claude-0/today-collapsed.png', fullPage: true });
+await p.click('.t-summary');
+await p.waitForTimeout(500);
+console.log('blocks visible expanded:', await p.locator('.t-block').count());
+console.log('page height expanded:', await p.evaluate(() => document.body.scrollHeight));
+await p.screenshot({ path: '/tmp/claude-0/today-expanded.png', fullPage: true });
+await p.reload({ waitUntil: 'domcontentloaded' });
+await p.waitForTimeout(1500);
+console.log('after reload, blocks visible:', await p.locator('.t-block').count());
+await b.close(); process.exit(0);

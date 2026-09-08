@@ -4,9 +4,12 @@ import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useServerConfig } from '../hooks/useServerConfig';
+import { useBack } from '../hooks/useBack';
 import { Screen } from '../components/Shell';
 import { Button, Section } from '../components/ui';
+import { CURRENCIES } from '../lib/currencies';
 import './legal.css';
+import './settings.css';
 
 interface Billing {
   plan: 'free' | 'plus';
@@ -30,10 +33,11 @@ function browserTimezone(): string | undefined {
 }
 
 export default function Settings() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, setUser } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const { reminderEmailsEnabled } = useServerConfig();
   const navigate = useNavigate();
+  const back = useBack('/more');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [billing, setBilling] = useState<Billing | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -87,18 +91,23 @@ export default function Settings() {
     }
   }
 
+  async function changeCurrency(currency: string) {
+    const { currency: saved } = await api.patch<{ currency: string }>('/account/currency', { currency });
+    if (user) setUser({ ...user, currency: saved });
+  }
+
   return (
-    <Screen title={t('settingsTitle')} nav={false}>
+    <Screen title={t('settingsTitle')} nav={false} back={back}>
       <Section title={t('settingsAccount')}>
-        <p style={{ fontSize: 14, color: 'var(--mut)' }}>{user?.email}</p>
+        <p className="set-value">{user?.email}</p>
       </Section>
 
       <Section title={t('planTitle')}>
-        <p style={{ fontSize: 14, fontWeight: 600, margin: '0 0 4px' }}>
+        <p className="set-plan-name">
           {billing?.plan === 'plus' ? t('planPlus') : t('planFree')}
         </p>
-        <p style={{ fontSize: 13, color: 'var(--mut)', margin: '0 0 8px' }}>{t('planCurrentFree')}</p>
-        <p style={{ fontSize: 12.5, color: 'var(--mut-dim)', margin: 0 }}>{t('planFutureNote')}</p>
+        <p className="set-note">{t('planCurrentFree')}</p>
+        <p className="set-note-quiet">{t('planFutureNote')}</p>
       </Section>
 
       <Section title={t('settingsLanguage')}>
@@ -112,11 +121,27 @@ export default function Settings() {
         </div>
       </Section>
 
+      <Section title={t('settingsCurrency')}>
+        <p className="set-note">{t('settingsCurrencyNote')}</p>
+        <select
+          className="ww-select"
+          value={user?.currency ?? 'USD'}
+          onChange={(e) => changeCurrency(e.target.value)}
+          aria-label={t('settingsCurrency')}
+        >
+          {CURRENCIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </Section>
+
       <Section title={t('legalYourData')}>
         <Button full variant="secondary" onClick={exportData} disabled={exporting}>
           {exporting ? t('forgotPasswordSending') : t('legalExportData')}
         </Button>
-        <p style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 10 }}>{t('legalExportNote')}</p>
+        <p className="set-hint">{t('legalExportNote')}</p>
         <div className="legal-links" style={{ justifyContent: 'flex-start', marginTop: 16 }}>
           <Link to="/terms">{t('termsTitle')}</Link>
           <Link to="/privacy">{t('privacyTitle')}</Link>
@@ -135,7 +160,7 @@ export default function Settings() {
         {/* A toggle that saves a preference nothing acts on is worse than no
             toggle, so on a deployment with no mail the section says so. */}
         {!reminderEmailsEnabled ? (
-          <p style={{ fontSize: 12.5, color: 'var(--mut)' }}>{t('notifEmailOff')}</p>
+          <p className="set-hint-flush">{t('notifEmailOff')}</p>
         ) : notif ? (
           <>
             <label className="consent-row" style={{ marginBottom: 12 }}>
@@ -165,17 +190,17 @@ export default function Settings() {
               </label>
             )}
             {notif.reminderEmailEnabled && (
-              <p style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 8 }}>
+              <p className="set-hint-tight">
                 {t('notifTimezone', { tz: notif.timezone || t('notifTimezoneUnknown') })}{' '}
                 <button className="today-link" onClick={() => updateNotifications({ timezone: browserTimezone() })}>
                   {t('notifTimezoneUse')}
                 </button>
               </p>
             )}
-            <p style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 10 }}>{t('notifReminderNote')}</p>
+            <p className="set-hint">{t('notifReminderNote')}</p>
           </>
         ) : (
-          <p style={{ fontSize: 13.5, color: 'var(--mut)' }}>{t('settingsNotificationsBody')}</p>
+          <p className="set-body">{t('settingsNotificationsBody')}</p>
         )}
       </Section>
 
@@ -191,7 +216,7 @@ export default function Settings() {
             <button className="today-link" onClick={() => setConfirmDelete(true)}>
               {t('settingsDeleteAccount')}
             </button>
-            <p style={{ fontSize: 12.5, color: 'var(--mut)', marginTop: 8 }}>{t('legalDeleteNote')}</p>
+            <p className="set-hint-tight">{t('legalDeleteNote')}</p>
           </>
         ) : (
           <div className="form-stack">

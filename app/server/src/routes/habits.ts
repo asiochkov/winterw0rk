@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAuth, userIdOf } from '../middleware.js';
+import { HABIT_CATEGORIES } from '../habitCategories.js';
 import { computeStats } from '../streak.js';
 import { addDays, scheduledOn, todayStr } from '../util.js';
 
@@ -21,7 +22,8 @@ function serializeHabit(row: any) {
   const today = todayStr();
   const todayEntry = entries.find((e) => e.date === today);
 
-  const week: { date: string; scheduled: boolean; done: boolean; value: number }[] = [];
+  const forgiven = new Set(stats.forgiven);
+  const week: { date: string; scheduled: boolean; done: boolean; forgiven: boolean; value: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = addDays(today, -i);
     const e = entries.find((x) => x.date === d);
@@ -30,6 +32,7 @@ function serializeHabit(row: any) {
       date: d,
       scheduled,
       done: scheduled && !!e && (habit.type === 'bool' ? e.value >= 1 : row.target != null ? e.value >= row.target : e.value > 0),
+      forgiven: forgiven.has(d),
       value: e?.value ?? 0,
     });
   }
@@ -50,6 +53,9 @@ function serializeHabit(row: any) {
     streak: stats.streak,
     best: stats.best,
     rate: stats.rate,
+    // Days the streak survived without being completed, so the interface can
+    // draw them as forgiven rather than as done or as a miss.
+    forgiven: stats.forgiven,
     week,
   };
 }
@@ -66,7 +72,7 @@ router.get('/', (req, res) => {
 const createSchema = z.object({
   name: z.string().trim().min(1).max(60),
   type: z.enum(['bool', 'count', 'time']),
-  category: z.string().default('GENERAL'),
+  category: z.enum(HABIT_CATEGORIES).default('GENERAL'),
   schedule: z.array(z.number().min(0).max(6)).min(1),
   target: z.number().positive().optional(),
   unit: z.string().optional(),
@@ -127,6 +133,48 @@ router.post('/:id/complete', (req, res) => {
   ).run(row.id, date, value, parsed.data.note ?? null);
 
   res.json({ habit: serializeHabit(row) });
+});
+
+/**
+ * Editing a habit. There was no way to do this at all: the only thing a habit
+ * could be was archived, so a schedule set wrong at onboarding — where every
+ * habit was created as seven days a week — could only be corrected by starting
+ * a new habit and losing the streak with the old one.
+ *
+ * Entries are keyed by date and untouched here, so the streak survives an
+ * edit; changing the schedule re-reads the same marks against the new days.
+ */
+const updateSchema = z.object({
+  name: z.string().trim().min(1).max(60).optional(),
+  category: z.enum(HABIT_CATEGORIES).optional(),
+  schedule: z.array(z.number().int().min(0).max(6)).min(1).optional(),
+  target: z.number().positive().nullable().optional(),
+  unit: z.string().max(16).nullable().optional(),
+  step: z.number().positive().nullable().optional(),
+});
+
+router.patch('/:id', (req, res) => {
+  const parsed = updateSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0]?.message || 'invalid_input' });
+  const userId = userIdOf(req);
+  const row = getOwnedHabit(userId, Number(req.params.id));
+  if (!row) return res.status(404).json({ error: 'not_found' });
+
+  const d = parsed.data;
+  if (d.name !== undefined) db.prepare('UPDATE habits SET name = ? WHERE id = ?').run(d.name, row.id);
+  if (d.category !== undefined) db.prepare('UPDATE habits SET category = ? WHERE id = ?').run(d.category, row.id);
+  if (d.schedule !== undefined) {
+    // Deduplicated and sorted so two schedules meaning the same days are stored
+    // the same way, and the week strip always draws in order.
+    const days = [...new Set(d.schedule)].sort((a, b) => a - b);
+    db.prepare('UPDATE habits SET schedule = ? WHERE id = ?').run(JSON.stringify(days), row.id);
+  }
+  if (d.target !== undefined) db.prepare('UPDATE habits SET target = ? WHERE id = ?').run(d.target, row.id);
+  if (d.unit !== undefined) db.prepare('UPDATE habits SET unit = ? WHERE id = ?').run(d.unit, row.id);
+  if (d.step !== undefined) db.prepare('UPDATE habits SET step = ? WHERE id = ?').run(d.step, row.id);
+
+  const updated = db.prepare('SELECT * FROM habits WHERE id = ?').get(row.id);
+  res.json({ habit: serializeHabit(updated) });
 });
 
 router.patch('/:id/archive', (req, res) => {

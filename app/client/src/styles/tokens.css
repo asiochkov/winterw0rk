@@ -60,6 +60,51 @@
   --r-sm: 10px;
   --r-xs: 8px;
   --r-pill: 999px;
+
+  /*
+   * Type scale.
+   *
+   * Every other layer here was tokenised — motion, spacing, radius, colour —
+   * and typography was not, so 267 font-size declarations had grown 35
+   * distinct values that only sometimes agreed. The rungs below are the eight
+   * values the stylesheets already use most, counted rather than chosen:
+   * 11px appears 80 times, 12px 36, 13px 26, 15px 18. Picking the real
+   * frequencies means adopting the scale moves nothing on screen — the
+   * prototype's measurements are preserved exactly, they just stop being 267
+   * independent decisions.
+   *
+   * Values still off the scale (14px, 16px, and the hero numerals from 26px
+   * up) are left as they are rather than snapped: this project transfers its
+   * sizes from the prototype by measurement, and rounding them to a rung to
+   * make a table look tidy would undo that.
+   */
+  --fs-1: 11px;
+  --fs-2: 12px;
+  --fs-3: 13px;
+  --fs-4: 15px;
+  --fs-5: 17px;
+  --fs-6: 22px;
+  --fs-7: 30px;
+  --fs-8: 44px;
+
+  /* Line height, by role rather than by rung: 1 is for anything whose box is
+     set by its own size (numerals, single-line labels) and is by far the most
+     common at 93 uses; the rest are body copy. */
+  --lh-flat: 1;
+  --lh-display: 0.85;
+  --lh-snug: 1.2;
+  --lh-body: 1.5;
+  --lh-loose: 1.6;
+
+  /* One positive value for uppercase labels — 106 uses, the most disciplined
+     thing in the stylesheets — and the negative tracking headings use as they
+     get larger. */
+  --ls-label: 0.08em;
+  --ls-h5: -0.01em;
+  --ls-h4: -0.02em;
+  --ls-h3: -0.03em;
+  --ls-h2: -0.04em;
+  --ls-h1: -0.05em;
 }
 
 /* Night is the default, exactly as in the prototype. */
@@ -78,8 +123,12 @@
   --mut: #84868c;
   --mutr: 132, 134, 140;
   /* Not a v7 token. v7 has no named disabled colour and dims text inline
-     instead; .38 is the faintest alpha it uses on --t. */
-  --mut-dim: rgba(250, 250, 250, 0.38);
+     instead, and .38 — the faintest alpha it uses on --t — measured 3.44:1 on
+     this background: below the 4.5:1 WCAG AA needs for body text. All three
+     places using this token draw ordinary text (a version line, calendar day
+     letters, a plan note), not a disabled control, so the alpha is raised to
+     the lowest value that passes on --bg, --sf1 and --sf2 alike (5.16:1). */
+  --mut-dim: rgba(250, 250, 250, 0.5);
 
   --ac: #7e9bff;
   --ac2: #a9bcff;
@@ -134,7 +183,9 @@
 
   --mut: #6a6d73;
   --mutr: 106, 109, 115;
-  --mut-dim: rgba(13, 13, 13, 0.38);
+  /* The day theme was further off still — 2.51:1 — because dark-on-light loses
+     more contrast per step of alpha. .6 gives 5.05:1. */
+  --mut-dim: rgba(13, 13, 13, 0.6);
 
   --ac: #2a2fbe;
   --ac2: #1c2091;

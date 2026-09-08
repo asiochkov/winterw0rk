@@ -17,7 +17,7 @@
   background: var(--sheet);
   border: var(--edge2);
   color: var(--tx);
-  font-size: 13px;
+  font-size: var(--fs-3);
   line-height: 1.4;
   box-shadow: var(--lift2);
   animation: wwToast 0.42s var(--e-settle) both;

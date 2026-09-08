@@ -3,16 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import type { Habit } from '../api/types';
 import { useAuth } from '../context/AuthContext';
+import { dayOfArc } from '../lib/arc';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
+import { useBack } from '../hooks/useBack';
 import { Section } from '../components/ui';
-
-function dayOfArc(startDate: string | null): number {
-  if (!startDate) return 1;
-  const start = new Date(startDate + 'T00:00:00Z').getTime();
-  const now = new Date(new Date().toISOString().slice(0, 10) + 'T00:00:00Z').getTime();
-  return Math.max(1, Math.round((now - start) / 86400000) + 1);
-}
 
 const GOAL_LABEL_KEYS: Record<string, 'goalDiscipline' | 'goalBody' | 'goalFocus' | 'goalReset'> = {
   discipline: 'goalDiscipline',
@@ -25,6 +20,7 @@ export default function Profile() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const back = useBack('/more');
   const [habits, setHabits] = useState<Habit[]>([]);
   const [focusToday, setFocusToday] = useState(0);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -57,7 +53,7 @@ export default function Profile() {
   ];
 
   return (
-    <Screen title={t('profileTitle')} nav={false}>
+    <Screen title={t('profileTitle')} nav={false} back={back}>
       {loadFailed && <p className="inline-error" role="alert">{t('profileLoadFailed')}</p>}
       <Section>
         <p className="page-title" style={{ fontSize: 20, marginBottom: 2 }}>
