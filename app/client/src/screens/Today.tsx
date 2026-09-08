@@ -3,26 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/client';
 import type { Habit, MoodEntry, QuitCounter, WorkoutSession } from '../api/types';
 import { useAuth } from '../context/AuthContext';
+import { dayOfArc } from '../lib/arc';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { ContextRail } from '../components/ContextRail';
-import { NextStepCard, StreakCard, TodayHero, phaseOf, weekFrom } from './TodayHero';
+import { NextStepCard, StreakCard, TodayHero, weekFrom } from './TodayHero';
 import { TodayHabits } from './TodayHabits';
-import { CleanRuns, DayOverview, MindTiles, type OverviewArea } from './TodayBlocks';
+import { CleanRuns, DayOverview, MindTiles, SummaryStrip, type OverviewArea } from './TodayBlocks';
 import { useWorld } from '../context/WorldContext';
 import { Button, Section } from '../components/ui';
 import { ErrorState, LoadingRows } from '../components/states';
 import { useMutation } from '../hooks/useAsyncData';
 import './today.css';
 
-const MOOD_KEYS = ['moodTerrible', 'moodBad', 'moodNeutral', 'moodGood', 'moodExcellent'] as const;
+const DETAIL_KEY = 'ww.today.detailOpen';
 
-function dayOfArc(startDate: string | null): number {
-  if (!startDate) return 1;
-  const start = new Date(startDate + 'T00:00:00Z').getTime();
-  const now = new Date(new Date().toISOString().slice(0, 10) + 'T00:00:00Z').getTime();
-  return Math.max(1, Math.round((now - start) / 86400000) + 1);
-}
+const MOOD_KEYS = ['moodTerrible', 'moodBad', 'moodNeutral', 'moodGood', 'moodExcellent'] as const;
 
 export default function Today() {
   const { user } = useAuth();
@@ -39,6 +35,26 @@ export default function Today() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const mutation = useMutation();
+  // Remembered per device: someone who always wants the detail open should not
+  // have to reopen it every morning.
+  const [expanded, setExpanded] = useState(() => {
+    try {
+      return localStorage.getItem(DETAIL_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  function toggleExpanded() {
+    setExpanded((open) => {
+      try {
+        localStorage.setItem(DETAIL_KEY, open ? '0' : '1');
+      } catch {
+        /* storage unavailable — the toggle still works for this visit */
+      }
+      return !open;
+    });
+  }
 
   const load = useCallback(async () => {
     setLoadError(null);
@@ -272,17 +288,6 @@ export default function Today() {
     },
   ];
 
-  // v6 reorders Today's blocks by time of day and world: mind leads in the
-  // evening, training leads in the fitness world, habits lead otherwise.
-  const evening = phaseOf() === 'evening';
-  const order = isFit
-    ? evening
-      ? { workout: 3, habits: 4, quit: 5, mind: 1, body: 2 }
-      : { workout: 1, habits: 3, quit: 4, mind: 5, body: 2 }
-    : evening
-      ? { workout: 5, habits: 2, quit: 3, mind: 1, body: 6 }
-      : { workout: 4, habits: 1, quit: 2, mind: 3, body: 5 };
-
   return (
     <Screen nav bleed rail={rail}>
       <TodayHero
@@ -305,50 +310,70 @@ export default function Today() {
         </div>
       </div>
 
-      <div className="t-below t-blocks">
-        <div className="t-block" style={{ order: order.habits }}>
-          <TodayHabits
-            habits={todaysHabits}
-            doneCount={doneCount}
-            onToggle={completeHabit}
-            onStep={stepHabit}
-            onOpenAll={() => navigate('/habits')}
-          />
-          {mutation.error && <p className="inline-error">{mutation.error}</p>}
-        </div>
-
-        {counters.length > 0 && (
-          <div className="t-block" style={{ order: order.quit }}>
-            <CleanRuns counters={counters} onOpen={(c) => navigate(`/quit/${c.id}`)} />
-          </div>
-        )}
-
-        {/* This carried order.quit, the same key as Clean runs, which left
-            order.body unused and the two tiles fighting for one position. */}
-        <div className="t-block" style={{ order: order.body }}>
-          <DayOverview areas={overviewAreas} />
-        </div>
-
-        <div className="t-block t-block-wide" style={{ order: order.mind }}>
-          <MindTiles
-            moodBars={moodBars}
-            moodText={mood ? t(MOOD_KEYS[mood.mood - 1]) : t('todayMoodNotLogged')}
-            focusText={t('todayFocusMinutes', { n: focusMin })}
-            onMood={() => navigate('/mood')}
-            onFocus={() => navigate('/focus')}
-          />
-        </div>
-
-        {habits.length === 0 && (
-          <div className="t-block" style={{ order: 99 }}>
-            <Section>
-              <Button full variant="secondary" onClick={() => navigate('/habits/new')}>
-                {t('todayAddFirstHabit')}
-              </Button>
-            </Section>
-          </div>
-        )}
+      {/* Zone 2. Everything below the next step used to be five cards of equal
+          weight, reordered on every render by time of day and by world — so
+          the screen someone opened in the morning was not the screen they
+          opened that evening, and nothing on it ranked above anything else.
+          The order is fixed now, and the detail sits behind one line. */}
+      <div className="t-below">
+        <SummaryStrip
+          items={[
+            { label: t('todayHabitsShort'), value: `${doneCount}/${todaysHabits.length}` },
+            { label: t('todayFocusShort'), value: t('todayFocusMinutes', { n: focusMin }) },
+            {
+              label: t('todayMoodShort'),
+              value: mood ? t(MOOD_KEYS[mood.mood - 1]) : '—',
+            },
+          ]}
+          expanded={expanded}
+          onToggle={toggleExpanded}
+        />
       </div>
+
+      {expanded && (
+        <div className="t-below t-blocks">
+          <div className="t-block">
+            <TodayHabits
+              habits={todaysHabits}
+              doneCount={doneCount}
+              onToggle={completeHabit}
+              onStep={stepHabit}
+              onOpenAll={() => navigate('/habits')}
+            />
+            {mutation.error && <p className="inline-error">{mutation.error}</p>}
+          </div>
+
+          {counters.length > 0 && (
+            <div className="t-block">
+              <CleanRuns counters={counters} onOpen={(c) => navigate(`/quit/${c.id}`)} />
+            </div>
+          )}
+
+          <div className="t-block">
+            <DayOverview areas={overviewAreas} />
+          </div>
+
+          <div className="t-block t-block-wide">
+            <MindTiles
+              moodBars={moodBars}
+              moodText={mood ? t(MOOD_KEYS[mood.mood - 1]) : t('todayMoodNotLogged')}
+              focusText={t('todayFocusMinutes', { n: focusMin })}
+              onMood={() => navigate('/mood')}
+              onFocus={() => navigate('/focus')}
+            />
+          </div>
+
+          {habits.length === 0 && (
+            <div className="t-block">
+              <Section>
+                <Button full variant="secondary" onClick={() => navigate('/habits/new')}>
+                  {t('todayAddFirstHabit')}
+                </Button>
+              </Section>
+            </div>
+          )}
+        </div>
+      )}
     </Screen>
   );
 }

@@ -268,6 +268,11 @@ export const ru: typeof en = {
   // today
   todayDayOf: 'ДЕНЬ {day} ИЗ {total}',
   todayHabitsClosed: '{done}/{total} привычек закрыто сегодня.',
+  todayExpand: 'Показать остальное',
+  todayCollapse: 'Скрыть остальное',
+  todayHabitsShort: 'Привычки',
+  todayFocusShort: 'Фокус',
+  todayMoodShort: 'Настроение',
   todayNext: 'Далее',
   todayStart: 'Начать',
   todayDoneLabel: 'Готово',

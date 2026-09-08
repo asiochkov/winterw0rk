@@ -883,3 +883,60 @@
 .t-mind-foot.is-accent {
   color: var(--ac);
 }
+
+/*
+ * Zone 2's one line. Everything that is not the next step lives behind this,
+ * so the screen answers "what now" before it offers anything else.
+ */
+.t-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 52px;
+  padding: 0 18px;
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  background: var(--sf1);
+  color: var(--tx);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--m-fast) var(--e-io);
+}
+.t-summary:hover,
+.t-summary.is-open {
+  border-color: rgba(var(--w), 0.16);
+}
+.t-summary-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+.t-summary-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.t-summary-sep {
+  color: var(--mut);
+  margin-right: 2px;
+}
+.t-summary-label {
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.t-summary-value {
+  font-size: var(--fs-3);
+  font-weight: 600;
+}
+.t-summary-chevron {
+  flex: none;
+  color: var(--mut);
+  font-size: var(--fs-3);
+}

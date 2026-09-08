@@ -13,6 +13,48 @@ import { quitKindLabel } from '../lib/quitKinds';
 /** v6 shows at most three counters here and sends the rest to the Quit screen. */
 export const CLEAN_RUN_LIMIT = 3;
 
+/**
+ * Zone 2: everything that is not the one thing to do now.
+ *
+ * Today showed seven blocks at once, all in the same card, at the same size,
+ * with no answer to "what do I do first" — the blocks competed rather than
+ * ranked. The detail is still one tap away; it just no longer argues with the
+ * next step for the top of the screen.
+ */
+export function SummaryStrip({
+  items,
+  expanded,
+  onToggle,
+}: {
+  items: { label: string; value: string }[];
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  const { t } = useLanguage();
+  return (
+    <button
+      type="button"
+      className={`t-summary ${expanded ? 'is-open' : ''}`}
+      onClick={onToggle}
+      aria-expanded={expanded}
+      aria-label={expanded ? t('todayCollapse') : t('todayExpand')}
+    >
+      <span className="t-summary-items">
+        {items.map((it, i) => (
+          <span className="t-summary-item" key={it.label}>
+            {i > 0 && <span className="t-summary-sep" aria-hidden="true">·</span>}
+            <span className="t-summary-label">{it.label}</span>
+            <span className="t-summary-value">{it.value}</span>
+          </span>
+        ))}
+      </span>
+      <span className="t-summary-chevron" aria-hidden="true">
+        {expanded ? '⌃' : '⌄'}
+      </span>
+    </button>
+  );
+}
+
 export function CleanRuns({
   counters,
   onOpen,

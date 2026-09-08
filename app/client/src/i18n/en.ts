@@ -266,6 +266,11 @@ export const en = {
   // today
   todayDayOf: 'DAY {day} OF {total}',
   todayHabitsClosed: '{done}/{total} habits closed today.',
+  todayExpand: 'Show the rest of today',
+  todayCollapse: 'Hide the rest of today',
+  todayHabitsShort: 'Habits',
+  todayFocusShort: 'Focus',
+  todayMoodShort: 'Mood',
   todayNext: 'Next',
   todayStart: 'Start',
   todayDoneLabel: 'Done',
