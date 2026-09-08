@@ -6,11 +6,19 @@ import { Screen } from '../components/Shell';
 import { ErrorState, LoadingRows } from '../components/states';
 import { useMutation } from '../hooks/useAsyncData';
 import { Button, Input, Pill } from '../components/ui';
+import { V6Icon } from '../components/V6Icon';
 import { DayTimeline } from './planner/DayTimeline';
 import { WeekTimeline } from './planner/WeekTimeline';
 import './planner.css';
 
 type PlannerView = 'day' | 'week' | 'list' | 'backlog';
+
+/** The calendar date a weekday falls on in the week being shown. */
+function dateOfWeekday(weekday: number, todayIndex: number): number {
+  const d = new Date();
+  d.setDate(d.getDate() + (weekday - todayIndex));
+  return d.getDate();
+}
 
 /** "07:30" to 450. Anything else is treated as no time at all rather than as
  *  midnight, which would silently place the task at the top of the day. */
@@ -47,6 +55,7 @@ export default function Planner() {
   );
   const [selectedDay, setSelectedDay] = useState(todayIndex);
   const [times, setTimes] = useState({ start: '', end: '' });
+  const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState('');
   const [addTo, setAddTo] = useState<number | 'backlog'>(0);
   const [menuFor, setMenuFor] = useState<number | null>(null);
@@ -72,6 +81,14 @@ export default function Planner() {
     load();
   }, []);
 
+  /** Opens the form on whichever day is being looked at, not on Monday. */
+  function openAdd() {
+    if (tab === 'backlog') setAddTo('backlog');
+    else if (tab === 'day') setAddTo(selectedDay);
+    else setAddTo(todayIndex);
+    setAdding(true);
+  }
+
   async function addTask() {
     if (!title.trim()) return;
     const startMin = parseClock(times.start);
@@ -91,6 +108,7 @@ export default function Planner() {
     if (!ok) return;
     setTitle('');
     setTimes({ start: '', end: '' });
+    setAdding(false);
     load();
   }
 
@@ -173,41 +191,73 @@ export default function Planner() {
         </button>
       </div>
 
-      <div className="planner-add">
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('plannerNewTask')} />
-        <select className="planner-select" value={addTo} onChange={(e) => setAddTo(e.target.value === 'backlog' ? 'backlog' : Number(e.target.value))}>
-          {DAYS.map((d, i) => (
-            <option key={i} value={i}>
-              {d}
-            </option>
-          ))}
-          <option value="backlog">{t('plannerBacklogLabel')}</option>
-        </select>
-        <Button onClick={addTask}>{t('add')}</Button>
-      </div>
+      {/* The form used to sit open above the calendar and take half the
+          screen before any of it was visible — and its day select defaulted to
+          Monday, so adding while looking at Tuesday filed the task on the
+          wrong day. It opens on demand now, and starts on the day in view. */}
+      {!adding ? (
+        <button type="button" className="planner-open-add" onClick={openAdd}>
+          <span className="planner-open-add-plus" aria-hidden="true">
+            +
+          </span>
+          {t('plannerNewTask')}
+        </button>
+      ) : (
+        <div className="planner-form">
+          <div className="planner-add">
+            <Input
+              autoFocus
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={t('plannerNewTask')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') addTask();
+                if (e.key === 'Escape') setAdding(false);
+              }}
+            />
+            <select
+              className="planner-select"
+              value={addTo}
+              onChange={(e) => setAddTo(e.target.value === 'backlog' ? 'backlog' : Number(e.target.value))}
+            >
+              {DAYS.map((d, i) => (
+                <option key={i} value={i}>
+                  {d}
+                </option>
+              ))}
+              <option value="backlog">{t('plannerBacklogLabel')}</option>
+            </select>
+          </div>
 
-      {/* Optional: a task with no time still works exactly as it did, and is
-          listed above the grid rather than dropped somewhere on it. */}
-      {addTo !== 'backlog' && (
-        <div className="planner-times">
-          <label className="planner-time">
-            <span>{t('plannerStartTime')}</span>
-            <input
-              className="input"
-              type="time"
-              value={times.start}
-              onChange={(e) => setTimes((v) => ({ ...v, start: e.target.value }))}
-            />
-          </label>
-          <label className="planner-time">
-            <span>{t('plannerEndTime')}</span>
-            <input
-              className="input"
-              type="time"
-              value={times.end}
-              onChange={(e) => setTimes((v) => ({ ...v, end: e.target.value }))}
-            />
-          </label>
+          {addTo !== 'backlog' && (
+            <div className="planner-times">
+              <label className="planner-time">
+                <span>{t('plannerStartTime')}</span>
+                <input
+                  className="input"
+                  type="time"
+                  value={times.start}
+                  onChange={(e) => setTimes((v) => ({ ...v, start: e.target.value }))}
+                />
+              </label>
+              <label className="planner-time">
+                <span>{t('plannerEndTime')}</span>
+                <input
+                  className="input"
+                  type="time"
+                  value={times.end}
+                  onChange={(e) => setTimes((v) => ({ ...v, end: e.target.value }))}
+                />
+              </label>
+            </div>
+          )}
+
+          <div className="planner-form-actions">
+            <Button onClick={addTask}>{t('add')}</Button>
+            <Button variant="ghost" onClick={() => setAdding(false)}>
+              {t('cancel')}
+            </Button>
+          </div>
         </div>
       )}
 
@@ -231,20 +281,35 @@ export default function Planner() {
               days never leaves the day view. */}
           <div className="planner-daystrip">
             <button type="button" className="planner-daystrip-back" onClick={() => setTab('week')}>
-              ⌃ {t('plannerBackToWeek')}
+              <V6Icon name="plan" size={15} stroke="currentColor" strokeWidth={1.5} />
+              {t('plannerBackToWeek')}
             </button>
             <div className="planner-daystrip-days">
-              {DAYS.map((label, i) => (
-                <button
-                  key={label}
-                  type="button"
-                  className={`planner-daystrip-day ${i === selectedDay ? 'is-on' : ''}`}
-                  onClick={() => setSelectedDay(i)}
-                  aria-current={i === selectedDay ? 'date' : undefined}
-                >
-                  {label}
-                </button>
-              ))}
+              {DAYS.map((label, i) => {
+                const count = byDay(i).length;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`planner-daystrip-day ${i === selectedDay ? 'is-on' : ''} ${
+                      i === todayIndex ? 'is-today' : ''
+                    }`}
+                    onClick={() => setSelectedDay(i)}
+                    aria-current={i === selectedDay ? 'date' : undefined}
+                  >
+                    <span className="planner-daystrip-name">{label}</span>
+                    {/* The date, so the strip can be read against a real
+                        calendar, and load as dots — a numeral here would be
+                        mistaken for part of the date. */}
+                    <span className="planner-daystrip-date">{dateOfWeekday(i, todayIndex)}</span>
+                    <span className="planner-daystrip-load" aria-hidden="true">
+                      {Array.from({ length: Math.min(3, count) }, (_, d) => (
+                        <span key={d} className="planner-daystrip-dot" />
+                      ))}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
           <DayTimeline

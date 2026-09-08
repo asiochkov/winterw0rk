@@ -15,6 +15,18 @@
   overflow-x: hidden;
   max-height: 62vh;
   -webkit-overflow-scrolling: touch;
+  /* Room for the first hour label, which is centred on its line and was
+     otherwise cut in half by the top edge; and for the floating bar at the
+     bottom, which the last hour of the day was disappearing behind.
+     (A fade mask was tried here and removed: the container is taller than the
+     viewport, so it faded a band across the middle of the screen rather than
+     the edge of the scroll.) */
+  padding: 10px 0 96px;
+}
+@media (min-width: 760px) {
+  .tl-scroll {
+    padding-bottom: var(--s6);
+  }
 }
 .tl-grid {
   position: relative;
@@ -27,6 +39,15 @@
   flex: none;
   width: 52px;
 }
+/* Scrolling the week sideways used to carry the hour labels off screen with
+   it, leaving a grid of unlabelled boxes. */
+.tl-week-scroll .tl-axis,
+.tl-week-scroll .tl-week-axis-gap {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: var(--bg);
+}
 .tl-axis-hour {
   position: absolute;
   left: 0;
@@ -35,9 +56,16 @@
 .tl-axis-label {
   display: block;
   transform: translateY(-50%);
+  padding-right: 10px;
   font-size: var(--fs-1);
   font-variant-numeric: tabular-nums;
   color: var(--mut);
+  text-align: right;
+}
+/* The working hours read as the body of the day and the rest as its margins,
+   which is most of what makes a calendar scannable at a glance. */
+.tl-axis-hour.is-quiet .tl-axis-label {
+  opacity: 0.45;
 }
 
 .tl-lane,
@@ -51,13 +79,32 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(var(--w), 0.06);
+  background: rgba(var(--w), 0.05);
+}
+/* A stronger line every three hours gives the eye something to count by. */
+.tl-hourline.is-major {
+  background: rgba(var(--w), 0.1);
+}
+/* Half-hour ticks, dotted, so a 30-minute block is placeable by eye. */
+.tl-halfline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(var(--w), 0.05) 0 3px,
+    transparent 3px 8px
+  );
 }
 
 .tl-card {
   position: absolute;
   left: 4px;
   right: 4px;
+  /* A colour bar on the leading edge, as in the references: the category is
+     readable before the title is. */
+  border-left: 3px solid var(--ac);
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -70,10 +117,12 @@
 }
 .tl-card.prio-high {
   border-color: rgba(var(--amr), 0.4);
+  border-left-color: var(--am);
   background: rgba(var(--amr), 0.14);
 }
 .tl-card.prio-low {
   border-color: rgba(var(--w), 0.12);
+  border-left-color: var(--mut);
   background: rgba(var(--w), 0.05);
 }
 .tl-card.is-done {
@@ -259,4 +308,53 @@
   margin: var(--s4) 0 0;
   font-size: var(--fs-3);
   color: var(--mut);
+}
+
+
+/* A day with nothing on it: the grid stays, so the shape of the day is still
+   visible, and the invitation sits on it rather than replacing it. */
+.tl-empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: var(--s6);
+  text-align: center;
+  pointer-events: none;
+}
+.tl-empty-title {
+  font-size: var(--fs-4);
+  color: var(--mut);
+  margin: 0;
+}
+
+
+/*
+ * The week grid scrolls sideways below the width where a column can hold a
+ * title. Header and grid live in the same scroller so the columns cannot slip
+ * out of line with their own headings.
+ */
+.tl-week-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tl-week-scroll .tl-week-head,
+.tl-week-scroll .tl-grid {
+  min-width: 660px;
+}
+@media (min-width: 760px) {
+  .tl-week-scroll .tl-week-head,
+  .tl-week-scroll .tl-grid {
+    min-width: 0;
+  }
+}
+/* Today's column is tinted so the eye finds it without reading the dates. */
+.tl-week-col.is-today {
+  background: rgba(var(--acr), 0.04);
+}
+.tl-week-day.is-today .tl-week-day-label {
+  color: var(--ac);
 }

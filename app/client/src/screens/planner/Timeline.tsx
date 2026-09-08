@@ -40,17 +40,44 @@ export function isTimed(task: PlannerTask): boolean {
  * The hour rail, shared by the day and week views so one axis cannot drift
  * from the other.
  */
+/** Outside these the day is drawn quieter — a calendar that treats 3am like
+ *  3pm is harder to scan than one that does not. */
+const WAKING_FROM = 7;
+const WAKING_TO = 22;
+
 export function HourAxis({ from, to }: { from: number; to: number }) {
   const hours: number[] = [];
   for (let h = from; h <= to; h++) hours.push(h);
   return (
     <div className="tl-axis" style={{ height: (to - from + 1) * HOUR_PX }}>
       {hours.map((h) => (
-        <div key={h} className="tl-axis-hour" style={{ top: (h - from) * HOUR_PX }}>
+        <div
+          key={h}
+          className={`tl-axis-hour ${h < WAKING_FROM || h > WAKING_TO ? 'is-quiet' : ''}`}
+          style={{ top: (h - from) * HOUR_PX }}
+        >
           <span className="tl-axis-label">{minutesToLabel(h * 60)}</span>
         </div>
       ))}
     </div>
+  );
+}
+
+/** The hour and half-hour rules behind a lane. */
+export function HourLines({ from, to }: { from: number; to: number }) {
+  return (
+    <>
+      {Array.from({ length: to - from + 1 }, (_, i) => (
+        <div
+          key={`h${i}`}
+          className={`tl-hourline ${(from + i) % 3 === 0 ? 'is-major' : ''}`}
+          style={{ top: i * HOUR_PX }}
+        />
+      ))}
+      {Array.from({ length: to - from + 1 }, (_, i) => (
+        <div key={`m${i}`} className="tl-halfline" style={{ top: i * HOUR_PX + HOUR_PX / 2 }} />
+      ))}
+    </>
   );
 }
 

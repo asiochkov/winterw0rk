@@ -2,6 +2,7 @@ import type { PlannerTask } from '../../api/types';
 import { useLanguage } from '../../context/LanguageContext';
 import {
   HourAxis,
+  HourLines,
   HOUR_PX,
   LooseTasks,
   NowLine,
@@ -46,9 +47,7 @@ export function DayTimeline({
         <div className="tl-grid" style={{ height: (to - from + 1) * HOUR_PX }}>
           <HourAxis from={from} to={to} />
           <div className="tl-lane">
-            {Array.from({ length: to - from + 1 }, (_, i) => (
-              <div key={i} className="tl-hourline" style={{ top: i * HOUR_PX }} />
-            ))}
+            <HourLines from={from} to={to} />
             {timed.map((task) => (
               <TimelineCard
                 key={task.id}
@@ -59,11 +58,15 @@ export function DayTimeline({
               />
             ))}
             {isToday && <NowLine from={from} />}
+            {timed.length === 0 && (
+              <div className="tl-empty-state">
+                <p className="tl-empty-title">{t('plannerNoTimedTasks')}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {timed.length === 0 && <p className="tl-empty">{t('plannerNoTimedTasks')}</p>}
     </div>
   );
 }

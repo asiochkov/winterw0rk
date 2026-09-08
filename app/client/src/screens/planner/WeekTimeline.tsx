@@ -1,5 +1,5 @@
 import type { PlannerTask } from '../../api/types';
-import { HourAxis, HOUR_PX, NowLine, TimelineCard, isTimed, useHourWindow } from './Timeline';
+import { HourAxis, HourLines, HOUR_PX, NowLine, TimelineCard, isTimed, useHourWindow } from './Timeline';
 
 /** The calendar date this weekday falls on in the week being shown. The tasks
  *  themselves are stored by weekday, but a column header without a date is
@@ -36,7 +36,10 @@ export function WeekTimeline({
   const { from, to } = useHourWindow(timed, true);
 
   return (
-    <div className="tl-week">
+    /* One horizontal scroller wrapping the header and the grid, so the columns
+       keep a width a title actually fits in. Seven columns squeezed into a
+       phone gave each about 50px and truncated every card to two letters. */
+    <div className="tl-week tl-week-scroll">
       <div className="tl-week-head">
         <div className="tl-week-axis-gap" />
         {dayLabels.map((label, i) => {
@@ -69,10 +72,8 @@ export function WeekTimeline({
           <HourAxis from={from} to={to} />
           <div className="tl-week-cols">
             {dayLabels.map((label, i) => (
-              <div key={label} className="tl-week-col">
-                {Array.from({ length: to - from + 1 }, (_, h) => (
-                  <div key={h} className="tl-hourline" style={{ top: h * HOUR_PX }} />
-                ))}
+              <div key={label} className={`tl-week-col ${i === todayIndex ? 'is-today' : ''}`}>
+                <HourLines from={from} to={to} />
                 {timed
                   .filter((task) => task.weekday === i)
                   .map((task) => (

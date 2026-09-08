@@ -113,16 +113,24 @@
 }
 .planner-daystrip-back {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   min-height: 44px;
-  border: 0;
-  background: none;
-  padding: 0;
+  padding: 0 12px 0 8px;
+  border: var(--edge);
+  border-radius: var(--r-pill);
+  background: var(--sf1);
   cursor: pointer;
   font-family: inherit;
   font-size: var(--fs-1);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--mut);
+  transition: color var(--m-fast) var(--e-io), border-color var(--m-fast) var(--e-io);
+}
+.planner-daystrip-back svg {
+  flex: none;
 }
 .planner-daystrip-back:hover {
   color: var(--tx);
@@ -134,18 +142,92 @@
 .planner-daystrip-day {
   flex: 1;
   min-width: 0;
-  min-height: 44px;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 2px;
   border-radius: var(--r-sm);
   border: 1px solid transparent;
   background: var(--sf1);
   color: var(--mut);
   font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--m-fast) var(--e-io), color var(--m-fast) var(--e-io);
+}
+.planner-daystrip-name {
   font-size: var(--fs-1);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
-  cursor: pointer;
+}
+.planner-daystrip-date {
+  font-size: var(--fs-3);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--tx);
+}
+/* Today is marked whether or not it is the day being looked at — otherwise
+   the strip loses its anchor as soon as you move off it. */
+.planner-daystrip-day.is-today .planner-daystrip-date {
+  color: var(--ac);
 }
 .planner-daystrip-day.is-on {
   border-color: var(--ac);
+  background: var(--sf-ac);
   color: var(--tx);
+}
+.planner-daystrip-load {
+  display: flex;
+  gap: 3px;
+  height: 4px;
+}
+.planner-daystrip-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* The add form, opened on demand rather than sitting above the calendar. */
+.planner-open-add {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  margin-bottom: var(--s4);
+  padding: 0 16px;
+  border: 1px dashed rgba(var(--w), 0.14);
+  border-radius: var(--r-lg);
+  background: none;
+  color: var(--mut);
+  font-family: inherit;
+  font-size: var(--fs-4);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--m-fast) var(--e-io), color var(--m-fast) var(--e-io);
+}
+.planner-open-add:hover {
+  border-color: rgba(var(--acr), 0.5);
+  color: var(--tx);
+}
+.planner-open-add-plus {
+  font-size: var(--fs-6);
+  line-height: 1;
+  color: var(--ac);
+}
+.planner-form {
+  margin-bottom: var(--s4);
+  padding: 16px;
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  background: var(--sf1);
+}
+.planner-form-actions {
+  display: flex;
+  gap: var(--s3);
+  margin-top: var(--s3);
 }
