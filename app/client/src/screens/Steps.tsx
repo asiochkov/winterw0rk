@@ -191,7 +191,7 @@ export default function Steps() {
       <Section title={t('stepsManual')}>
         <div className="planner-add">
           <Input
-            type="number"
+            type="number" inputMode="numeric"
             value={manualValue}
             onChange={(e) => setManualValue(e.target.value)}
             placeholder={t('stepsManualPlaceholder')}
@@ -207,7 +207,7 @@ export default function Steps() {
         <div className="planner-add">
           <Field label={t('stepsDailyGoal')}>
             <Input
-              type="number"
+              type="number" inputMode="numeric"
               value={goalDraft}
               onChange={(e) => setGoalDraft(e.target.value)}
               placeholder={String(today.goal)}

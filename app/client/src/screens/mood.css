@@ -101,3 +101,20 @@
 .mood-cal-m5 {
   background: var(--ok);
 }
+
+/* The card is a button now — marking a mood should not lock the day. */
+.mood-today-set {
+  width: 100%;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mood-today-change {
+  margin: 4px 0 0;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--mut);
+}

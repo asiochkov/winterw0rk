@@ -278,6 +278,8 @@ export const ru: typeof en = {
   todayHabitsShort: 'Привычки',
   todayFocusShort: 'Фокус',
   todayMoodShort: 'Настроение',
+  todayTasks: 'Задачи на сегодня',
+  todayOpenPlanner: 'Открыть планер',
   todayNext: 'Далее',
   todayStart: 'Начать',
   todayDoneLabel: 'Готово',
@@ -458,6 +460,8 @@ export const ru: typeof en = {
   exerciseAlternatives: 'Альтернативы',
 
   // mood
+  optional: 'необязательно',
+  moodChange: 'Нажмите, чтобы изменить',
   moodTitle: 'Настроение',
   moodKicker: 'Один тап, почти каждый день',
   moodThisMonth: 'Этот месяц',

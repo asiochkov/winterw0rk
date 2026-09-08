@@ -71,7 +71,7 @@ export default function SignIn() {
             />
           </Field>
           {passwordResetEnabled && (
-            <Link to="/forgot-password" style={{ fontSize: 13.5, alignSelf: 'flex-start' }}>
+            <Link to="/forgot-password" className="auth-inline-link">
               {t('forgotPassword')}
             </Link>
           )}

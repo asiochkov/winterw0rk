@@ -8,6 +8,20 @@ import { Button, Input, Section } from '../components/ui';
 import { ErrorState, LoadingRows } from '../components/states';
 import './admin.css';
 
+/**
+ * The one screen with no t() in it, deliberately.
+ *
+ * Every user-facing string in Winterwork goes through the dictionary — the
+ * coverage is exact, en and ru key for key, and a review that greps for
+ * untranslated text will land here and find "Overview", "Users", "Suspend".
+ * That is not an oversight: this screen is an internal tool, reachable only by
+ * an admin account, and translating an operations console adds a second set of
+ * strings to keep in step for no reader who needs it.
+ *
+ * If Winterwork ever has admins who do not read English, this is the screen to
+ * translate first, and the exception ends here rather than spreading.
+ */
+
 interface AdminUser {
   id: number;
   email: string;

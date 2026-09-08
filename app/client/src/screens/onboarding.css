@@ -126,7 +126,7 @@
 }
 .onb-freq-btn {
   flex: 1;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 8px;
   border-radius: var(--r-sm);
   border: var(--edge);

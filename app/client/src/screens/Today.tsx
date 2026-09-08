@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/client';
-import type { Habit, MoodEntry, QuitCounter, WorkoutSession } from '../api/types';
+import type { Habit, MoodEntry, PlannerTask, QuitCounter, WorkoutSession } from '../api/types';
 import { useAuth } from '../context/AuthContext';
 import { dayOfArc, isArcComplete } from '../lib/arc';
 import { useLanguage } from '../context/LanguageContext';
@@ -9,7 +9,7 @@ import { Screen } from '../components/Shell';
 import { ContextRail } from '../components/ContextRail';
 import { NextStepCard, StreakCard, TodayHero, weekFrom } from './TodayHero';
 import { TodayHabits } from './TodayHabits';
-import { CleanRuns, DayOverview, MindTiles, SummaryStrip, type OverviewArea } from './TodayBlocks';
+import { CleanRuns, DayOverview, MindTiles, SummaryStrip, TodayTasks, type OverviewArea } from './TodayBlocks';
 import { Button, Section } from '../components/ui';
 import { ErrorState, LoadingRows } from '../components/states';
 import { useMutation } from '../hooks/useAsyncData';
@@ -32,6 +32,7 @@ export default function Today() {
   const [mood, setMood] = useState<MoodEntry | null>(null);
   const [focusSec, setFocusSec] = useState(0);
   const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([]);
+  const [plannerTasks, setPlannerTasks] = useState<PlannerTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const mutation = useMutation();
@@ -59,7 +60,7 @@ export default function Today() {
   const load = useCallback(async () => {
     setLoadError(null);
     try {
-      const [h, q, tr, m, f, mh] = await Promise.all([
+      const [h, q, tr, m, f, mh, pl] = await Promise.all([
         api.get<{ habits: Habit[] }>('/habits'),
         api.get<{ counters: QuitCounter[] }>('/quit'),
         api.get<{ session: WorkoutSession | null; restDay: boolean }>('/training/today'),
@@ -68,6 +69,7 @@ export default function Today() {
         api.get<{ totalSec: number }>('/focus/today'),
         // The mood tile draws the last week rather than a single value.
         api.get<{ entries: MoodEntry[] }>('/mood/history'),
+        api.get<{ tasks: PlannerTask[] }>('/planner'),
       ]);
       setHabits(h.habits);
       setCounters(q.counters);
@@ -76,6 +78,7 @@ export default function Today() {
       setMood(m.entry);
       setFocusSec(f.totalSec);
       setMoodHistory(mh.entries);
+      setPlannerTasks(pl.tasks);
     } catch (err) {
       setLoadError(err instanceof ApiError ? err.message : t('genericError'));
     } finally {
@@ -280,6 +283,17 @@ export default function Today() {
     };
   })();
 
+  // Only what is due today. The rest of the week and the backlog stay in the
+  // planner: Today is for what is being done now, not for looking ahead.
+  const weekdayToday = (new Date().getDay() + 6) % 7;
+  const todaysTasks = plannerTasks.filter((task) => !task.backlog && task.weekday === weekdayToday);
+  const tasksDone = todaysTasks.filter((task) => task.done).length;
+
+  async function toggleTask(task: PlannerTask) {
+    const ok = await mutation.run(() => api.patch(`/planner/${task.id}`, { done: !task.done }));
+    if (ok) load();
+  }
+
   const focusMin = Math.round(focusSec / 60);
 
   // Seven days of mood, oldest first, with a gap where nothing was logged.
@@ -323,6 +337,14 @@ export default function Today() {
         <div className="t-block-wide">
           <NextStepCard kicker={next.kicker} title={next.title} why={next.why} cta={next.cta} onGo={next.go} />
         </div>
+        {/* Tasks due today sit with the next step rather than behind the
+            summary: they are the day's commitments, not a statistic about it.
+            Nothing renders when there are none. */}
+        {todaysTasks.length > 0 && (
+          <div className="t-block-wide">
+            <TodayTasks tasks={todaysTasks} onToggle={toggleTask} onOpenPlanner={() => navigate('/planner')} />
+          </div>
+        )}
         <div className="t-block-wide">
           <StreakCard days={bestStreak} week={week} />
         </div>
@@ -337,6 +359,9 @@ export default function Today() {
         <SummaryStrip
           items={[
             { label: t('todayHabitsShort'), value: `${doneCount}/${todaysHabits.length}` },
+            ...(todaysTasks.length
+              ? [{ label: t('todayTasks'), value: `${tasksDone}/${todaysTasks.length}` }]
+              : []),
             { label: t('todayFocusShort'), value: t('todayFocusMinutes', { n: focusMin }) },
             {
               label: t('todayMoodShort'),

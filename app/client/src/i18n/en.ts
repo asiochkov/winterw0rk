@@ -276,6 +276,8 @@ export const en = {
   todayHabitsShort: 'Habits',
   todayFocusShort: 'Focus',
   todayMoodShort: 'Mood',
+  todayTasks: 'Tasks today',
+  todayOpenPlanner: 'Open the planner',
   todayNext: 'Next',
   todayStart: 'Start',
   todayDoneLabel: 'Done',
@@ -456,6 +458,8 @@ export const en = {
   exerciseAlternatives: 'Alternatives',
 
   // mood
+  optional: 'optional',
+  moodChange: 'Tap to change',
   moodTitle: 'Mood',
   moodKicker: 'One tap, most days',
   moodThisMonth: 'This month',

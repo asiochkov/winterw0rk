@@ -339,7 +339,7 @@
   cursor: pointer;
 }
 .sum-save:disabled {
-  opacity: 0.55;
+  opacity: var(--disabled-opacity);
   cursor: default;
 }
 
@@ -910,7 +910,7 @@
   cursor: pointer;
 }
 .ss-nav-btn:disabled {
-  opacity: 0.4;
+  opacity: var(--disabled-opacity);
   cursor: default;
 }
 .ss-nav-btn.is-primary {

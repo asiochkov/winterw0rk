@@ -47,6 +47,7 @@ export default function AddQuit() {
               key={p.value}
               type="button"
               className={`quit-chip ${kind === p.value ? 'quit-chip-on' : ''}`}
+              aria-pressed={kind === p.value}
               onClick={() => setKind(p.value)}
             >
               {t(p.key)}
@@ -54,10 +55,10 @@ export default function AddQuit() {
           ))}
         </div>
         <Field label={t('quitCostPerUnit')} hint={t('quitCostPerUnitHint')}>
-          <Input type="number" value={unitCost} onChange={(e) => setUnitCost(e.target.value)} placeholder="0.50" />
+          <Input type="number" inputMode="decimal" value={unitCost} onChange={(e) => setUnitCost(e.target.value)} placeholder="0.50" />
         </Field>
         <Field label={t('quitUnitsPerDay')} hint={t('quitUnitsPerDayHint')}>
-          <Input type="number" value={dailyAmount} onChange={(e) => setDailyAmount(e.target.value)} placeholder="10" />
+          <Input type="number" inputMode="decimal" value={dailyAmount} onChange={(e) => setDailyAmount(e.target.value)} placeholder="10" />
         </Field>
         {error && <p className="onb-error">{error}</p>}
         <Button full disabled={!kind.trim() || busy} onClick={submit}>

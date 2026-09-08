@@ -116,7 +116,7 @@ export default function Focus() {
       <Section title={t('focusMethod')}>
         <div className="type-row">
           {MODES.map((m) => (
-            <button key={m.k} className={`type-btn ${mode === m.k ? 'type-btn-on' : ''}`} onClick={() => setMode(m.k)}>
+            <button key={m.k} className={`type-btn ${mode === m.k ? 'type-btn-on' : ''}`} aria-pressed={mode === m.k} onClick={() => setMode(m.k)}>
               {t(m.labelKey)}
             </button>
           ))}

@@ -940,3 +940,51 @@
   color: var(--mut);
   font-size: var(--fs-3);
 }
+
+/* Planner tasks due today. The planner held them and Today did not show them,
+   so the screen that answers "what now" was missing part of the answer. */
+.t-tasks {
+  padding: 18px 20px 14px;
+  border: var(--edge);
+  border-radius: var(--r-lg);
+  background: var(--sf1);
+}
+.t-tasks-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.t-tasks-label {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.t-tasks-count {
+  font-size: var(--fs-2);
+  font-variant-numeric: tabular-nums;
+  color: var(--mut);
+}
+.t-task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+.t-task-title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-4);
+  color: var(--tx);
+}
+.t-task.is-done .t-task-title {
+  text-decoration: line-through;
+  color: var(--mut);
+}
+.t-task-time {
+  flex: none;
+  font-size: var(--fs-2);
+  font-variant-numeric: tabular-nums;
+  color: var(--mut);
+}

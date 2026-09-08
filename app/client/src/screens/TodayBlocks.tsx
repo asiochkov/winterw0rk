@@ -1,4 +1,4 @@
-import type { QuitCounter } from '../api/types';
+import type { PlannerTask, QuitCounter } from '../api/types';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { formatMoney } from '../lib/format';
@@ -21,6 +21,60 @@ export const CLEAN_RUN_LIMIT = 3;
  * ranked. The detail is still one tap away; it just no longer argues with the
  * next step for the top of the screen.
  */
+/**
+ * Today's planner tasks, on Today.
+ *
+ * The planner held them and Today did not show them, so the screen that
+ * answers "what now" was missing a whole category of the answer. Only the ones
+ * due today: the rest of the week and the backlog stay in the planner, where
+ * looking ahead is the point.
+ */
+export function TodayTasks({
+  tasks,
+  onToggle,
+  onOpenPlanner,
+}: {
+  tasks: PlannerTask[];
+  onToggle: (task: PlannerTask) => void;
+  onOpenPlanner: () => void;
+}) {
+  const { t } = useLanguage();
+  if (!tasks.length) return null;
+  const done = tasks.filter((task) => task.done).length;
+
+  return (
+    <div className="t-tasks">
+      <div className="t-tasks-head">
+        <span className="t-tasks-label">{t('todayTasks')}</span>
+        <span className="t-tasks-count">
+          {done}/{tasks.length}
+        </span>
+      </div>
+      {tasks.map((task) => (
+        <div key={task.id} className={`t-task ${task.done ? 'is-done' : ''}`}>
+          <button
+            type="button"
+            className={`today-check ${task.done ? 'today-check-on' : ''}`}
+            onClick={() => onToggle(task)}
+            aria-pressed={task.done}
+            aria-label={task.title}
+          />
+          <span className="t-task-title">{task.title}</span>
+          {task.startMin != null && (
+            <span className="t-task-time">
+              {String(Math.floor(task.startMin / 60)).padStart(2, '0')}:
+              {String(task.startMin % 60).padStart(2, '0')}
+            </span>
+          )}
+        </div>
+      ))}
+      <button type="button" className="today-link" onClick={onOpenPlanner}>
+        {t('todayOpenPlanner')}
+      </button>
+    </div>
+  );
+}
+
 export function SummaryStrip({
   items,
   expanded,

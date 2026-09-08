@@ -12,7 +12,7 @@
   transform: scale(0.98);
 }
 .btn:disabled {
-  opacity: 0.45;
+  opacity: var(--disabled-opacity);
 }
 .btn-primary {
   background: var(--tx);

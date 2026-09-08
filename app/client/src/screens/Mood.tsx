@@ -32,6 +32,7 @@ export default function Mood() {
   const { t } = useLanguage();
   const DOW = [t('dayMon'), t('dayTue'), t('dayWed'), t('dayThu'), t('dayFri'), t('daySat'), t('daySun')];
   const [today, setToday] = useState<MoodEntry | null>(null);
+  const [reopened, setReopened] = useState(false);
   const [history, setHistory] = useState<MoodEntry[]>([]);
   const [pending, setPending] = useState<number | null>(null);
   const [tag, setTag] = useState('');
@@ -62,6 +63,7 @@ export default function Mood() {
           note: note || undefined,
         });
         setToday(entry);
+        setReopened(false);
       });
     } finally {
       setPending(null);
@@ -83,14 +85,18 @@ export default function Mood() {
   return (
     <Screen title={t('moodTitle')} kicker={t('moodKicker')} nav>
       <Section>
-        {today ? (
-          <div className="mood-today-set">
+        {today && !reopened ? (
+          /* Marking a mood replaced the picker with a static card for the rest
+             of the day — five emoji side by side are easy to mis-tap and there
+             was no way to correct it until tomorrow. */
+          <button type="button" className="mood-today-set" onClick={() => setReopened(true)}>
             <span className="mood-today-emoji">{MOODS.find((m) => m.k === today.mood)?.emoji}</span>
             <div>
               <p className="mood-today-label">{t(MOODS.find((m) => m.k === today.mood)!.labelKey)}</p>
               {today.tag && <p className="mood-today-tag">{today.tag}</p>}
+              <p className="mood-today-change">{t('moodChange')}</p>
             </div>
-          </div>
+          </button>
         ) : (
           <>
             <div className="mood-picker">
@@ -103,7 +109,7 @@ export default function Mood() {
             </div>
             <div className="mood-chip-list">
               {TAG_KEYS.map((key) => (
-                <button key={key} className={`quit-chip ${tag === t(key) ? 'quit-chip-on' : ''}`} onClick={() => setTag(tag === t(key) ? '' : t(key))}>
+                <button key={key} className={`quit-chip ${tag === t(key) ? 'quit-chip-on' : ''}`} aria-pressed={tag === t(key)} onClick={() => setTag(tag === t(key) ? '' : t(key))}>
                   {t(key)}
                 </button>
               ))}

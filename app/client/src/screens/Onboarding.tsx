@@ -274,6 +274,7 @@ function OnboardingFlow({ user, setUser }: { user: User; setUser: (u: User) => v
                           key={f.k}
                           type="button"
                           className={`onb-freq-btn ${(frequency[p.n] ?? 'daily') === f.k ? 'is-on' : ''}`}
+                          aria-pressed={(frequency[p.n] ?? 'daily') === f.k}
                           onClick={() => setFrequency((m) => ({ ...m, [p.n]: f.k }))}
                         >
                           {t(f.labelKey)}

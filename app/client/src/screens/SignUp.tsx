@@ -56,7 +56,9 @@ export default function SignUp() {
         <h1 className="auth-headline auth-headline-form">{t('signUpTitle')}</h1>
         <p className="auth-sub">{t('signUpSub')}</p>
         <form className="auth-form" onSubmit={onSubmit}>
-          <Field label={t('nameLabel')}>
+          {/* The only optional field on the form, and it looked exactly like
+              the two required ones. */}
+          <Field label={t('nameLabel')} hint={t('optional')}>
             <Input
               autoFocus
               value={name}

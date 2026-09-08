@@ -133,10 +133,10 @@ export default function Nutrition() {
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Chicken & rice" />
           </Field>
           <Field label={t('nutritionKcal')}>
-            <Input type="number" value={calories} onChange={(e) => setCalories(e.target.value)} placeholder="550" />
+            <Input type="number" inputMode="numeric" value={calories} onChange={(e) => setCalories(e.target.value)} placeholder="550" />
           </Field>
           <Field label={t('nutritionProtein')}>
-            <Input type="number" value={protein} onChange={(e) => setProtein(e.target.value)} placeholder="40" />
+            <Input type="number" inputMode="numeric" value={protein} onChange={(e) => setProtein(e.target.value)} placeholder="40" />
           </Field>
         </div>
         <Button full variant="secondary" onClick={addFood} style={{ marginTop: 12 }}>

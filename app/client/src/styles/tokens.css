@@ -61,6 +61,13 @@
   --r-xs: 8px;
   --r-pill: 999px;
 
+  /* One opacity for a control that cannot be pressed. There were three —
+     0.4, 0.45 and 0.55 — so the same state read as three different degrees of
+     unavailable depending on which screen it was on. (The extended audit
+     expected these to use --mut-dim; they never did, they use opacity, which
+     is why raising that token's contrast did not touch them.) */
+  --disabled-opacity: 0.45;
+
   /*
    * Type scale.
    *

@@ -122,7 +122,7 @@ export default function Street() {
           <Section title={t('streetMode')}>
             <div className="type-row">
               {MODES.map((m) => (
-                <button key={m.k} className={`type-btn ${mode === m.k ? 'type-btn-on' : ''}`} onClick={() => setMode(m.k)}>
+                <button key={m.k} className={`type-btn ${mode === m.k ? 'type-btn-on' : ''}`} aria-pressed={mode === m.k} onClick={() => setMode(m.k)}>
                   {t(m.labelKey)}
                 </button>
               ))}
@@ -228,7 +228,7 @@ export default function Street() {
           ) : (
             <>
               <Field label={t('streetDistance')}>
-                <Input type="number" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="5.2" autoFocus />
+                <Input type="number" inputMode="decimal" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="5.2" autoFocus />
               </Field>
               <p className="today-empty" style={{ marginTop: 8 }}>
                 {t('streetNoGpsFallback', { time: fmt(elapsed) })}

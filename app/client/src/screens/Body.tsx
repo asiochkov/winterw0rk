@@ -100,17 +100,17 @@ export default function Body() {
       <Section title={t('bodyLogToday')}>
         <div className="form-stack">
           <Field label={t('bodyWeightKg')}>
-            <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="82.4" />
+            <Input type="number" inputMode="decimal" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="82.4" />
           </Field>
           <div className="type-row">
             <Field label={t('bodyChest')}>
-              <Input type="number" value={chest} onChange={(e) => setChest(e.target.value)} placeholder="—" />
+              <Input type="number" inputMode="decimal" value={chest} onChange={(e) => setChest(e.target.value)} placeholder="—" />
             </Field>
             <Field label={t('bodyWaist')}>
-              <Input type="number" value={waist} onChange={(e) => setWaist(e.target.value)} placeholder="—" />
+              <Input type="number" inputMode="decimal" value={waist} onChange={(e) => setWaist(e.target.value)} placeholder="—" />
             </Field>
             <Field label={t('bodyHips')}>
-              <Input type="number" value={hips} onChange={(e) => setHips(e.target.value)} placeholder="—" />
+              <Input type="number" inputMode="decimal" value={hips} onChange={(e) => setHips(e.target.value)} placeholder="—" />
             </Field>
           </div>
           <Button full onClick={save} disabled={!weight && !chest && !waist && !hips}>

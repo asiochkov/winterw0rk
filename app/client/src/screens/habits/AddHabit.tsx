@@ -71,7 +71,7 @@ export default function AddHabit() {
         <Field label={t('typeLabel')}>
           <div className="type-row">
             {(['bool', 'count', 'time'] as HabitType[]).map((tp) => (
-              <button key={tp} type="button" className={`type-btn ${type === tp ? 'type-btn-on' : ''}`} onClick={() => setType(tp)}>
+              <button key={tp} type="button" className={`type-btn ${type === tp ? 'type-btn-on' : ''}`} aria-pressed={type === tp} onClick={() => setType(tp)}>
                 {tp === 'bool' ? t('typeBool') : tp === 'count' ? t('typeCount') : t('typeTime')}
               </button>
             ))}
@@ -80,13 +80,13 @@ export default function AddHabit() {
         {type !== 'bool' && (
           <div className="type-row">
             <Field label={t('targetLabel')}>
-              <Input type="number" value={target} onChange={(e) => setTarget(e.target.value)} placeholder={type === 'time' ? '15' : '2'} />
+              <Input type="number" inputMode="decimal" value={target} onChange={(e) => setTarget(e.target.value)} placeholder={type === 'time' ? '15' : '2'} />
             </Field>
             <Field label={t('unitLabel')}>
               <Input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder={type === 'time' ? 'MIN' : 'L'} />
             </Field>
             <Field label={t('stepLabel')}>
-              <Input type="number" value={step} onChange={(e) => setStep(e.target.value)} placeholder="0.25" />
+              <Input type="number" inputMode="decimal" value={step} onChange={(e) => setStep(e.target.value)} placeholder="0.25" />
             </Field>
           </div>
         )}

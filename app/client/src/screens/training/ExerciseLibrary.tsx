@@ -35,11 +35,11 @@ export default function ExerciseLibrary() {
     <Screen title={t('libraryTitle')} nav={false} back={back}>
       <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('librarySearch')} style={{ marginBottom: 12 }} />
       <div className="mood-chip-list" style={{ marginBottom: 16 }}>
-        <button className={`quit-chip ${!group ? 'quit-chip-on' : ''}`} onClick={() => setGroup('')}>
+        <button className={`quit-chip ${!group ? 'quit-chip-on' : ''}`} aria-pressed={!group} onClick={() => setGroup('')}>
           {t('all')}
         </button>
         {groups.map((g) => (
-          <button key={g} className={`quit-chip ${group === g ? 'quit-chip-on' : ''}`} onClick={() => setGroup(g)}>
+          <button key={g} className={`quit-chip ${group === g ? 'quit-chip-on' : ''}`} aria-pressed={group === g} onClick={() => setGroup(g)}>
             {g}
           </button>
         ))}

@@ -119,6 +119,9 @@
   /* Room for the toggle so long passwords do not run under it. */
   padding-right: 78px;
 }
+/* The one control in the app that was under the 44px minimum. It sits inside
+   the password field, so it cannot simply grow — the hit area is extended past
+   the paint instead, the same way the round nav buttons do it. */
 .auth-password-toggle {
   position: absolute;
   right: 6px;
@@ -135,6 +138,21 @@
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
 }
+.auth-password-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -2px -4px;
+}
 .auth-password-toggle:hover {
   color: var(--tx);
+}
+
+/* A 15px-tall link is not a tap target. Measured on sign-in at 78×15 before
+   this; the text stays the same size and the box grows around it. */
+.auth-inline-link {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13.5px;
 }
