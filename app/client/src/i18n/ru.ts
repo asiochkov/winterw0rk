@@ -576,6 +576,13 @@ export const ru: typeof en = {
 
   // planner
   plannerTitle: 'Планер',
+  plannerNoTime: 'Без времени',
+  plannerNoTimedTasks: 'На этот день ничего не назначено по времени.',
+  plannerDay: 'День',
+  plannerList: 'Список',
+  plannerStartTime: 'Начало',
+  plannerEndTime: 'Конец',
+  plannerBackToWeek: 'К неделе',
   plannerWeek: 'Неделя',
   plannerBacklog: 'Бэклог ({n})',
   plannerNewTask: 'Новая задача',

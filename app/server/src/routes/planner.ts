@@ -16,6 +16,8 @@ function serializeTask(row: any) {
     recurrence: row.recurrence,
     backlog: !!row.backlog,
     done: !!row.done,
+    startMin: row.start_min,
+    endMin: row.end_min,
     subtasks: subtasks.map((s) => ({ id: s.id, title: s.title, done: !!s.done })),
   };
 }
@@ -32,6 +34,10 @@ const createSchema = z.object({
   weekday: z.number().min(0).max(6).nullable().optional(),
   recurrence: z.enum(['none', 'daily', 'weekly']).default('none'),
   backlog: z.boolean().default(false),
+  /** Minutes from midnight. Null for a task with no time, which is most of
+   *  them — the timeline lists those separately rather than inventing a slot. */
+  startMin: z.number().int().min(0).max(1439).nullable().optional(),
+  endMin: z.number().int().min(1).max(1440).nullable().optional(),
 });
 
 router.post('/', (req, res) => {
@@ -40,8 +46,21 @@ router.post('/', (req, res) => {
   const userId = userIdOf(req);
   const t = parsed.data;
   const info = db
-    .prepare('INSERT INTO tasks (user_id, title, priority, weekday, recurrence, backlog) VALUES (?, ?, ?, ?, ?, ?)')
-    .run(userId, t.title, t.priority, t.backlog ? null : t.weekday ?? null, t.recurrence, t.backlog ? 1 : 0);
+    .prepare(
+      `INSERT INTO tasks (user_id, title, priority, weekday, recurrence, backlog, start_min, end_min)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(
+      userId,
+      t.title,
+      t.priority,
+      t.backlog ? null : t.weekday ?? null,
+      t.recurrence,
+      t.backlog ? 1 : 0,
+      // A time only means something on a day, so the backlog never carries one.
+      t.backlog ? null : t.startMin ?? null,
+      t.backlog ? null : t.endMin ?? null
+    );
   const row = db.prepare('SELECT * FROM tasks WHERE id = ?').get(info.lastInsertRowid);
   res.status(201).json({ task: serializeTask(row) });
 });
@@ -57,6 +76,10 @@ const updateSchema = z.object({
   recurrence: z.enum(['none', 'daily', 'weekly']).optional(),
   backlog: z.boolean().optional(),
   done: z.boolean().optional(),
+  /** Minutes from midnight. Null for a task with no time, which is most of
+   *  them — the timeline lists those separately rather than inventing a slot. */
+  startMin: z.number().int().min(0).max(1439).nullable().optional(),
+  endMin: z.number().int().min(1).max(1440).nullable().optional(),
 });
 
 router.patch('/:id', (req, res) => {
@@ -73,7 +96,11 @@ router.patch('/:id', (req, res) => {
       weekday = CASE WHEN ? THEN ? ELSE weekday END,
       recurrence = COALESCE(?, recurrence),
       backlog = COALESCE(?, backlog),
-      done = COALESCE(?, done)
+      done = COALESCE(?, done),
+      -- Explicit null clears a time, so the CASE distinguishes "not sent"
+      -- from "sent as null" the way the weekday column already does.
+      start_min = CASE WHEN ? THEN ? ELSE start_min END,
+      end_min = CASE WHEN ? THEN ? ELSE end_min END
      WHERE id = ?`
   ).run(
     t.title ?? null,
@@ -83,6 +110,10 @@ router.patch('/:id', (req, res) => {
     t.recurrence ?? null,
     t.backlog === undefined ? null : t.backlog ? 1 : 0,
     t.done === undefined ? null : t.done ? 1 : 0,
+    'startMin' in t ? 1 : 0,
+    t.startMin ?? null,
+    'endMin' in t ? 1 : 0,
+    t.endMin ?? null,
     row.id
   );
   const updated = db.prepare('SELECT * FROM tasks WHERE id = ?').get(row.id);

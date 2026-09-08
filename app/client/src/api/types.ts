@@ -158,6 +158,11 @@ export interface PlannerTask {
   recurrence: TaskRecurrence;
   backlog: boolean;
   done: boolean;
+  /** Minutes from midnight, or null for a task with no time — most of them.
+   *  A timed task is drawn on the timeline; an untimed one is listed beside
+   *  it rather than given an invented slot. */
+  startMin: number | null;
+  endMin: number | null;
   subtasks: Subtask[];
 }
 

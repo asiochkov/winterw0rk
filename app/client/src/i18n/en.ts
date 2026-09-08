@@ -574,6 +574,13 @@ export const en = {
 
   // planner
   plannerTitle: 'Planner',
+  plannerNoTime: 'No time set',
+  plannerNoTimedTasks: 'Nothing scheduled at a time on this day.',
+  plannerDay: 'Day',
+  plannerList: 'List',
+  plannerStartTime: 'Start',
+  plannerEndTime: 'End',
+  plannerBackToWeek: 'Back to the week',
   plannerWeek: 'Week',
   plannerBacklog: 'Backlog ({n})',
   plannerNewTask: 'New task',

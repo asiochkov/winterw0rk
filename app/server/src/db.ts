@@ -293,6 +293,13 @@ addColumnIfMissing('users', 'terms_version', 'TEXT');
 addColumnIfMissing('users', 'privacy_version', 'TEXT');
 addColumnIfMissing('users', 'consented_at', 'TEXT');
 
+// Planner tasks can carry a time, which is what lets them be drawn on a
+// timeline rather than only listed under a weekday. Minutes from midnight
+// rather than a clock string: it sorts, subtracts and positions without
+// parsing. Both null keeps the old behaviour — an untimed task for that day.
+addColumnIfMissing('tasks', 'start_min', 'INTEGER');
+addColumnIfMissing('tasks', 'end_min', 'INTEGER');
+
 // The quit counters add up money saved, and three screens each printed it with
 // a different hardcoded symbol. The currency the user actually counts in is a
 // property of the user, not of whichever screen is drawing the figure.

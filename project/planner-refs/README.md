@@ -116,3 +116,42 @@ Blocks fill nearly the full column width; short ones still show both lines.
   neither screenshot can show.
 
 Decide these against v7's existing patterns, and record the decision here.
+
+---
+
+## Decisions taken on the open questions
+
+Recorded here as the file asks, after building the timeline.
+
+**The energy curve is not built.** The brief says its data should come from
+"the app's existing energy/circadian insight logic, or a new `energyInsights`
+service if there is none". There is none, and there is no signal in the data
+model — no sleep, no heart rate, no time-of-day performance history — from
+which an energy rise or dip could be derived. Drawing the curve would mean
+inventing a claim about the user's body and presenting it as a measurement,
+which is the same thing as the prototype's hardcoded 92kg bench that was
+refused earlier in this transfer. If a real signal appears later (sleep
+entries, or completion times per hour accumulated over an arc), the labels
+have a place to attach to on the axis.
+
+**Untimed tasks** are listed above the grid under "no time set", not placed on
+it. Most tasks have no time; giving them an invented slot would say something
+false about when they happen.
+
+**Overlapping events** are drawn stacked in the same lane. Neither reference
+shows two at once and the side-by-side split rule is unspecified; stacking is
+the honest minimum until there is a rule to follow. Worth revisiting once
+enough tasks carry times for overlaps to be common.
+
+**The expand transition** is a view swap, not a shared-element animation. The
+week column and the day view do not share a DOM node, and faking the morph
+with a scale would move the card away from where its time actually is —
+misleading in a calendar for the length of the animation.
+
+**Phone default** is Day, per the composition rule not to shrink a desktop
+layout: seven columns at 430px gives each day about 50px, too narrow for a
+title. The week grid stays reachable through its own tab and scrolls
+horizontally.
+
+**Buffer rows and travel-time strips** from the references are not built —
+they need data the model does not have.

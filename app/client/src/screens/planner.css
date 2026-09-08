@@ -78,3 +78,74 @@
 .planner-sub-add .input {
   flex: 1;
 }
+
+/* Optional start/end for a task. Both empty means an untimed task, which is
+   what most of them are and what the planner did exclusively before. */
+.planner-times {
+  display: flex;
+  gap: var(--s3);
+  margin: -6px 0 16px;
+}
+.planner-time {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.planner-time span {
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.planner-time .input {
+  min-height: 44px;
+}
+
+/* In the day view the week strip becomes the navigator, so switching days
+   never drops out of the day. */
+.planner-daystrip {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: var(--s4);
+}
+.planner-daystrip-back {
+  align-self: flex-start;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.planner-daystrip-back:hover {
+  color: var(--tx);
+}
+.planner-daystrip-days {
+  display: flex;
+  gap: 4px;
+}
+.planner-daystrip-day {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: var(--sf1);
+  color: var(--mut);
+  font-family: inherit;
+  font-size: var(--fs-1);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.planner-daystrip-day.is-on {
+  border-color: var(--ac);
+  color: var(--tx);
+}
