@@ -55,6 +55,9 @@ export const en = {
   todayStartFocus: 'START FOCUS',
   todayMoodNotLogged: 'NOT LOGGED TODAY',
   reportTitle: 'Personal report',
+  reportOpen: 'Open the report',
+  reportArcDay: 'Day {n} of the arc',
+  reportFoot: 'Measured against the same span before it. Nothing here is an average of other people.',
   reportPeriod: 'Last {n} days',
   reportIntro: 'Each line is the last {n} days measured against the {n} before them.',
   reportDiscipline: 'Discipline',
@@ -150,6 +153,11 @@ export const en = {
   ctxFocusMeaning: 'Time recorded in focus blocks.',
 
   // common
+  arcCompleteKicker: 'Arc complete',
+  arcCompleteTitle: '{n} days, done.',
+  arcCompleteBody: 'That is {n} days of showing up, closed. Here is what moved across it.',
+  arcCompleteStartNext: 'Start the next arc',
+  arcCompleteLater: 'Not yet',
   back: 'Back',
   sessionExpired: 'Your session ended. Sign in to pick up where you left off.',
   cancel: 'Cancel',

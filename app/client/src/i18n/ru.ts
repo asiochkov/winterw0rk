@@ -57,6 +57,9 @@ export const ru: typeof en = {
   todayStartFocus: 'НАЧАТЬ ФОКУС',
   todayMoodNotLogged: 'СЕГОДНЯ НЕ ЗАПИСАНО',
   reportTitle: 'Личный отчёт',
+  reportOpen: 'Открыть отчёт',
+  reportArcDay: 'День арки {n}',
+  reportFoot: 'Сравнение с таким же отрезком до него. Ничего здесь не усреднено по другим людям.',
   reportPeriod: 'За {n} дней',
   reportIntro: 'Каждая строка — последние {n} дней против {n} предыдущих.',
   reportDiscipline: 'Дисциплина',
@@ -152,6 +155,11 @@ export const ru: typeof en = {
   ctxFocusMeaning: 'Время, записанное в блоках фокуса.',
 
   // common
+  arcCompleteKicker: 'Арка завершена',
+  arcCompleteTitle: '{n} дней позади.',
+  arcCompleteBody: 'Это {n} дней, которые вы закрыли. Вот что за них изменилось.',
+  arcCompleteStartNext: 'Начать новую арку',
+  arcCompleteLater: 'Пока нет',
   back: 'Назад',
   sessionExpired: 'Сессия завершена. Войдите, чтобы продолжить с того же места.',
   cancel: 'Отмена',

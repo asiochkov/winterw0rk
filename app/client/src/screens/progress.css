@@ -278,6 +278,25 @@
 /* ── Personal report, transcribed from v7's Progress screen ─────────────
    v7 marks this off with an accent rule rather than the neutral edge every
    other section uses: it is the conclusion, not another block of data. */
+.pr-report-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--m-fast) var(--e-io);
+}
+.pr-report-link:hover {
+  border-color: rgba(var(--acr), 0.5);
+}
+.pr-report-open {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: var(--fs-2);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--ac);
+}
 .pr-report {
   margin: 34px 22px 0;
   padding: 30px 4px 4px;

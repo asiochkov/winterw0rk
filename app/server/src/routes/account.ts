@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAuth, userIdOf } from '../middleware.js';
+import { toPublicUser } from './auth.js';
 import { isKnownTimeZone } from '../util.js';
 import { ensureUnsubscribeToken } from '../reminders.js';
 
@@ -86,6 +87,19 @@ router.patch('/notifications', (req, res) => {
     reminderHour: row.reminder_hour,
     timezone: row.timezone,
   });
+});
+
+/**
+ * Starting the next arc. The old one is not deleted — habits, entries and
+ * counters all carry on; only the day counter is re-anchored to today, which
+ * is what makes the finish line mean anything.
+ */
+router.post('/arc/restart', (req, res) => {
+  const userId = userIdOf(req);
+  const today = new Date().toISOString().slice(0, 10);
+  db.prepare('UPDATE users SET arc_start_date = ? WHERE id = ?').run(today, userId);
+  const row = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+  res.json({ user: toPublicUser(row) });
 });
 
 /**

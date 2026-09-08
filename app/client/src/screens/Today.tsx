@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../api/client';
 import type { Habit, MoodEntry, QuitCounter, WorkoutSession } from '../api/types';
 import { useAuth } from '../context/AuthContext';
-import { dayOfArc } from '../lib/arc';
+import { dayOfArc, isArcComplete } from '../lib/arc';
 import { useLanguage } from '../context/LanguageContext';
 import { Screen } from '../components/Shell';
 import { ContextRail } from '../components/ContextRail';
@@ -17,6 +17,8 @@ import { useMutation } from '../hooks/useAsyncData';
 import './today.css';
 
 const DETAIL_KEY = 'ww.today.detailOpen';
+/** Keyed by the arc's own start date, so a new arc gets its own ending. */
+const ARC_SEEN_KEY = 'ww.arcCompleteSeen';
 
 const MOOD_KEYS = ['moodTerrible', 'moodBad', 'moodNeutral', 'moodGood', 'moodExcellent'] as const;
 
@@ -86,6 +88,24 @@ export default function Today() {
   useEffect(() => {
     load();
   }, [load]);
+
+  /*
+   * The arc ran to its length and nothing happened: day 91 looked like day 90
+   * with a bigger number. It ends somewhere now. Shown once per arc — the
+   * screen offers to start the next one, and declining has to mean declining.
+   */
+  const arcStart = user?.arcStartDate ?? null;
+  const arcLength = user?.arcLengthDays;
+  useEffect(() => {
+    if (!isArcComplete(arcStart, arcLength)) return;
+    try {
+      if (localStorage.getItem(ARC_SEEN_KEY) === arcStart) return;
+      localStorage.setItem(ARC_SEEN_KEY, arcStart ?? '');
+    } catch {
+      /* no storage: better to show it again than never */
+    }
+    navigate('/arc-complete');
+  }, [arcStart, arcLength, navigate]);
 
   async function completeHabit(habit: Habit) {
     const value =
